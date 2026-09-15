@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resource Details — UniShare Uganda</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="resource_detail">
+<a href="#main-content" class="skip-link">Skip to content</a>
+<header class="site-header" id="site-header"></header>
+
+<main id="main-content">
+  <div class="container" id="detail-container">
+    <!-- Filled by inline script below -->
+  </div>
+</main>
+
+<!-- Report modal -->
+<div class="modal-backdrop" id="report-modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="report-modal-title">
+    <div class="modal-header">
+      <h3 id="report-modal-title" style="margin:0;">Report this resource</h3>
+      <button type="button" class="modal-close" data-close-modal aria-label="Close">&times;</button>
+    </div>
+    <div class="field">
+      <label for="report-reason">Reason</label>
+      <select id="report-reason">
+        <option value="">Select a reason</option>
+        <option>Wrong Course</option>
+        <option>Outdated</option>
+        <option>Incorrect Content</option>
+        <option>Duplicate</option>
+        <option>Inappropriate</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="report-comment">Comment (optional)</label>
+      <textarea id="report-comment" placeholder="Tell us more…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+      <button type="button" class="btn btn-primary" id="submit-report-btn">Submit Report</button>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer" id="site-footer"></footer>
+
+<script src="js/main.js"></script>
+<script>
+  function fileTypeBlurb(fileType) {
+    if (fileType === "PDF") return "PDF document";
+    if (fileType === "DOCX") return "Word document";
+    if (fileType === "PPTX") return "PowerPoint presentation";
+    return "Image file";
+  }
+
+  function renderDetailPage() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    const resource = id ? getResourceById(id) : null;
+    const container = document.getElementById("detail-container");
+
+    if (!resource) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <h3>Resource not found</h3>
+          <p>This resource may have been removed, or the link is incorrect.</p>
+          <a href="browse.html" class="btn btn-accent">Back to Browse</a>
+        </div>`;
+      return;
+    }
+
+    const type = resourceTypeMeta(resource.type);
+    const voted = hasVoted(resource.id);
+    const statusBadge = resource.status === "pending"
+      ? `<span class="badge badge-status-pending">Pending Review</span>`
+      : resource.status === "rejected"
+      ? `<span class="badge badge-status-rejected">Rejected</span>`
+      : `<span class="stamp">✓ Moderator Approved</span>`;
+
+    container.innerHTML = `
+      <div class="page-header">
+        <div class="card-eyebrow" style="margin-bottom: var(--space-2);">
+          <span class="course-stamp">${escapeHtml(resource.courseCode)}</span>
+          <span class="badge ${type.badgeClass}">${type.label}</span>
+        </div>
+        <h1>${escapeHtml(resource.title)}</h1>
+        <div class="flex-between">
+          <div class="card-meta">
+            <span>${escapeHtml(resource.university)} · ${escapeHtml(resource.courseName)}</span>
+            <span>Lecturer: ${escapeHtml(resource.lecturer)} · ${escapeHtml(resource.academicYear)}, ${escapeHtml(resource.semester)}</span>
+            <span>Uploaded by ${escapeHtml(resource.uploader)} on ${formatDate(resource.uploadDate)}</span>
+          </div>
+          ${statusBadge}
+        </div>
+      </div>
+
+      <div class="detail-grid">
+        <div>
+          <div class="preview-panel">
+            <div class="preview-icon">${escapeHtml(resource.fileType)}</div>
+            <p style="color: rgba(255,255,255,0.85); margin-top: var(--space-3);">
+              ${fileTypeBlurb(resource.fileType)} preview — open the download to view the full file.
+            </p>
+          </div>
+
+          <div class="stack-sm" style="margin-top: var(--space-4);">
+            <p><strong>File name:</strong> ${escapeHtml(resource.fileName)}</p>
+            <p style="margin-top: -8px;"><strong>File type:</strong> ${escapeHtml(resource.fileType)} &nbsp;·&nbsp; <strong>Size:</strong> ${escapeHtml(resource.fileSize)}</p>
+          </div>
+
+          <p style="margin-top: var(--space-4);">${escapeHtml(resource.description || "")}</p>
+
+          <div class="action-row" style="margin-top: var(--space-4);">
+            <button type="button" class="btn btn-primary" id="download-btn">Download</button>
+            <button type="button" class="upvote-btn ${voted ? "voted" : ""}" id="detail-upvote-btn" data-vote-id="${resource.id}" aria-pressed="${voted}">
+              ▲ <span class="vote-count">${resource.upvotes}</span> Upvote
+            </button>
+            <button type="button" class="btn btn-outline" id="share-btn">Share</button>
+            <button type="button" class="btn btn-outline" id="report-btn">Report</button>
+          </div>
+        </div>
+
+        <aside class="filter-panel">
+          <h4>At a glance</h4>
+          <div class="card-meta stack-sm">
+            <span><strong>University:</strong> ${escapeHtml(resource.university)}</span>
+            <span><strong>Course:</strong> ${escapeHtml(resource.courseCode)} — ${escapeHtml(resource.courseName)}</span>
+            <span><strong>Lecturer:</strong> ${escapeHtml(resource.lecturer)}</span>
+            <span><strong>Year / Semester:</strong> ${escapeHtml(resource.academicYear)}, ${escapeHtml(resource.semester)}</span>
+            <span><strong>Type:</strong> ${type.label}</span>
+            <span><strong>Uploader:</strong> ${escapeHtml(resource.uploader)}</span>
+          </div>
+        </aside>
+      </div>
+
+      <hr class="divider">
+
+      <div class="section-heading">
+        <h2>More resources for this course</h2>
+      </div>
+      <div class="resource-grid" id="related-resources-grid"></div>
+    `;
+
+    wireDetailInteractions(resource);
+    renderRelatedResources(resource);
+  }
+
+  function renderRelatedResources(resource) {
+    const related = getAllResources()
+      .filter((r) => r.id !== resource.id && r.courseCode === resource.courseCode && (r.status === "approved" || r.status === undefined))
+      .slice(0, 4);
+    const mount = document.getElementById("related-resources-grid");
+    if (related.length === 0) {
+      mount.innerHTML = `<p class="text-soft">No other resources for this course yet — be the first to add one.</p>`;
+      return;
+    }
+    mount.innerHTML = related.map(renderResourceCard).join("");
+    wireUpvoteDelegation("#related-resources-grid");
+  }
+
+  function wireDetailInteractions(resource) {
+    document.getElementById("download-btn").addEventListener("click", () => {
+      showToast(`Downloading ${resource.fileName} (mock file).`, "success");
+    });
+
+    document.getElementById("share-btn").addEventListener("click", () => {
+      const url = window.location.href;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => showToast("Link copied to clipboard."));
+      } else {
+        showToast("Share link: " + url);
+      }
+    });
+
+    document.getElementById("report-btn").addEventListener("click", () => openModal("report-modal"));
+
+    document.getElementById("detail-upvote-btn").addEventListener("click", (e) => {
+      const user = getCurrentUser();
+      if (!user) { showToast("Login to vote.", "error"); return; }
+      if (hasVoted(resource.id)) { showToast("You already upvoted this resource."); return; }
+      registerVote(resource.id);
+      const btn = e.currentTarget;
+      btn.classList.add("voted");
+      btn.setAttribute("aria-pressed", "true");
+      const countEl = btn.querySelector(".vote-count");
+      countEl.textContent = String(Number(countEl.textContent) + 1);
+      showToast("Upvoted — thanks for the feedback!", "success");
+    });
+
+    document.getElementById("submit-report-btn").addEventListener("click", () => {
+      const reason = document.getElementById("report-reason").value;
+      if (!reason) { showToast("Select a reason before submitting.", "error"); return; }
+      closeModal("report-modal");
+      document.getElementById("report-reason").value = "";
+      document.getElementById("report-comment").value = "";
+      showToast("Report submitted — our moderators will take a look.", "success");
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", renderDetailPage);
+</script>
+</body>
+</html>
