@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log In — UniShare Uganda</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="login">
+<a href="#main-content" class="skip-link">Skip to content</a>
+<header class="site-header" id="site-header"></header>
+
+<main id="main-content">
+  <div class="container">
+    <div class="auth-card">
+      <h1 style="font-size:1.7rem;">Log in</h1>
+      <p class="text-soft">Welcome back — pick up where you left off.</p>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" autocomplete="email" required>
+          <p class="error-msg"></p>
+        </div>
+
+        <div class="field">
+          <label for="login-password">Password</label>
+          <div class="password-field">
+            <input type="password" id="login-password" autocomplete="current-password" required>
+            <button type="button" class="password-toggle" data-target="login-password" aria-label="Show password">Show</button>
+          </div>
+          <p class="error-msg"></p>
+        </div>
+
+        <div class="flex-between" style="margin-bottom: var(--space-5);">
+          <label class="checkbox-row" style="margin:0;">
+            <input type="checkbox" id="login-remember">
+            <span>Remember me</span>
+          </label>
+          <a href="#" id="forgot-password-link" class="text-soft" style="font-size:0.88rem;">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Log In</button>
+      </form>
+
+      <p class="text-center" style="margin-top: var(--space-5);">
+        Don't have an account? <a href="register.html">Register</a>
+      </p>
+
+      <hr class="divider">
+      <p class="text-soft" style="font-size: 0.82rem;">
+        Demo accounts — student: <code>aisha.nabirye@students.mak.ac.ug</code> / <code>student123</code>,
+        moderator: <code>moderator@unishare.ug</code> / <code>moderate123</code>.
+      </p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer" id="site-footer"></footer>
+
+<script src="js/main.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  document.getElementById("forgot-password-link").addEventListener("click", (e) => {
+    e.preventDefault();
+    showToast("Password reset isn't wired up in this demo — try one of the demo accounts below.");
+  });
+</script>
+</body>
+</html>

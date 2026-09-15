@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Uploads — UniShare Uganda</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="my_uploads">
+<a href="#main-content" class="skip-link">Skip to content</a>
+<header class="site-header" id="site-header"></header>
+
+<main id="main-content">
+  <div class="container">
+    <div class="page-header flex-between">
+      <div>
+        <h1>My uploads</h1>
+        <p class="text-soft">Track the status of everything you've shared.</p>
+      </div>
+      <a href="upload.html" class="btn btn-accent">Upload  Resource</a>
+    </div>
+
+    <div class="stats-row" id="my-uploads-stats"></div>
+
+    <div class="toolbar">
+      <div class="field" style="margin:0;">
+        <label for="my-uploads-filter" style="margin:0; font-size:0.88rem;">Filter</label>
+        <select id="my-uploads-filter">
+          <option value="all">All</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+      <div class="field" style="margin:0;">
+        <label for="my-uploads-sort" style="margin:0; font-size:0.88rem;">Sort</label>
+        <select id="my-uploads-sort">
+          <option value="newest">Newest</option>
+          <option value="upvoted">Most Upvoted</option>
+        </select>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Course</th>
+          <th>Type</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Upvotes</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="my-uploads-body"></tbody>
+    </table>
+
+    <div class="empty-state" id="my-uploads-empty" hidden>
+      <h3>You haven't uploaded anything yet</h3>
+      <p>Share your first resource and help your coursemates out.</p>
+      <a href="upload.html" class="btn btn-accent">Upload a Resource</a>
+    </div>
+  </div>
+</main>
+
+<!-- Delete confirmation modal -->
+<div class="modal-backdrop" id="delete-upload-modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="delete-upload-title">
+    <div class="modal-header">
+      <h3 id="delete-upload-title" style="margin:0;">Delete this upload?</h3>
+      <button type="button" class="modal-close" data-close-modal aria-label="Close">&times;</button>
+    </div>
+    <p>This will permanently remove it from your uploads. This can't be undone.</p>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+      <button type="button" class="btn btn-danger" id="confirm-delete-upload-btn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer" id="site-footer"></footer>
+
+<script src="js/main.js"></script>
+<script>
+  let pendingDeleteId = null;
+
+  function requireLoginOrRedirect() {
+    if (!getCurrentUser()) {
+      showToast("Please log in to view your uploads.", "error");
+      setTimeout(() => { window.location.href = "login.html"; }, 900);
+      return false;
+    }
+    return true;
+  }
+
+  function myUploadsForCurrentUser() {
+    const user = getCurrentUser();
+    return getUserUploads().filter((u) => u.uploaderId === user.id);
+  }
+
+  function renderStats() {
+    const uploads = myUploadsForCurrentUser();
+    const approved = uploads.filter((u) => u.status === "approved").length;
+    const pending = uploads.filter((u) => u.status === "pending").length;
+    const rejected = uploads.filter((u) => u.status === "rejected").length;
+    const totalUpvotes = uploads.reduce((sum, u) => sum + (u.upvotes || 0), 0);
+
+    document.getElementById("my-uploads-stats").innerHTML = `
+      <div class="stat-card"><div class="num">${uploads.length}</div><div class="label">Total Uploads</div></div>
+      <div class="stat-card"><div class="num">${approved}</div><div class="label">Approved</div></div>
+      <div class="stat-card"><div class="num">${pending}</div><div class="label">Pending</div></div>
+      <div class="stat-card"><div class="num">${rejected}</div><div class="label">Rejected</div></div>
+      <div class="stat-card"><div class="num">${totalUpvotes}</div><div class="label">Total Upvotes</div></div>
+    `;
+  }
+
+  function statusBadge(status) {
+    if (status === "approved") return `<span class="badge badge-status-approved">Approved</span>`;
+    if (status === "rejected") return `<span class="badge badge-status-rejected">Rejected</span>`;
+    return `<span class="badge badge-status-pending">Pending</span>`;
+  }
+
+  function renderTable() {
+    const filter = document.getElementById("my-uploads-filter").value;
+    const sort = document.getElementById("my-uploads-sort").value;
+    let uploads = myUploadsForCurrentUser();
+
+    if (filter !== "all") uploads = uploads.filter((u) => u.status === filter);
+    uploads = [...uploads].sort((a, b) =>
+      sort === "upvoted" ? b.upvotes - a.upvotes : new Date(b.uploadDate) - new Date(a.uploadDate)
+    );
+
+    const body = document.getElementById("my-uploads-body");
+    const empty = document.getElementById("my-uploads-empty");
+    const table = document.querySelector(".data-table");
+
+    if (uploads.length === 0) {
+      table.hidden = true;
+      empty.hidden = false;
+      body.innerHTML = "";
+      return;
+    }
+    table.hidden = false;
+    empty.hidden = true;
+
+    body.innerHTML = uploads.map((u) => `
+      <tr data-id="${u.id}">
+        <td data-label="Title">
+          ${escapeHtml(u.title)}
+          ${u.status === "rejected" && u.rejectionReason ? `<div class="text-soft" style="font-size:0.8rem; margin-top:4px;"><strong>Rejection reason:</strong> ${escapeHtml(u.rejectionReason)}</div>` : ""}
+        </td>
+        <td data-label="Course">${escapeHtml(u.courseCode)}</td>
+        <td data-label="Type">${resourceTypeMeta(u.type).label}</td>
+        <td data-label="Date">${formatDate(u.uploadDate)}</td>
+        <td data-label="Status">${statusBadge(u.status)}</td>
+        <td data-label="Upvotes">${u.upvotes}</td>
+        <td data-label="Actions">
+          <div class="action-row">
+            <a href="resource_detail.html?id=${encodeURIComponent(u.id)}" class="btn btn-ghost btn-sm">View</a>
+            ${u.status === "rejected" ? `<button type="button" class="btn btn-outline btn-sm" data-resubmit="${u.id}">Resubmit</button>` : `<button type="button" class="btn btn-outline btn-sm" data-edit="${u.id}">Edit</button>`}
+            <button type="button" class="btn btn-danger btn-sm" data-delete="${u.id}">Delete</button>
+          </div>
+        </td>
+      </tr>
+    `).join("");
+
+    document.querySelectorAll("[data-delete]").forEach((btn) => {
+      btn.addEventListener("click", () => { pendingDeleteId = btn.dataset.delete; openModal("delete-upload-modal"); });
+    });
+    document.querySelectorAll("[data-edit]").forEach((btn) => {
+      btn.addEventListener("click", () => showToast("Editing an upload isn't available in this demo yet."));
+    });
+    document.querySelectorAll("[data-resubmit]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const uploads = getUserUploads();
+        const idx = uploads.findIndex((u) => u.id === btn.dataset.resubmit);
+        if (idx > -1) {
+          uploads[idx].status = "pending";
+          uploads[idx].rejectionReason = null;
+          writeJSON(LS_KEYS.uploads, uploads);
+          showToast("Resubmitted for moderation review.", "success");
+          renderStats();
+          renderTable();
+        }
+      });
+    });
+  }
+
+  document.getElementById("confirm-delete-upload-btn").addEventListener("click", () => {
+    const uploads = getUserUploads().filter((u) => u.id !== pendingDeleteId);
+    writeJSON(LS_KEYS.uploads, uploads);
+    closeModal("delete-upload-modal");
+    showToast("Upload deleted.", "success");
+    renderStats();
+    renderTable();
+  });
+
+  document.getElementById("my-uploads-filter").addEventListener("change", renderTable);
+  document.getElementById("my-uploads-sort").addEventListener("change", renderTable);
+
+  document.addEventListener("DOMContentLoaded", () => {
+    if (!requireLoginOrRedirect()) return;
+    renderStats();
+    renderTable();
+  });
+</script>
+</body>
+</html>

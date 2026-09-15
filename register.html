@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register — UniShare Uganda</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="register">
+<a href="#main-content" class="skip-link">Skip to content</a>
+<header class="site-header" id="site-header"></header>
+
+<main id="main-content">
+  <div class="container">
+    <div class="auth-card" style="max-width: 560px;">
+      <h1 style="font-size:1.7rem;">Create your account</h1>
+      <p class="text-soft">Join students from universities across Uganda sharing academic resources.</p>
+
+      <form id="register-form" novalidate>
+        <div class="field">
+          <label for="register-name">Full Name</label>
+          <input type="text" id="register-name" autocomplete="name" required>
+          <p class="error-msg"></p>
+        </div>
+
+        <div class="field">
+          <label for="register-email">Institutional Email</label>
+          <input type="email" id="register-email" autocomplete="email" placeholder="you@students.mak.ac.ug" required>
+          <p class="error-msg"></p>
+        </div>
+
+        <div class="field">
+          <label for="register-university">University</label>
+          <select id="register-university" required></select>
+          <p class="error-msg"></p>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="register-password">Password</label>
+            <div class="password-field">
+              <input type="password" id="register-password" autocomplete="new-password" required>
+              <button type="button" class="password-toggle" data-target="register-password" aria-label="Show password">Show</button>
+            </div>
+            <p class="hint">At least 8 characters.</p>
+            <p class="error-msg"></p>
+          </div>
+
+          <div class="field">
+            <label for="register-confirm-password">Confirm Password</label>
+            <div class="password-field">
+              <input type="password" id="register-confirm-password" autocomplete="new-password" required>
+              <button type="button" class="password-toggle" data-target="register-confirm-password" aria-label="Show password">Show</button>
+            </div>
+            <p class="error-msg"></p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="register-course">Course of Study</label>
+            <input type="text" id="register-course" placeholder="e.g. Bachelor of Computer Science" required>
+            <p class="error-msg"></p>
+          </div>
+
+          <div class="field">
+            <label for="register-year">Year of Study</label>
+            <select id="register-year" required>
+              <option value="">Select year</option>
+              <option>Year 1</option>
+              <option>Year 2</option>
+              <option>Year 3</option>
+              <option>Year 4</option>
+              <option>Year 5</option>
+            </select>
+            <p class="error-msg"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="checkbox-row">
+            <input type="checkbox" id="register-agree">
+            <label for="register-agree">I agree to upload only original/accurate content.</label>
+          </div>
+          <p class="error-msg"></p>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+      </form>
+
+      <div id="register-success" class="alert alert-success" hidden>
+        <strong>Account created!</strong> Redirecting you to the login page…
+      </div>
+
+      <p class="text-center" style="margin-top: var(--space-5);">
+        Already have an account? <a href="login.html">Log in</a>
+      </p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer" id="site-footer"></footer>
+
+<script src="js/main.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>
