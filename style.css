@@ -278,3 +278,208 @@ body {
   .arcode-nav * { transition-duration: .01ms !important; }
 }
 /*  */
+/* ====================================================
+   Techwind shared UI foundation (buttons, inputs, cards)
+   ==================================================== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; /* Defines the preferred font and fallback font families. */
+  background: #eff6ff; /* Sets the element's background color or visual treatment. */
+  color: #0f172a; /* Sets the foreground text or icon color. */
+}
+.techwind-hero button, .techwind-hero a, .techwind-hero input, .techwind-hero textarea, .techwind-hero select { font: inherit; }
+.techwind-hero button, .techwind-hero a { -webkit-tap-highlight-color: transparent; }
+.techwind-hero [hidden] { display: none !important; }
+
+.techwind-hero a:focus-visible,
+.techwind-hero button:focus-visible,
+.techwind-hero input:focus-visible,
+.techwind-hero textarea:focus-visible,
+.techwind-hero select:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.28); /* Draws an outer focus indicator without changing layout size. */
+  outline-offset: 2px; /* Configures the element's outline offset. */
+}
+
+/* Buttons -------------------------------------------------- */
+.techwind-hero .primary-action,
+.techwind-hero .secondary-action,
+.techwind-hero .ghost-action {
+  display: inline-flex; /* Chooses the layout model used by the element and its children. */
+  align-items: center; /* Aligns child elements along the cross axis. */
+  justify-content: center; /* Distributes children along the main layout axis. */
+  gap: 9px; /* Sets consistent spacing between grid or flex children. */
+  min-height: 48px; /* Prevents the element from becoming shorter than this value. */
+  padding: 12px 22px; /* Sets inner spacing between content and the border. */
+  border: 1px solid transparent; /* Defines the element's border width, style, and color. */
+  border-radius: 10px; /* Rounds the element's corners. */
+  font-weight: 800; /* Sets the visual weight of the text. */
+  font-size: 15px; /* Sets the size of the text. */
+  line-height: 1; /* Sets the vertical height allocated to each line of text. */
+  text-decoration: none; /* Adds or removes decorative lines on text. */
+  cursor: pointer; /* Chooses the pointer shown when the element is hovered. */
+  transition: transform 200ms ease, background-color 200ms ease, color 200ms ease, border-color 200ms ease, box-shadow 200ms ease; /* Animates supported property changes between visual states. */
+}
+.techwind-hero .primary-action { background: #2563eb; color: #ffffff; box-shadow: 0 8px 20px color-mix(in srgb, #2563eb 24%, transparent); }
+.techwind-hero .primary-action:hover { background: #1d4ed8; color: #ffffff; transform: translateY(-2px); box-shadow: 0 14px 36px rgba(37, 99, 235, 0.24); }
+.techwind-hero .secondary-action { border-color: color-mix(in srgb, #0f172a 18%, transparent); background: #ffffff; color: #0f172a; }
+.techwind-hero .secondary-action:hover { border-color: #2563eb; color: #2563eb; transform: translateY(-2px); box-shadow: 0 28px 80px rgba(37, 99, 235, 0.22); }
+.techwind-hero .ghost-action { background: transparent; color: #0f172a; }
+.techwind-hero .ghost-action:hover { background: color-mix(in srgb, #2563eb 9%, transparent); color: #2563eb; }
+.techwind-hero .primary-action svg, .techwind-hero .secondary-action svg, .techwind-hero .ghost-action svg { width: 16px; height: 16px; flex: none; }
+
+/* Eyebrow pill, badges, chips ------------------------------ */
+.techwind-hero .eyebrow {
+  display: inline-flex; /* Chooses the layout model used by the element and its children. */
+  align-items: center; /* Aligns child elements along the cross axis. */
+  gap: 8px; /* Sets consistent spacing between grid or flex children. */
+  padding: 8px 14px; /* Sets inner spacing between content and the border. */
+  border: 1px solid color-mix(in srgb, #2563eb 30%, transparent); /* Defines the element's border width, style, and color. */
+  border-radius: 999px; /* Rounds the element's corners. */
+  background: color-mix(in srgb, #2563eb 8%, #ffffff); /* Sets the element's background color or visual treatment. */
+  color: #2563eb; /* Sets the foreground text or icon color. */
+  font-size: 12px; /* Sets the size of the text. */
+  font-weight: 800; /* Sets the visual weight of the text. */
+  letter-spacing: 0.08em; /* Adjusts the horizontal spacing between characters. */
+  text-transform: uppercase; /* Changes the displayed capitalization of text. */
+}
+.techwind-hero .eyebrow svg { width: 14px; height: 14px; }
+.techwind-hero .badge {
+  display: inline-flex; /* Chooses the layout model used by the element and its children. */
+  align-items: center; /* Aligns child elements along the cross axis. */
+  gap: 5px; /* Sets consistent spacing between grid or flex children. */
+  padding: 4px 10px; /* Sets inner spacing between content and the border. */
+  border-radius: 999px; /* Rounds the element's corners. */
+  font-size: 11px; /* Sets the size of the text. */
+  font-weight: 800; /* Sets the visual weight of the text. */
+}
+.techwind-hero .icon-chip {
+  display: grid; /* Chooses the layout model used by the element and its children. */
+  place-items: center; /* Configures the element's place items. */
+  width: 44px; /* Sets the element's width. */
+  height: 44px; /* Sets the element's height. */
+  flex: 0 0 auto; /* Controls how a flex item grows, shrinks, and sizes itself. */
+  border-radius: 12px; /* Rounds the element's corners. */
+  background: color-mix(in srgb, #2563eb 12%, #ffffff); /* Sets the element's background color or visual treatment. */
+  color: #2563eb; /* Sets the foreground text or icon color. */
+}
+.techwind-hero .icon-chip svg { width: 20px; height: 20px; }
+
+/* Cards and avatars ---------------------------------------- */
+.techwind-hero .card {
+  border: 1px solid rgba(15, 23, 42, 0.10); /* Defines the element's border width, style, and color. */
+  border-radius: 16px; /* Rounds the element's corners. */
+  background: #ffffff; /* Sets the element's background color or visual treatment. */
+  box-shadow: 0 24px 70px rgba(37, 99, 235, 0.15); /* Adds depth by drawing a shadow around the element. */
+}
+.techwind-hero .avatar {
+  display: grid; /* Chooses the layout model used by the element and its children. */
+  place-items: center; /* Configures the element's place items. */
+  width: 40px; /* Sets the element's width. */
+  height: 40px; /* Sets the element's height. */
+  border-radius: 50%; /* Rounds the element's corners. */
+  background: linear-gradient(135deg, #3b82f6, #06b6d4); /* Sets the element's background color or visual treatment. */
+  color: #ffffff; /* Sets the foreground text or icon color. */
+  font-size: 12px; /* Sets the size of the text. */
+  font-weight: 900; /* Sets the visual weight of the text. */
+}
+.techwind-hero .avatar.sm { width: 32px; height: 32px; font-size: 10px; }
+
+/* Forms ---------------------------------------------------- */
+.techwind-hero .field-label { display: block; margin-bottom: 8px; color: #0f172a; font-size: 13px; font-weight: 800; }
+.techwind-hero .input {
+  width: 100%; /* Sets the element's width. */
+  min-height: 48px; /* Prevents the element from becoming shorter than this value. */
+  padding: 12px 14px; /* Sets inner spacing between content and the border. */
+  border: 1px solid rgba(15, 23, 42, 0.10); /* Defines the element's border width, style, and color. */
+  border-radius: 10px; /* Rounds the element's corners. */
+  background: #ffffff; /* Sets the element's background color or visual treatment. */
+  color: #0f172a; /* Sets the foreground text or icon color. */
+  outline: none; /* Draws an outer focus indicator without changing layout size. */
+}
+.techwind-hero .input::placeholder { color: #475569; }
+.techwind-hero .input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.28); }
+
+/* Scroll-reveal motion ------------------------------------- */
+.techwind-hero .reveal { opacity: 0; transform: translateY(18px); transition: opacity 700ms ease, transform 700ms ease; }
+.techwind-hero .reveal.is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .techwind-hero .reveal { opacity: 1; transform: none; transition: none; }
+  .techwind-hero *, .techwind-hero *::before, .techwind-hero *::after {
+    scroll-behavior: auto !important; /* Configures the element's scroll behavior. */
+    transition-duration: 0.01ms !important; /* Configures the element's transition duration. */
+    animation-duration: 0.01ms !important; /* Configures the element's animation duration. */
+  }
+}
+
+/* ====================================================
+   Landing component baseline tweaks
+   ==================================================== */
+.techwind-hero :is(a, button, input) { font: inherit; }
+.techwind-hero .primary-action svg { width: 16px; height: 16px; flex: none; }
+
+.techwind-hero { position: relative; overflow: hidden; min-height: 100vh; padding: 60px clamp(20px, 6vw, 72px); display: flex; flex-direction: column; justify-content: center; isolation: isolate; }
+.techwind-hero .hero-stripes { position: absolute; inset: 0; z-index: 0; background: linear-gradient(180deg, color-mix(in srgb, #2563eb 9%, transparent), transparent 40%), radial-gradient(ellipse 60% 50% at 85% 20%, color-mix(in srgb, #06b6d4 14%, transparent), transparent 70%); }
+.techwind-hero .hero-shell { position: relative; z-index: 1; width: min(1180px, 100%); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: clamp(32px, 5vw, 64px); }
+
+/* Copy */
+.techwind-hero h1 { max-width: 600px; margin: 20px 0 0; font-size: clamp(36px, 5vw, 56px); line-height: 1.06; letter-spacing: -0.04em; }
+.techwind-hero .text-accent { position: relative; color: #2563eb; }
+.techwind-hero .text-accent::after { content: ''; position: absolute; left: 0; right: 0; bottom: 4px; height: 9px; border-radius: 5px; background: color-mix(in srgb, #06b6d4 55%, transparent); z-index: -1; }
+.techwind-hero .hero-lead { max-width: 540px; margin: 20px 0 0; color: #475569; font-size: clamp(15px, 1.6vw, 18px); line-height: 1.7; }
+.techwind-hero .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.techwind-hero .tour-message { min-height: 22px; margin: 16px 0 0; color: #2563eb; font-size: 13px; font-weight: 700; text-align: center; }
+
+/* Trust row */
+.techwind-hero .trust-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 32px; padding-top: 18px; border-top: 1px solid color-mix(in srgb, #0f172a 10%, transparent); }
+.techwind-hero .trust-label { color: #475569; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; }
+.techwind-hero .trust-logos { display: flex; flex-wrap: wrap; align-items: center; gap: 22px; color: color-mix(in srgb, #0f172a 55%, transparent); font-size: 14px; font-weight: 800; letter-spacing: 0.06em; }
+
+/* Dashboard card */
+.techwind-hero .dash-card { width: min(480px, 100%); margin-left: auto; padding: 18px; }
+.techwind-hero .dash-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: #475569; font-size: 12px; font-weight: 700; }
+.techwind-hero .dash-title { display: inline-flex; align-items: center; gap: 8px; }
+.techwind-hero .dash-title svg { color: #2563eb; }
+.techwind-hero .dash-period { font-size: 11px; }
+.techwind-hero .dash-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+.techwind-hero .dash-kpis div { display: grid; gap: 4px; padding: 14px 12px; border: 1px solid color-mix(in srgb, #0f172a 9%, transparent); border-radius: 12px; }
+.techwind-hero .dash-kpis span { color: #475569; font-size: 11px; }
+.techwind-hero .dash-kpis strong { font-size: 22px; letter-spacing: -0.03em; }
+.techwind-hero .dash-kpis em { font-style: normal; color: #059669; font-size: 11px; font-weight: 800; }
+.techwind-hero .dash-chart { margin-top: 12px; padding: 14px 12px 10px; border: 1px solid color-mix(in srgb, #0f172a 9%, transparent); border-radius: 12px; }
+.techwind-hero .bars { display: flex; align-items: flex-end; gap: 6px; height: 120px; }
+.techwind-hero .bars span { flex: 1; border-radius: 5px 5px 2px 2px; background: linear-gradient(180deg, #06b6d4, #2563eb); transform: scaleY(0); transform-origin: bottom; animation: techwindBar 650ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
+.techwind-hero .bars span:nth-child(1) { animation-delay: 80ms; }
+.techwind-hero .bars span:nth-child(2) { animation-delay: 140ms; }
+.techwind-hero .bars span:nth-child(3) { animation-delay: 200ms; }
+.techwind-hero .bars span:nth-child(4) { animation-delay: 260ms; }
+.techwind-hero .bars span:nth-child(5) { animation-delay: 320ms; }
+.techwind-hero .bars span:nth-child(6) { animation-delay: 380ms; }
+.techwind-hero .bars span:nth-child(7) { animation-delay: 440ms; }
+.techwind-hero .bars span:nth-child(8) { animation-delay: 500ms; }
+.techwind-hero .bars span:nth-child(9) { animation-delay: 560ms; }
+.techwind-hero .bars span:nth-child(10) { animation-delay: 620ms; }
+.techwind-hero .dash-footer { display: flex; align-items: center; gap: 8px; margin-top: 14px; color: #475569; font-size: 12px; }
+.techwind-hero .dash-footer .icon-chip { width: 30px; height: 30px; }
+
+/* Motion */
+@keyframes techwindBar { to { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .techwind-hero .bars span { animation: none; transform: scaleY(1); }
+}
+
+/* Responsive */
+@media (max-width: 920px) {
+  .techwind-hero { padding: 56px 22px; }
+  .techwind-hero .hero-shell { grid-template-columns: 1fr; text-align: center; }
+  .techwind-hero .hero-copy, .techwind-hero .hero-lead { margin-right: auto; margin-left: auto; }
+  .techwind-hero .hero-actions, .techwind-hero .trust-row { justify-content: center; }
+  .techwind-hero .dash-card { margin: 40px auto 0; }
+}
+@media (max-width: 520px) {
+  .techwind-hero { padding: 44px 16px; }
+  .techwind-hero h1 { font-size: clamp(30px, 11vw, 40px); }
+  .techwind-hero .hero-actions { display: grid; }
+  .techwind-hero .hero-actions > * { width: 100%; justify-content: center; }
+  .techwind-hero .bars { height: 90px; }
+}
