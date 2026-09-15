@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moderation Queue — UniShare Uganda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-page="admin">
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="site-header"></div>
+
+<main id="main" class="page-main">
+  <div class="container">
+    <div class="page-header">
+      <h1>Moderation Queue</h1>
+      <p><span id="statPendingCount">4</span> pending &middot; oldest 3 days &middot; <span id="statToday">1</span> submitted today</p>
+    </div>
+
+    <div class="admin-stats">
+      <div class="summary-card"><div class="sc-num" id="statPendingCount2">4</div><div class="sc-label">Pending Resources</div></div>
+      <div class="summary-card"><div class="sc-num">3 days</div><div class="sc-label">Oldest Submission</div></div>
+      <div class="summary-card"><div class="sc-num">1</div><div class="sc-label">Today's Submissions</div></div>
+    </div>
+
+    <div class="admin-toolbar">
+      <div class="admin-filters">
+        <select id="modFilterUniversity" class="input"></select>
+        <select id="modFilterType" class="input">
+          <option value="">All Types</option>
+          <option>Notes</option>
+          <option>Past Paper</option>
+          <option>Slides</option>
+          <option>Summary</option>
+        </select>
+      </div>
+      <div style="display:flex; gap:12px; align-items:center;">
+        <label class="checkbox-row" style="margin-bottom:0;">
+          <input type="checkbox" id="selectAllPending"> <span>Select all</span>
+        </label>
+        <button class="btn btn-secondary btn-sm" id="approveSelectedBtn">Approve Selected</button>
+      </div>
+    </div>
+
+    <div id="modQueueList"></div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+
+<div class="modal-overlay" id="rejectModal">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="rejectModalTitle">
+    <div class="modal-head">
+      <h3 id="rejectModalTitle">Reject this resource</h3>
+      <button class="modal-close" id="rejectModalClose" aria-label="Close"><span data-icon="x"></span></button>
+    </div>
+    <div class="field">
+      <label for="rejectReason">Reason</label>
+      <select id="rejectReason" class="input">
+        <option>Wrong course</option>
+        <option>Outdated</option>
+        <option>Incorrect content</option>
+        <option>Duplicate</option>
+        <option>Inappropriate</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="rejectComment">Comment (optional)</label>
+      <textarea id="rejectComment" class="input" placeholder="Explain what needs fixing…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="rejectModalCancel">Cancel</button>
+      <button class="btn btn-danger" id="rejectModalSubmit">Confirm Rejection</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>

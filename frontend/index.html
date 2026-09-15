@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UniShare Uganda — Find academic resources from students across Uganda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="home">
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="site-header"></div>
+
+<main id="main">
+  <section class="hero">
+    <div class="container">
+      <div class="hero-inner">
+        <h1>Find the academic resources you need.</h1>
+        <p class="lead">Search verified notes, past papers, slides and summaries shared by students across Uganda.</p>
+      </div>
+
+      <form class="search-panel" id="homeSearchForm">
+        <div class="search-row">
+          <div class="field field-uni">
+            <label for="homeUniversity">Select your university</label>
+            <select id="homeUniversity" class="input"></select>
+          </div>
+          <div class="field field-query">
+            <label for="homeQuery">Course code, course name or lecturer</label>
+            <input type="text" id="homeQuery" class="input" placeholder="Search by course code, course name or lecturer…">
+          </div>
+        </div>
+        <div style="margin-top: 16px; display:flex; justify-content:flex-end;">
+          <button type="submit" class="btn btn-primary"><span data-icon="search"></span> Search</button>
+        </div>
+      </form>
+
+      <div class="quick-filters" id="quickFilters">
+        <button type="button" class="quick-filter" data-type="Past Paper">
+          <span class="qf-icon" data-icon="file"></span>
+          <span class="qf-label">Past Papers</span>
+          <span class="qf-count">Browse exam papers</span>
+        </button>
+        <button type="button" class="quick-filter" data-type="Notes">
+          <span class="qf-icon" data-icon="book"></span>
+          <span class="qf-label">Notes</span>
+          <span class="qf-count">Class notes by course</span>
+        </button>
+        <button type="button" class="quick-filter" data-type="Slides">
+          <span class="qf-icon" data-icon="upload"></span>
+          <span class="qf-label">Slides</span>
+          <span class="qf-count">Lecture presentations</span>
+        </button>
+        <button type="button" class="quick-filter" data-type="Summary">
+          <span class="qf-icon" data-icon="check"></span>
+          <span class="qf-label">Summaries</span>
+          <span class="qf-count">Condensed revision notes</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <section class="section" id="recentSection">
+      <div class="section-head">
+        <h2>Recently Added</h2>
+        <a href="browse.html">Browse all resources</a>
+      </div>
+      <div class="resource-grid" id="recentGrid"></div>
+    </section>
+
+    <section class="section" aria-label="Platform statistics">
+      <div class="stats-band">
+        <div class="stat-card"><div class="stat-num">12,480</div><div class="stat-label">Resources</div></div>
+        <div class="stat-card"><div class="stat-num">15</div><div class="stat-label">Universities</div></div>
+        <div class="stat-card"><div class="stat-num">3,240</div><div class="stat-label">Contributors</div></div>
+      </div>
+    </section>
+
+    <section class="section" id="emptyStateDemo" style="display:none;">
+      <div class="empty-state">
+        <div class="empty-icon" data-icon="empty" style="display:flex;justify-content:center;"></div>
+        <h3>No resources found.</h3>
+        <p>Be the first to share resources for this course.</p>
+        <a href="upload.html" class="btn btn-primary">Upload a Resource</a>
+      </div>
+    </section>
+
+    <section class="section" id="about" aria-label="About UniShare Uganda">
+      <div class="card">
+        <h2>About UniShare Uganda</h2>
+        <p style="margin-top:12px; color:var(--color-text-secondary);">UniShare Uganda is a shared, moderator-reviewed library of notes, slides, summaries and past papers, contributed by students at universities across the country — built so that finding a past paper doesn't depend on which WhatsApp group you're in.</p>
+      </div>
+    </section>
+
+    <section class="section" id="contact" aria-label="Contact and reporting">
+      <div class="card">
+        <h2>Contact &amp; Terms</h2>
+        <p style="margin-top:12px; color:var(--color-text-secondary);">Questions, issues, or something to report? Reach the UniShare team at <a href="mailto:hello@unishare.ug">hello@unishare.ug</a>. By using UniShare, you agree to share only original or permitted academic material.</p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="js/main.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    populateUniversitySelect(document.getElementById("homeUniversity"), true);
+
+    const grid = document.getElementById("recentGrid");
+    const recent = RESOURCES.filter(r => r.approved).slice().sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 8);
+    grid.innerHTML = recent.map(resourceCardHtml).join("");
+
+    document.getElementById("homeSearchForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const uni = document.getElementById("homeUniversity").value;
+      const q = document.getElementById("homeQuery").value;
+      const params = new URLSearchParams();
+      if (uni) params.set("university", uni);
+      if (q) params.set("q", q);
+      window.location.href = "browse.html" + (params.toString() ? "?" + params.toString() : "");
+    });
+
+    document.querySelectorAll(".quick-filter").forEach(btn => {
+      btn.addEventListener("click", () => {
+        window.location.href = "browse.html?type=" + encodeURIComponent(btn.getAttribute("data-type"));
+      });
+    });
+  });
+</script>
+</body>
+</html>
