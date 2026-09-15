@@ -52,3 +52,38 @@
   // Runs the following handler when this browser event occurs.
   window.addEventListener('resize', () => { if (window.innerWidth > 900) setOverlay(false); });
 })(); // Executes this step of the component interaction.
+
+
+const hero = document.getElementById('techwind-hero'); // Finds the required element in the document.
+// Runs the following logic only when this condition is true.
+if (hero) {
+  const reveals = hero.querySelectorAll('.reveal'); // Finds the required element in the document.
+  // Sets up an observer that reacts when an element enters the viewport.
+  const observer = new IntersectionObserver((entries) => {
+    // Runs the following operation for every matching item.
+    entries.forEach((entry) => {
+      // Runs the following logic only when this condition is true.
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible'); // Adds the state class that activates its related CSS.
+        observer.unobserve(entry.target); // Stops observing the given element.
+      // Closes the current callback or control block.
+      }
+    // Closes the current callback or control block.
+    });
+  }, { threshold: 0.15 }); // Executes this step of the component interaction.
+  reveals.forEach((el) => observer.observe(el)); // Runs the following operation for every matching item.
+// Closes the current callback or control block.
+}
+
+const demoButton = document.getElementById('techwind-hero-demo'); // Finds the required element in the document.
+const tourMessage = document.getElementById('techwind-hero-message'); // Finds the required element in the document.
+// Runs the following logic only when this condition is true.
+if (demoButton && tourMessage) {
+  // Runs the following handler when this browser event occurs.
+  demoButton.addEventListener('click', () => {
+    // Writes output text into the element.
+    tourMessage.textContent = 'Watch a 90-second walkthrough of roster syncs, events, and engagement trends.';
+  // Closes the current callback or control block.
+  });
+// Closes the current callback or control block.
+}
