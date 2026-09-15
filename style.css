@@ -1,0 +1,280 @@
+/* Styling the Navbar */
+/* ====================================================
+   Arcode shared UI foundation (buttons, inputs, cards)
+   ==================================================== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; /* Defines the preferred font and fallback font families. */
+  background: #fafafa; /* Sets the element's background color or visual treatment. */
+  color: #18181b; /* Sets the foreground text or icon color. */
+}
+.arcode-nav button, .arcode-nav a, .arcode-nav input, .arcode-nav textarea, .arcode-nav select { font: inherit; }
+.arcode-nav button, .arcode-nav a { -webkit-tap-highlight-color: transparent; }
+.arcode-nav [hidden] { display: none !important; }
+
+.arcode-nav a:focus-visible,
+.arcode-nav button:focus-visible,
+.arcode-nav input:focus-visible,
+.arcode-nav textarea:focus-visible,
+.arcode-nav select:focus-visible {
+  outline: 3px solid rgba(124, 58, 237, 0.28); /* Draws an outer focus indicator without changing layout size. */
+  outline-offset: 2px; /* Configures the element's outline offset. */
+}
+
+/* Buttons -------------------------------------------------- */
+.arcode-nav .primary-action,
+.arcode-nav .secondary-action,
+.arcode-nav .ghost-action {
+  display: inline-flex; /* Chooses the layout model used by the element and its children. */
+  align-items: center; /* Aligns child elements along the cross axis. */
+  justify-content: center; /* Distributes children along the main layout axis. */
+  gap: 9px; /* Sets consistent spacing between grid or flex children. */
+  min-height: 48px; /* Prevents the element from becoming shorter than this value. */
+  padding: 12px 22px; /* Sets inner spacing between content and the border. */
+  border: 1px solid transparent; /* Defines the element's border width, style, and color. */
+  border-radius: 18px; /* Rounds the element's corners. */
+  font-weight: 800; /* Sets the visual weight of the text. */
+  font-size: 15px; /* Sets the size of the text. */
+  line-height: 1; /* Sets the vertical height allocated to each line of text. */
+  text-decoration: none; /* Adds or removes decorative lines on text. */
+  cursor: pointer; /* Chooses the pointer shown when the element is hovered. */
+  transition: transform 200ms ease, background-color 200ms ease, color 200ms ease, border-color 200ms ease, box-shadow 200ms ease; /* Animates supported property changes between visual states. */
+}
+.arcode-nav .primary-action { background: #7c3aed; color: #ffffff; box-shadow: 0 8px 20px color-mix(in srgb, #7c3aed 24%, transparent); }
+.arcode-nav .primary-action:hover { background: #5b21b6; color: #ffffff; transform: translateY(-2px); box-shadow: 0 18px 44px rgba(124, 58, 237, 0.28); }
+.arcode-nav .secondary-action { border-color: color-mix(in srgb, #18181b 18%, transparent); background: #ffffff; color: #18181b; }
+.arcode-nav .secondary-action:hover { border-color: #7c3aed; color: #7c3aed; transform: translateY(-2px); box-shadow: 0 34px 90px rgba(124, 58, 237, 0.22); }
+.arcode-nav .ghost-action { background: transparent; color: #18181b; }
+.arcode-nav .ghost-action:hover { background: color-mix(in srgb, #7c3aed 9%, transparent); color: #7c3aed; }
+.arcode-nav .primary-action svg, .arcode-nav .secondary-action svg, .arcode-nav .ghost-action svg { width: 16px; height: 16px; flex: none; }
+
+/* Eyebrow pill, badges, chips ------------------------------ */
+.arcode-nav .eyebrow {
+  display: inline-flex; /* Chooses the layout model used by the element and its children. */
+  align-items: center; /* Aligns child elements along the cross axis. */
+  gap: 8px; /* Sets consistent spacing between grid or flex children. */
+  padding: 8px 14px; /* Sets inner spacing between content and the border. */
+  border: 1px solid color-mix(in srgb, #7c3aed 30%, transparent); /* Defines the element's border width, style, and color. */
+  border-radius: 999px; /* Rounds the element's corners. */
+  background: color-mix(in srgb, #7c3aed 8%, #ffffff); /* Sets the element's background color or visual treatment. */
+  color: #7c3aed; /* Sets the foreground text or icon color. */
+  font-size: 12px; /* Sets the size of the text. */
+  font-weight: 800; /* Sets the visual weight of the text. */
+  letter-spacing: 0.08em; /* Adjusts the horizontal spacing between characters. */
+  text-transform: uppercase; /* Changes the displayed capitalization of text. */
+}
+.arcode-nav .eyebrow svg { width: 14px; height: 14px; }
+.arcode-nav .badge {
+  display: inline-flex; /* Chooses the layout model used by the element and its children. */
+  align-items: center; /* Aligns child elements along the cross axis. */
+  gap: 5px; /* Sets consistent spacing between grid or flex children. */
+  padding: 4px 10px; /* Sets inner spacing between content and the border. */
+  border-radius: 999px; /* Rounds the element's corners. */
+  font-size: 11px; /* Sets the size of the text. */
+  font-weight: 800; /* Sets the visual weight of the text. */
+}
+.arcode-nav .icon-chip {
+  display: grid; /* Chooses the layout model used by the element and its children. */
+  place-items: center; /* Configures the element's place items. */
+  width: 44px; /* Sets the element's width. */
+  height: 44px; /* Sets the element's height. */
+  flex: 0 0 auto; /* Controls how a flex item grows, shrinks, and sizes itself. */
+  border-radius: 12px; /* Rounds the element's corners. */
+  background: color-mix(in srgb, #7c3aed 12%, #ffffff); /* Sets the element's background color or visual treatment. */
+  color: #7c3aed; /* Sets the foreground text or icon color. */
+}
+.arcode-nav .icon-chip svg { width: 20px; height: 20px; }
+
+/* Cards and avatars ---------------------------------------- */
+.arcode-nav .card {
+  border: 1px solid rgba(24, 24, 27, 0.08); /* Defines the element's border width, style, and color. */
+  border-radius: 32px; /* Rounds the element's corners. */
+  background: #ffffff; /* Sets the element's background color or visual treatment. */
+  box-shadow: 0 28px 80px rgba(24, 24, 27, 0.12); /* Adds depth by drawing a shadow around the element. */
+}
+.arcode-nav .avatar {
+  display: grid; /* Chooses the layout model used by the element and its children. */
+  place-items: center; /* Configures the element's place items. */
+  width: 40px; /* Sets the element's width. */
+  height: 40px; /* Sets the element's height. */
+  border-radius: 50%; /* Rounds the element's corners. */
+  background: linear-gradient(135deg, #a78bfa, #7c3aed); /* Sets the element's background color or visual treatment. */
+  color: #ffffff; /* Sets the foreground text or icon color. */
+  font-size: 12px; /* Sets the size of the text. */
+  font-weight: 900; /* Sets the visual weight of the text. */
+}
+.arcode-nav .avatar.sm { width: 32px; height: 32px; font-size: 10px; }
+
+/* Forms ---------------------------------------------------- */
+.arcode-nav .field-label { display: block; margin-bottom: 8px; color: #18181b; font-size: 13px; font-weight: 800; }
+.arcode-nav .input {
+  width: 100%; /* Sets the element's width. */
+  min-height: 48px; /* Prevents the element from becoming shorter than this value. */
+  padding: 12px 14px; /* Sets inner spacing between content and the border. */
+  border: 1px solid rgba(24, 24, 27, 0.08); /* Defines the element's border width, style, and color. */
+  border-radius: 18px; /* Rounds the element's corners. */
+  background: #ffffff; /* Sets the element's background color or visual treatment. */
+  color: #18181b; /* Sets the foreground text or icon color. */
+  outline: none; /* Draws an outer focus indicator without changing layout size. */
+}
+.arcode-nav .input::placeholder { color: #71717a; }
+.arcode-nav .input:focus { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.28); }
+
+/* Scroll-reveal motion ------------------------------------- */
+.arcode-nav .reveal { opacity: 0; transform: translateY(18px); transition: opacity 700ms ease, transform 700ms ease; }
+.arcode-nav .reveal.is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .arcode-nav .reveal { opacity: 1; transform: none; transition: none; }
+  .arcode-nav *, .arcode-nav *::before, .arcode-nav *::after {
+    scroll-behavior: auto !important; /* Configures the element's scroll behavior. */
+    transition-duration: 0.01ms !important; /* Configures the element's transition duration. */
+    animation-duration: 0.01ms !important; /* Configures the element's animation duration. */
+  }
+}
+
+/* ====================================================
+   Arcode main navbar baseline tweaks
+   ==================================================== */
+.arcode-nav :is(a, button, input) { font: inherit; }
+.arcode-nav svg { flex: none; }
+.arcode-nav [hidden] { display: none !important; }
+/* ====================================================
+   Arcode expressive studio navbar
+   ==================================================== */
+.arcode-nav .nav-shell {
+  position: sticky; top: 0; z-index: 40; /* Defines how the element is positioned in the document. */
+  display: flex; align-items: center; gap: 16px; /* Chooses the layout model used by the element and its children. */
+  width: min(1240px, calc(100% - 28px)); margin: 14px auto 0; /* Sets the element's width. */
+  padding: 12px 20px; /* Sets inner spacing between content and the border. */
+  border: 1px solid rgba(24, 24, 27, 0.08); border-radius: 32px; /* Defines the element's border width, style, and color. */
+  background: color-mix(in srgb, #ffffff 92%, transparent); /* Sets the element's background color or visual treatment. */
+  box-shadow: 0 28px 80px rgba(24, 24, 27, 0.12); /* Adds depth by drawing a shadow around the element. */
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); /* Applies a visual effect to content behind this element. */
+}
+.arcode-nav .brand { display: inline-flex; align-items: center; gap: 11px; color: #18181b; text-decoration: none; }
+.arcode-nav .brand-badge {
+  display: grid; width: 42px; height: 42px; place-items: center; /* Chooses the layout model used by the element and its children. */
+  border-radius: 50%; /* Rounds the element's corners. */
+  background: linear-gradient(135deg, #7c3aed, #7c3aed); /* Sets the element's background color or visual treatment. */
+  color: #18181b; /* Sets the foreground text or icon color. */
+  box-shadow: 0 8px 20px color-mix(in srgb, #7c3aed 38%, transparent); /* Adds depth by drawing a shadow around the element. */
+}
+.arcode-nav .brand-text { display: inline-flex; align-items: baseline; font-size: 19px; font-weight: 800; }
+.arcode-nav .brand-text b { letter-spacing: -0.04em; }
+.arcode-nav .brand-text .code { background: linear-gradient(90deg, #7c3aed, #fb7185); background-clip: text; -webkit-background-clip: text; color: transparent; }
+.arcode-nav .brand-text small { margin-left: 9px; color: #71717a; font-size: 11px; font-weight: 600; }
+
+.arcode-nav .nav-links { display: flex; align-items: center; gap: 12px; margin: 0 auto; }
+.arcode-nav .nav-link, .arcode-nav .dropdown-trigger {
+  position: relative; display: inline-flex; align-items: center; gap: 5px; /* Defines how the element is positioned in the document. */
+  min-height: 44px; padding: 7px 4px; /* Prevents the element from becoming shorter than this value. */
+  border: 0; background: transparent; color: #71717a; /* Defines the element's border width, style, and color. */
+  font-size: 14px; font-weight: 650; text-decoration: none; cursor: pointer; /* Sets the size of the text. */
+  transition: color 160ms ease; /* Animates supported property changes between visual states. */
+}
+.arcode-nav .nav-link::after, .arcode-nav .dropdown-trigger::after {
+  content: ''; position: absolute; left: 50%; bottom: 2px; width: 0; height: 3px; /* Supplies generated content for a pseudo-element. */
+  border-radius: 999px; transform: translateX(-50%); /* Rounds the element's corners. */
+  background: linear-gradient(90deg, #7c3aed, #fb7185); /* Sets the element's background color or visual treatment. */
+  transition: width 180ms ease; /* Animates supported property changes between visual states. */
+}
+.arcode-nav .nav-link.is-active, .arcode-nav .dropdown.open .dropdown-trigger { color: #18181b; }
+.arcode-nav .nav-link.is-active::after, .arcode-nav .dropdown.open .dropdown-trigger::after { width: 100%; }
+.arcode-nav .dropdown-trigger svg { width: 14px; height: 14px; transition: transform 180ms ease; }
+.arcode-nav .dropdown.open .dropdown-trigger svg { transform: rotate(180deg); }
+
+.arcode-nav .dropdown { position: relative; }
+.arcode-nav .drop-panel {
+  position: absolute; top: calc(100% + 10px); left: 50%; width: 350px; /* Defines how the element is positioned in the document. */
+  padding: 12px; border: 1px solid rgba(24, 24, 27, 0.08); border-radius: 32px; /* Sets inner spacing between content and the border. */
+  background: #ffffff; /* Sets the element's background color or visual treatment. */
+  box-shadow: 0 26px 70px color-mix(in srgb, #18181b 20%, transparent); /* Adds depth by drawing a shadow around the element. */
+  opacity: 0; transform: translate(-50%, 10px) rotate(1deg); pointer-events: none; /* Controls the element's transparency. */
+  transform-origin: top center; /* Sets the point around which transforms operate. */
+  transition: opacity 180ms ease, transform 180ms ease; /* Animates supported property changes between visual states. */
+}
+.arcode-nav .dropdown.open .drop-panel { opacity: 1; transform: translate(-50%, 0) rotate(0); pointer-events: auto; }
+.arcode-nav .drop-item { display: grid; grid-template-columns: 44px 1fr; gap: 12px; align-items: center; padding: 10px; border-radius: 18px; color: #18181b; text-decoration: none; transition: transform 160ms ease; }
+.arcode-nav .drop-item:hover { background: color-mix(in srgb, #7c3aed 9%, transparent); transform: translateX(3px); }
+.arcode-nav .drop-icon {
+  display: grid; width: 44px; height: 44px; place-items: center; /* Chooses the layout model used by the element and its children. */
+  border-radius: 14px; background: color-mix(in srgb, #7c3aed 13%, transparent); /* Rounds the element's corners. */
+  color: #7c3aed; transform: rotate(-3deg); /* Sets the foreground text or icon color. */
+}
+.arcode-nav .drop-item:hover .drop-icon { transform: rotate(3deg); }
+.arcode-nav .drop-icon svg { width: 20px; height: 20px; }
+.arcode-nav .drop-icon.gem { background: color-mix(in srgb, #fb7185 15%, transparent); color: #fb7185; }
+.arcode-nav .drop-item > span:last-child { display: grid; gap: 2px; }
+.arcode-nav .drop-item b { font-size: 13px; }
+.arcode-nav .drop-item small { color: #71717a; font-size: 12px; }
+
+.arcode-nav .nav-actions { display: flex; align-items: center; gap: 10px; }
+.arcode-nav .cta {
+  display: inline-flex; align-items: center; gap: 7px; min-height: 44px; /* Chooses the layout model used by the element and its children. */
+  padding: 9px 18px; border-radius: 999px; /* Sets inner spacing between content and the border. */
+  background: linear-gradient(120deg, #7c3aed, #7c3aed); /* Sets the element's background color or visual treatment. */
+  color: #ffffff; font-size: 14px; font-weight: 700; text-decoration: none; /* Sets the foreground text or icon color. */
+  box-shadow: 0 10px 22px color-mix(in srgb, #7c3aed 34%, transparent); /* Adds depth by drawing a shadow around the element. */
+  transition: transform 160ms ease, box-shadow 160ms ease; /* Animates supported property changes between visual states. */
+}
+.arcode-nav .cta:hover { transform: translateY(-2px) rotate(-1deg); box-shadow: 0 14px 26px color-mix(in srgb, #7c3aed 42%, transparent); }
+.arcode-nav .cta svg { width: 16px; height: 16px; }
+.arcode-nav .nav-toggle {
+  display: none; width: 44px; height: 44px; place-items: center; /* Chooses the layout model used by the element and its children. */
+  border: 1px solid rgba(24, 24, 27, 0.08); border-radius: 14px; /* Defines the element's border width, style, and color. */
+  background: color-mix(in srgb, #18181b 5%, transparent); color: #18181b; cursor: pointer; /* Sets the element's background color or visual treatment. */
+}
+
+/* Full-screen overlay drawer */
+.arcode-nav .nav-overlay {
+  position: fixed; inset: 0; z-index: 80; /* Defines how the element is positioned in the document. */
+  display: flex; flex-direction: column; /* Chooses the layout model used by the element and its children. */
+  padding: clamp(20px, 5vw, 48px); /* Sets inner spacing between content and the border. */
+  background: color-mix(in srgb, #ffffff 97%, transparent); /* Sets the element's background color or visual treatment. */
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); /* Applies a visual effect to content behind this element. */
+  opacity: 0; pointer-events: none; transition: opacity 220ms ease; /* Controls the element's transparency. */
+}
+.arcode-nav .nav-overlay.is-open { opacity: 1; pointer-events: auto; }
+.arcode-nav .overlay-head { display: flex; align-items: center; justify-content: space-between; }
+.arcode-nav .overlay-close {
+  display: grid; width: 48px; height: 48px; place-items: center; /* Chooses the layout model used by the element and its children. */
+  border: 1px solid rgba(24, 24, 27, 0.08); border-radius: 50%; /* Defines the element's border width, style, and color. */
+  background: #ffffff; color: #18181b; cursor: pointer; /* Sets the element's background color or visual treatment. */
+}
+.arcode-nav .overlay-links { display: grid; gap: 4px; margin: auto 0; width: min(520px, 100%); }
+.arcode-nav .overlay-links a {
+  display: flex; align-items: baseline; gap: 18px; /* Chooses the layout model used by the element and its children. */
+  padding-bottom: 12px; border-bottom: 1px solid color-mix(in srgb, #18181b 10%, transparent); /* Adds inner spacing below the content. */
+  color: #18181b; font-size: clamp(34px, 7vw, 58px); font-weight: 800; letter-spacing: -0.04em; text-decoration: none; /* Sets the foreground text or icon color. */
+  opacity: 0; transform: translateY(26px); /* Controls the element's transparency. */
+  transition: opacity 320ms cubic-bezier(.2,.7,.3,1), transform 320ms cubic-bezier(.2,.7,.3,1), color 160ms ease; /* Animates supported property changes between visual states. */
+  transition-delay: calc(var(--i) * 55ms); /* Configures the element's transition delay. */
+}
+.arcode-nav .nav-overlay.is-open .overlay-links a { opacity: 1; transform: translateY(0); }
+.arcode-nav .overlay-links a:hover { color: #7c3aed; }
+.arcode-nav .overlay-links a span { color: #7c3aed; font-size: 14px; }
+.arcode-nav .overlay-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.arcode-nav .overlay-footer p { color: #71717a; font-size: 14px; }
+
+/* Demo screen */
+.arcode-nav .demo { padding: clamp(70px, 11vw, 130px) 20px; text-align: center; }
+.arcode-nav .demo .eyebrow { justify-content: center; }
+.arcode-nav .demo h1 { margin-top: 16px; font-size: clamp(40px, 6.5vw, 72px); line-height: 1.02; letter-spacing: -0.045em; }
+.arcode-nav .demo h1 em { background: linear-gradient(100deg, #7c3aed, #fb7185); background-clip: text; -webkit-background-clip: text; color: transparent; font-style: italic; }
+.arcode-nav .demo p { max-width: 560px; margin: 16px auto 0; color: #71717a; line-height: 1.7; }
+
+@media (max-width: 900px) {
+  .arcode-nav .nav-links { display: none; }
+  .arcode-nav .nav-toggle { display: grid; }
+  .arcode-nav .nav-actions { margin-left: auto; }
+}
+@media (max-width: 520px) {
+  .arcode-nav .nav-shell { width: calc(100% - 16px); margin-top: 8px; padding: 10px 14px; }
+  .arcode-nav .brand-text small { display: none; }
+  .arcode-nav .nav-actions .cta { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .arcode-nav * { transition-duration: .01ms !important; }
+}
+/*  */
