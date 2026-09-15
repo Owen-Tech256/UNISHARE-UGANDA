@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile — UniShare Uganda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="profile">
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="site-header"></div>
+
+<main id="main" class="page-main">
+  <div class="container">
+    <div class="page-header"><h1>My Profile</h1></div>
+
+    <div class="profile-grid">
+      <div>
+        <div class="card" style="margin-bottom:20px;">
+          <h3 style="margin-bottom:16px;">Profile Information</h3>
+          <div class="info-row"><span>Full Name</span><span id="infoName">Grace Nakato</span></div>
+          <div class="info-row"><span>Email</span><span id="infoEmail">g****@students.mak.ac.ug</span></div>
+          <div class="info-row"><span>University</span><span id="infoUniversity">Makerere University</span></div>
+          <div class="info-row"><span>Course of Study</span><span>Bachelor of Information Technology</span></div>
+          <div class="info-row"><span>Year of Study</span><span>Year 3</span></div>
+          <div class="info-row"><span>Member Since</span><span>January 2025</span></div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:16px;">Edit Profile</h3>
+          <form id="editProfileForm">
+            <div class="field">
+              <label for="editName">Full Name</label>
+              <input type="text" id="editName" class="input" value="Grace Nakato">
+            </div>
+            <div class="field">
+              <label for="editUniversity">University</label>
+              <select id="editUniversity" class="input"></select>
+            </div>
+            <div class="field">
+              <label for="editCourse">Course</label>
+              <input type="text" id="editCourse" class="input" value="Bachelor of Information Technology">
+            </div>
+            <div class="field">
+              <label for="editYear">Year</label>
+              <select id="editYear" class="input">
+                <option value="1">Year 1</option>
+                <option value="2">Year 2</option>
+                <option value="3" selected>Year 3</option>
+                <option value="4">Year 4</option>
+                <option value="5">Year 5</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="editEmail">Email</label>
+              <input type="email" id="editEmail" class="input" value="grace.nakato@students.mak.ac.ug" disabled>
+              <span class="hint">Email cannot be changed.</span>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </form>
+        </div>
+      </div>
+
+      <div>
+        <div class="card" style="margin-bottom:20px;">
+          <h3 style="margin-bottom:16px;">Contribution Statistics</h3>
+          <div class="summary-cards" style="margin-bottom:0;" id="profileStats"></div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px;">
+          <div class="section-head" style="margin-bottom:12px;"><h3>Recent Uploads</h3></div>
+          <div id="profileRecentList"></div>
+          <a href="my_uploads.html" class="btn btn-outline btn-block" style="margin-top:8px;">View All My Uploads</a>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:12px;">Account Settings</h3>
+          <div style="margin-bottom:16px;">
+            <h4 style="font-size:0.95rem; margin-bottom:8px;">Change Password</h4>
+            <button class="btn btn-outline btn-sm" id="changePwBtn">Change Password</button>
+          </div>
+          <div class="danger-zone">
+            <h4 style="font-size:0.95rem; margin-bottom:8px;">Delete Account</h4>
+            <p>Your account will be deleted, but your approved uploads will remain attributed as "Deleted User".</p>
+            <button class="btn btn-danger btn-sm" id="deleteAccountBtn">Delete Account</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+    <div class="modal-head">
+      <h3 id="deleteModalTitle">Delete your account?</h3>
+      <button class="modal-close" id="deleteModalClose" aria-label="Close"><span data-icon="x"></span></button>
+    </div>
+    <p class="text-secondary">Your account will be deleted, but your approved uploads will remain attributed as "Deleted User". This cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="deleteModalCancel">Cancel</button>
+      <button class="btn btn-danger" id="deleteModalConfirm">Delete Account</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/main.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (!requireAuth("login.html")) return;
+
+    populateUniversitySelect(document.getElementById("editUniversity"), false);
+    document.getElementById("editUniversity").value = "Makerere University";
+
+    document.getElementById("profileStats").innerHTML = `
+      <div class="summary-card"><div class="sc-num">4</div><div class="sc-label">Total Uploads</div></div>
+      <div class="summary-card"><div class="sc-num">2</div><div class="sc-label">Approved</div></div>
+      <div class="summary-card"><div class="sc-num">1</div><div class="sc-label">Pending</div></div>
+      <div class="summary-card"><div class="sc-num">1</div><div class="sc-label">Rejected</div></div>
+      <div class="summary-card"><div class="sc-num">${MY_UPLOADS.reduce((s,u)=>s+u.upvotes,0)}</div><div class="sc-label">Total Upvotes</div></div>
+    `;
+
+    document.getElementById("profileRecentList").innerHTML = MY_UPLOADS.slice(0, 3).map(u => `
+      <div class="info-row">
+        <span>${u.title}</span>
+        <span>${statusBadgeMarkup(u.status)}</span>
+      </div>
+    `).join("");
+
+    document.getElementById("editProfileForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      document.getElementById("infoName").textContent = document.getElementById("editName").value;
+      document.getElementById("infoUniversity").textContent = document.getElementById("editUniversity").value;
+      showToast("Profile updated.", "success");
+    });
+
+    document.getElementById("changePwBtn").addEventListener("click", () => showToast("Password change form would open here.", null));
+
+    document.getElementById("deleteAccountBtn").addEventListener("click", () => document.getElementById("deleteModal").classList.add("open"));
+    document.getElementById("deleteModalClose").addEventListener("click", () => document.getElementById("deleteModal").classList.remove("open"));
+    document.getElementById("deleteModalCancel").addEventListener("click", () => document.getElementById("deleteModal").classList.remove("open"));
+    document.getElementById("deleteModalConfirm").addEventListener("click", () => {
+      clearAuthState();
+      window.location.href = "index.html";
+    });
+  });
+</script>
+</body>
+</html>
