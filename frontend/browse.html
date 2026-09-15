@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Browse Resources — UniShare Uganda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="browse">
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="site-header"></div>
+
+<main id="main" class="page-main">
+  <div class="container">
+    <div class="page-header">
+      <h1>Browse Resources</h1>
+      <p>Search and filter notes, past papers, slides and summaries from universities across Uganda.</p>
+    </div>
+
+    <form id="searchForm" style="margin-bottom: 20px;">
+      <div class="field" style="margin-bottom:0; display:flex; gap:12px;">
+        <input type="text" id="searchInput" class="input" placeholder="Search by course code, course name or lecturer…">
+        <button type="submit" class="btn btn-primary"><span data-icon="search"></span></button>
+      </div>
+    </form>
+
+    <button type="button" class="btn btn-outline mobile-filter-trigger" id="mobileFilterTrigger">Filters</button>
+
+    <div class="browse-layout">
+      <aside class="filters-panel" id="filtersPanel" aria-label="Filters">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <h3>Filters</h3>
+          <button type="button" class="btn btn-ghost btn-sm" id="closeFiltersBtn" aria-label="Close filters" style="display:none;">Close</button>
+        </div>
+
+        <div class="filter-group">
+          <h4>University</h4>
+          <select id="filterUniversity" class="input"></select>
+        </div>
+
+        <div class="filter-group">
+          <h4>Course Code</h4>
+          <input type="text" id="filterCourseCode" class="input" placeholder="e.g. BIT210">
+        </div>
+
+        <div class="filter-group">
+          <h4>Lecturer</h4>
+          <input type="text" id="filterLecturer" class="input" placeholder="e.g. Namukasa">
+        </div>
+
+        <div class="filter-group">
+          <h4>Academic Year</h4>
+          <select id="filterYear" class="input"></select>
+        </div>
+
+        <div class="filter-group">
+          <h4>Semester</h4>
+          <select id="filterSemester" class="input">
+            <option value="">Any Semester</option>
+            <option value="Semester 1">Semester 1</option>
+            <option value="Semester 2">Semester 2</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <h4>Resource Type</h4>
+          <div class="checkbox-list">
+            <label><input type="checkbox" name="resourceType" value="Notes"> Notes</label>
+            <label><input type="checkbox" name="resourceType" value="Past Paper"> Past Paper</label>
+            <label><input type="checkbox" name="resourceType" value="Slides"> Slides</label>
+            <label><input type="checkbox" name="resourceType" value="Summary"> Summary</label>
+          </div>
+        </div>
+
+        <div class="filter-actions">
+          <button type="button" class="btn btn-primary btn-sm" id="applyFiltersBtn">Apply Filters</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="clearFiltersBtn">Clear Filters</button>
+        </div>
+      </aside>
+
+      <div>
+        <div class="browse-toolbar">
+          <span class="results-count" id="resultsCount"></span>
+          <div class="sort-row">
+            <label for="sortSelect">Sort by</label>
+            <select id="sortSelect" class="input">
+              <option value="upvoted">Most Upvoted</option>
+              <option value="recent">Most Recent</option>
+              <option value="alpha">Alphabetical</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="resultsList"></div>
+
+        <div class="empty-state" id="browseEmpty" style="display:none;">
+          <div class="empty-icon" data-icon="empty" style="display:flex;justify-content:center;"></div>
+          <h3>No resources found — be the first to upload!</h3>
+          <p>Try adjusting your filters, or share a resource yourself.</p>
+          <a href="upload.html" class="btn btn-primary">Upload Resource</a>
+        </div>
+
+        <nav class="pagination" id="pagination" aria-label="Pagination"></nav>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="js/main.js"></script>
+<script src="js/browse.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const trigger = document.getElementById("mobileFilterTrigger");
+    const closeBtn = document.getElementById("closeFiltersBtn");
+    function syncCloseBtn() {
+      closeBtn.style.display = window.matchMedia("(max-width: 1023px)").matches ? "inline-flex" : "none";
+    }
+    syncCloseBtn();
+    window.addEventListener("resize", syncCloseBtn);
+  });
+</script>
+</body>
+</html>

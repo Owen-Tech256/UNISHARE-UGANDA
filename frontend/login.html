@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome back — UniShare Uganda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="login">
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="site-header"></div>
+
+<main id="main" class="page-main">
+  <div class="container">
+    <div class="auth-shell">
+      <h1 style="margin-bottom: 24px;">Welcome back</h1>
+
+      <div class="form-alert error" id="loginAlert" role="alert">Invalid email or password.</div>
+
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="loginEmail">Institutional Email</label>
+          <input type="email" id="loginEmail" class="input" autocomplete="email">
+          <span class="error-text" id="loginEmailError"></span>
+        </div>
+
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <div class="password-wrap">
+            <input type="password" id="loginPassword" class="input" autocomplete="current-password">
+            <button type="button" class="password-toggle" id="loginPwToggle" aria-label="Show password">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <span class="error-text" id="loginPasswordError"></span>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px;">
+          <label class="checkbox-row" style="margin-bottom:0;">
+            <input type="checkbox" id="rememberMe">
+            <span>Remember me</span>
+          </label>
+          <a href="#" style="font-size:0.88rem;">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="loginSubmit">Login</button>
+      </form>
+
+      <p class="auth-foot">Don't have an account? <a href="register.html">Create one</a></p>
+      <p class="auth-foot text-secondary" style="font-size:0.8rem;">Demo tip: any email works — use a password of 4+ characters to sign in.</p>
+    </div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="js/main.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>

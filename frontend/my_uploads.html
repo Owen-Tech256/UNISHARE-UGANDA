@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Uploads — UniShare Uganda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="my_uploads">
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="site-header"></div>
+
+<main id="main" class="page-main">
+  <div class="container">
+    <div class="page-header">
+      <h1>My Uploads</h1>
+      <p>Track the status of everything you've shared with UniShare.</p>
+    </div>
+
+    <div class="summary-cards" id="summaryCards"></div>
+
+    <div class="admin-toolbar">
+      <div class="pill-tabs" id="statusTabs">
+        <button class="pill-tab active" data-status="All">All</button>
+        <button class="pill-tab" data-status="Pending">Pending</button>
+        <button class="pill-tab" data-status="Approved">Approved</button>
+        <button class="pill-tab" data-status="Rejected">Rejected</button>
+      </div>
+      <div class="sort-row">
+        <label for="uploadsSort">Sort</label>
+        <select id="uploadsSort" class="input">
+          <option value="newest">Newest</option>
+          <option value="upvoted">Most Upvoted</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Title</th><th>Course Code</th><th>Type</th><th>Date</th><th>Status</th><th>Upvotes</th><th>Reports</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="uploadsTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="empty-state" id="uploadsEmpty" style="display:none;">
+      <h3>No uploads in this category</h3>
+      <p>Try a different filter, or share something new.</p>
+      <a href="upload.html" class="btn btn-primary">Upload a Resource</a>
+    </div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="js/main.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (!requireAuth("login.html")) return;
+
+    let currentStatus = "All";
+    let currentSort = "newest";
+
+    api.getMyUploads().then(uploads => {
+
+      function renderSummary() {
+        const total = uploads.length;
+        const approved = uploads.filter(u => u.status === "Approved").length;
+        const pending = uploads.filter(u => u.status === "Pending").length;
+        const rejected = uploads.filter(u => u.status === "Rejected").length;
+        const totalUpvotes = uploads.reduce((sum, u) => sum + u.upvotes, 0);
+        document.getElementById("summaryCards").innerHTML = `
+          <div class="summary-card"><div class="sc-num">${total}</div><div class="sc-label">Total Uploads</div></div>
+          <div class="summary-card"><div class="sc-num">${approved}</div><div class="sc-label">Approved</div></div>
+          <div class="summary-card"><div class="sc-num">${pending}</div><div class="sc-label">Pending</div></div>
+          <div class="summary-card"><div class="sc-num">${rejected}</div><div class="sc-label">Rejected</div></div>
+          <div class="summary-card"><div class="sc-num">${totalUpvotes}</div><div class="sc-label">Total Upvotes</div></div>
+        `;
+      }
+
+      function statusClass(s) {
+        return s === "Approved" ? "status-approved" : s === "Pending" ? "status-pending" : "status-rejected";
+      }
+
+      function renderTable() {
+        let list = currentStatus === "All" ? uploads.slice() : uploads.filter(u => u.status === currentStatus);
+        if (currentSort === "newest") list.sort((a, b) => new Date(b.date) - new Date(a.date));
+        else list.sort((a, b) => b.upvotes - a.upvotes);
+
+        const body = document.getElementById("uploadsTableBody");
+        const empty = document.getElementById("uploadsEmpty");
+
+        if (!list.length) {
+          body.innerHTML = "";
+          empty.style.display = "block";
+          return;
+        }
+        empty.style.display = "none";
+
+        body.innerHTML = list.map(u => `
+          <tr>
+            <td data-label="Title">${u.title}</td>
+            <td data-label="Course Code">${u.course_code}</td>
+            <td data-label="Type">${u.type}</td>
+            <td data-label="Date">${u.date}</td>
+            <td data-label="Status">
+              <span class="status-badge ${statusClass(u.status)}">${u.status}</span>
+              ${u.status === "Rejected" && u.rejection_reason ? `<div class="text-secondary" style="font-size:0.78rem;margin-top:4px;">${u.rejection_reason}</div>` : ""}
+            </td>
+            <td data-label="Upvotes">${u.upvotes}</td>
+            <td data-label="Reports">${u.reports}</td>
+            <td data-label="Actions" class="actions-cell">
+              <a href="resource_detail.html?id=${u.id}" class="btn btn-ghost btn-sm">View</a>
+              <button class="btn btn-outline btn-sm">Edit</button>
+              ${u.status === "Rejected"
+                ? `<button class="btn btn-secondary btn-sm">Resubmit</button>`
+                : `<button class="btn btn-danger btn-sm">Withdraw</button>`}
+            </td>
+          </tr>
+        `).join("");
+      }
+
+      document.getElementById("statusTabs").addEventListener("click", (e) => {
+        const btn = e.target.closest(".pill-tab");
+        if (!btn) return;
+        document.querySelectorAll(".pill-tab").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentStatus = btn.getAttribute("data-status");
+        renderTable();
+      });
+
+      document.getElementById("uploadsSort").addEventListener("change", (e) => {
+        currentSort = e.target.value;
+        renderTable();
+      });
+
+      renderSummary();
+      renderTable();
+    });
+  });
+</script>
+</body>
+</html>

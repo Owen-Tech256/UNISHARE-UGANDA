@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create your UniShare account — UniShare Uganda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="register">
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="site-header"></div>
+
+<main id="main" class="page-main">
+  <div class="container">
+    <div class="auth-shell">
+      <h1 style="margin-bottom: 24px;">Create your UniShare account</h1>
+
+      <form id="registerForm" novalidate>
+        <div class="field">
+          <label for="regName">Full Name</label>
+          <input type="text" id="regName" class="input" autocomplete="name">
+          <span class="error-text" id="regNameError"></span>
+        </div>
+
+        <div class="field">
+          <label for="regEmail">Institutional Email</label>
+          <input type="email" id="regEmail" class="input" autocomplete="email" placeholder="you@students.university.ac.ug">
+          <span class="error-text" id="regEmailError"></span>
+        </div>
+
+        <div class="field">
+          <label for="regUniversity">University</label>
+          <select id="regUniversity" class="input"></select>
+          <span class="error-text" id="regUniversityError"></span>
+        </div>
+
+        <div class="field">
+          <label for="regPassword">Password</label>
+          <div class="password-wrap">
+            <input type="password" id="regPassword" class="input" autocomplete="new-password">
+            <button type="button" class="password-toggle" id="regPwToggle" aria-label="Show password">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <span class="hint">At least 8 characters.</span>
+          <span class="error-text" id="regPasswordError"></span>
+        </div>
+
+        <div class="field">
+          <label for="regConfirmPassword">Confirm Password</label>
+          <div class="password-wrap">
+            <input type="password" id="regConfirmPassword" class="input" autocomplete="new-password">
+            <button type="button" class="password-toggle" id="regConfirmPwToggle" aria-label="Show password">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <span class="error-text" id="regConfirmPasswordError"></span>
+        </div>
+
+        <div class="field">
+          <label for="regCourse">Course of Study</label>
+          <input type="text" id="regCourse" class="input" placeholder="e.g. Bachelor of Information Technology">
+          <span class="error-text" id="regCourseError"></span>
+        </div>
+
+        <div class="field">
+          <label for="regYear">Year of Study</label>
+          <select id="regYear" class="input">
+            <option value="">Select year</option>
+            <option value="1">Year 1</option>
+            <option value="2">Year 2</option>
+            <option value="3">Year 3</option>
+            <option value="4">Year 4</option>
+            <option value="5">Year 5</option>
+          </select>
+          <span class="error-text" id="regYearError"></span>
+        </div>
+
+        <div class="field">
+          <label class="checkbox-row">
+            <input type="checkbox" id="regTerms">
+            <span>I agree to upload only original, accurate content.</span>
+          </label>
+          <span class="error-text" id="regTermsError">You must agree before creating an account.</span>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="regSubmit">Create Account</button>
+      </form>
+
+      <p class="auth-foot">Already have an account? <a href="login.html">Login</a></p>
+    </div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="js/main.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>
