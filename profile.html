@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile — UniShare Uganda</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="profile">
+<a href="#main-content" class="skip-link">Skip to content</a>
+<header class="site-header" id="site-header"></header>
+
+<main id="main-content">
+  <div class="container" style="max-width: 900px;">
+    <div class="page-header">
+      <h1>My profile</h1>
+    </div>
+
+    <div class="grid-2" style="align-items: start; gap: var(--space-6);">
+      <div>
+        <div class="filter-panel" style="margin-bottom: var(--space-5);">
+          <div style="display:flex; gap: var(--space-4); align-items:center; margin-bottom: var(--space-4);">
+            <div class="avatar" id="profile-avatar"></div>
+            <div>
+              <h3 style="margin-bottom:2px;" id="profile-name"></h3>
+              <p class="text-soft" style="margin:0; font-size:0.88rem;" id="profile-email"></p>
+            </div>
+          </div>
+          <div class="card-meta stack-sm">
+            <span id="profile-university"></span>
+            <span id="profile-course"></span>
+            <span id="profile-year"></span>
+            <span id="profile-member-since"></span>
+          </div>
+        </div>
+
+        <div class="filter-panel">
+          <h4>Edit profile</h4>
+          <form id="edit-profile-form">
+            <div class="field">
+              <label for="edit-name">Name</label>
+              <input type="text" id="edit-name" required>
+            </div>
+            <div class="field">
+              <label for="edit-university">University</label>
+              <select id="edit-university" required></select>
+            </div>
+            <div class="field">
+              <label for="edit-course">Course</label>
+              <input type="text" id="edit-course" required>
+            </div>
+            <div class="field">
+              <label for="edit-year">Year</label>
+              <select id="edit-year" required>
+                <option>Year 1</option><option>Year 2</option><option>Year 3</option>
+                <option>Year 4</option><option>Year 5</option><option>N/A</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="edit-email">Email</label>
+              <input type="email" id="edit-email" disabled>
+              <p class="hint">Email can't be changed.</p>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+          </form>
+        </div>
+      </div>
+
+      <div>
+        <h3>Contribution statistics</h3>
+        <div class="stats-row" id="profile-stats"></div>
+
+        <div class="section-heading">
+          <h3 style="margin:0;">Recent uploads</h3>
+          <a href="my_uploads.html" class="btn btn-outline btn-sm">View All Uploads</a>
+        </div>
+        <div id="profile-recent-uploads" class="stack-sm"></div>
+
+        <hr class="divider">
+
+        <h3>Account settings</h3>
+        <div class="action-row">
+          <button type="button" class="btn btn-outline" id="change-password-btn">Change Password</button>
+          <button type="button" class="btn btn-danger" id="delete-account-btn">Delete Account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Delete account modal -->
+<div class="modal-backdrop" id="delete-account-modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="delete-account-title">
+    <div class="modal-header">
+      <h3 id="delete-account-title" style="margin:0;">Delete your account?</h3>
+      <button type="button" class="modal-close" data-close-modal aria-label="Close">&times;</button>
+    </div>
+    <p>This removes your session from this device and cannot be undone in a real deployment.
+      Your uploads will remain flagged under your name for moderator records.</p>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+      <button type="button" class="btn btn-danger" id="confirm-delete-account-btn">Delete Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- Change password modal -->
+<div class="modal-backdrop" id="change-password-modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="change-password-title">
+    <div class="modal-header">
+      <h3 id="change-password-title" style="margin:0;">Change password</h3>
+      <button type="button" class="modal-close" data-close-modal aria-label="Close">&times;</button>
+    </div>
+    <div class="field">
+      <label for="new-password">New password</label>
+      <input type="password" id="new-password">
+    </div>
+    <div class="field">
+      <label for="confirm-new-password">Confirm new password</label>
+      <input type="password" id="confirm-new-password">
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+      <button type="button" class="btn btn-primary" id="confirm-change-password-btn">Update Password</button>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer" id="site-footer"></footer>
+
+<script src="js/main.js"></script>
+<script>
+  function requireLoginOrRedirect() {
+    if (!getCurrentUser()) {
+      showToast("Please log in to view your profile.", "error");
+      setTimeout(() => { window.location.href = "login.html"; }, 900);
+      return false;
+    }
+    return true;
+  }
+
+  function renderProfile() {
+    const user = getCurrentUser();
+    document.getElementById("profile-avatar").textContent = user.fullName.charAt(0).toUpperCase();
+    document.getElementById("profile-name").textContent = user.fullName;
+    document.getElementById("profile-email").textContent = maskEmail(user.email);
+    document.getElementById("profile-university").innerHTML = `<strong>University:</strong> ${escapeHtml(user.university)}`;
+    document.getElementById("profile-course").innerHTML = `<strong>Course:</strong> ${escapeHtml(user.course)}`;
+    document.getElementById("profile-year").innerHTML = `<strong>Year of study:</strong> ${escapeHtml(user.year)}`;
+    document.getElementById("profile-member-since").innerHTML = `<strong>Member since:</strong> ${formatDate(user.memberSince)}`;
+
+    document.getElementById("edit-name").value = user.fullName;
+    document.getElementById("edit-course").value = user.course;
+    document.getElementById("edit-year").value = user.year;
+    document.getElementById("edit-email").value = user.email;
+
+    const uniSelect = document.getElementById("edit-university");
+    uniSelect.innerHTML = UNIVERSITIES.map((u) => `<option value="${escapeHtml(u)}">${escapeHtml(u)}</option>`).join("");
+    uniSelect.value = user.university;
+
+    const uploads = getUserUploads().filter((u) => u.uploaderId === user.id);
+    const approved = uploads.filter((u) => u.status === "approved").length;
+    const pending = uploads.filter((u) => u.status === "pending").length;
+    const rejected = uploads.filter((u) => u.status === "rejected").length;
+    const totalUpvotes = uploads.reduce((sum, u) => sum + (u.upvotes || 0), 0);
+
+    document.getElementById("profile-stats").innerHTML = `
+      <div class="stat-card"><div class="num">${uploads.length}</div><div class="label">Total Uploads</div></div>
+      <div class="stat-card"><div class="num">${approved}</div><div class="label">Approved</div></div>
+      <div class="stat-card"><div class="num">${pending}</div><div class="label">Pending</div></div>
+      <div class="stat-card"><div class="num">${rejected}</div><div class="label">Rejected</div></div>
+      <div class="stat-card"><div class="num">${totalUpvotes}</div><div class="label">Total Upvotes</div></div>
+    `;
+
+    const recentMount = document.getElementById("profile-recent-uploads");
+    const recent = [...uploads].sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate)).slice(0, 3);
+    recentMount.innerHTML = recent.length
+      ? recent.map((u) => `
+          <div class="filter-panel" style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong>${escapeHtml(u.title)}</strong>
+              <div class="text-soft" style="font-size:0.82rem;">${escapeHtml(u.courseCode)} · ${formatDate(u.uploadDate)}</div>
+            </div>
+            <a href="resource_detail.html?id=${encodeURIComponent(u.id)}" class="btn btn-ghost btn-sm">View</a>
+          </div>
+        `).join("")
+      : `<p class="text-soft">No uploads yet.</p>`;
+  }
+
+  document.getElementById("edit-profile-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const user = getCurrentUser();
+    user.fullName = document.getElementById("edit-name").value.trim() || user.fullName;
+    user.university = document.getElementById("edit-university").value;
+    user.course = document.getElementById("edit-course").value.trim() || user.course;
+    user.year = document.getElementById("edit-year").value;
+    setCurrentUser(user);
+
+    const users = getAllUsers();
+    const idx = users.findIndex((u) => u.id === user.id);
+    if (idx > -1) { users[idx] = { ...users[idx], ...user }; writeJSON(LS_KEYS.users, users); }
+
+    showToast("Profile updated.", "success");
+    renderProfile();
+  });
+
+  document.getElementById("change-password-btn").addEventListener("click", () => openModal("change-password-modal"));
+  document.getElementById("confirm-change-password-btn").addEventListener("click", () => {
+    const pw = document.getElementById("new-password").value;
+    const confirm = document.getElementById("confirm-new-password").value;
+    if (!pw || pw.length < 8) { showToast("Password must be at least 8 characters.", "error"); return; }
+    if (pw !== confirm) { showToast("Passwords do not match.", "error"); return; }
+    closeModal("change-password-modal");
+    document.getElementById("new-password").value = "";
+    document.getElementById("confirm-new-password").value = "";
+    showToast("Password updated.", "success");
+  });
+
+  document.getElementById("delete-account-btn").addEventListener("click", () => openModal("delete-account-modal"));
+  document.getElementById("confirm-delete-account-btn").addEventListener("click", () => {
+    showToast("Account deleted.", "success");
+    setTimeout(() => logout(), 600);
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    if (!requireLoginOrRedirect()) return;
+    renderProfile();
+  });
+</script>
+</body>
+</html>

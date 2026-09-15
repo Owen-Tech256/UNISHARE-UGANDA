@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moderation Queue — UniShare Uganda</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-page="moderation_queue">
+<a href="#main-content" class="skip-link">Skip to content</a>
+<header class="site-header" id="site-header"></header>
+
+<main id="main-content">
+  <div class="container">
+    <div class="page-header">
+      <h1>Moderation queue</h1>
+      <p class="text-soft">Review submissions before they appear in Browse.</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="num" id="stat-pending">0</div><div class="label">Pending Resources</div></div>
+      <div class="stat-card"><div class="num" id="stat-approved-today">0</div><div class="label">Approved Today</div></div>
+      <div class="stat-card"><div class="num" id="stat-rejected">0</div><div class="label">Rejected</div></div>
+      <div class="stat-card"><div class="num" id="stat-duplicates">0</div><div class="label">Possible Duplicates</div></div>
+    </div>
+
+    <div class="toolbar">
+      <div style="display:flex; gap: var(--space-3); flex-wrap: wrap;">
+        <div class="field" style="margin:0;">
+          <label for="mod-filter-university" style="margin:0; font-size:0.85rem;">University</label>
+          <select id="mod-filter-university"></select>
+        </div>
+        <div class="field" style="margin:0;">
+          <label for="mod-filter-type" style="margin:0; font-size:0.85rem;">Resource Type</label>
+          <select id="mod-filter-type"></select>
+        </div>
+      </div>
+      <button type="button" class="btn btn-accent" id="approve-selected-btn">Approve Selected</button>
+    </div>
+
+    <div class="stack-md" id="moderation-list"></div>
+  </div>
+</main>
+
+<!-- Reject modal -->
+<div class="modal-backdrop" id="reject-modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="reject-modal-title">
+    <div class="modal-header">
+      <h3 id="reject-modal-title" style="margin:0;">Reject submission</h3>
+      <button type="button" class="modal-close" data-close-modal aria-label="Close">&times;</button>
+    </div>
+    <div class="field">
+      <label for="reject-reason-select">Rejection reason</label>
+      <select id="reject-reason-select">
+        <option value="">Select a reason</option>
+        <option>Wrong Course</option>
+        <option>Outdated</option>
+        <option>Incorrect Content</option>
+        <option>Duplicate</option>
+        <option>Inappropriate</option>
+        <option>Poor Scan / Unreadable</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="reject-comment">Comment (optional)</label>
+      <textarea id="reject-comment" placeholder="Let the student know how to fix it…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+      <button type="button" class="btn btn-danger" id="reject-confirm-btn">Reject Resource</button>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer" id="site-footer"></footer>
+
+<script src="../js/main.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>

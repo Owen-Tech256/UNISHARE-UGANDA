@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reports — UniShare Uganda</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-page="reports">
+<a href="#main-content" class="skip-link">Skip to content</a>
+<header class="site-header" id="site-header"></header>
+
+<main id="main-content">
+  <div class="container">
+    <div class="page-header">
+      <h1>Reports</h1>
+      <p class="text-soft">Reports are grouped by resource so repeat issues are easy to spot.</p>
+    </div>
+
+    <div class="toolbar">
+      <div style="display:flex; gap: var(--space-3); flex-wrap: wrap;">
+        <div class="field" style="margin:0;">
+          <label for="report-filter-status" style="margin:0; font-size:0.85rem;">Status</label>
+          <select id="report-filter-status">
+            <option value="">All statuses</option>
+            <option value="open">Open</option>
+            <option value="resolved">Resolved</option>
+          </select>
+        </div>
+        <div class="field" style="margin:0;">
+          <label for="report-filter-reason" style="margin:0; font-size:0.85rem;">Reason</label>
+          <select id="report-filter-reason"></select>
+        </div>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Resource</th>
+          <th>Course</th>
+          <th>Reports</th>
+          <th>Reason</th>
+          <th>Latest</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="reports-table-body"></tbody>
+    </table>
+
+    <div class="empty-state" id="reports-empty" hidden>
+      <h3>No reports match these filters</h3>
+      <p>Nothing here right now — that's a good sign.</p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer" id="site-footer"></footer>
+
+<script src="../js/main.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>

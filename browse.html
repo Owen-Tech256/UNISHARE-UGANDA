@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Browse Resources — UniShare Uganda</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="browse">
+<a href="#main-content" class="skip-link">Skip to content</a>
+<header class="site-header" id="site-header"></header>
+
+<main id="main-content">
+  <div class="container" id="browse-results-top">
+
+    <div class="page-header">
+      <h1>Browse resources</h1>
+      <p class="text-soft">Search and filter notes, past papers, slides, and summaries from every listed university.</p>
+
+      <div class="search-bar" style="max-width: 640px;">
+        <label for="search-input" class="visually-hidden">Search notes, courses, lecturers</label>
+        <input type="search" id="search-input" placeholder="Search notes, courses, lecturers…" autocomplete="off">
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-outline filter-drawer-toggle" id="filter-drawer-toggle" aria-expanded="false" aria-controls="filter-panel" style="margin-bottom: var(--space-4);">
+      Filters ▾
+    </button>
+
+    <div class="browse-layout">
+      <!-- Filters -->
+      <aside class="filter-panel" id="filter-panel" aria-label="Filter resources">
+        <div class="flex-between">
+          <h4 style="margin:0;">Filters</h4>
+          <button type="button" class="btn btn-ghost btn-sm" id="clear-filters-btn">Clear Filters</button>
+        </div>
+
+        <div class="filter-group">
+          <label for="filter-university">University</label>
+          <select id="filter-university"></select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filter-course">Course Code</label>
+          <input type="text" id="filter-course" placeholder="e.g. CSC201">
+        </div>
+
+        <div class="filter-group">
+          <label for="filter-lecturer">Lecturer</label>
+          <input type="text" id="filter-lecturer" placeholder="e.g. Dr. Grace Nakato">
+        </div>
+
+        <div class="filter-group">
+          <label for="filter-year">Academic Year</label>
+          <select id="filter-year"></select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filter-semester">Semester</label>
+          <select id="filter-semester"></select>
+        </div>
+
+        <div class="filter-group">
+          <span class="group-label">Resource Type</span>
+          <div class="checkbox-list">
+            <label class="checkbox-row"><input type="checkbox" data-type-checkbox value="notes"><span>Notes</span></label>
+            <label class="checkbox-row"><input type="checkbox" data-type-checkbox value="pastpaper"><span>Past Paper</span></label>
+            <label class="checkbox-row"><input type="checkbox" data-type-checkbox value="slides"><span>Slides</span></label>
+            <label class="checkbox-row"><input type="checkbox" data-type-checkbox value="summary"><span>Summary</span></label>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Results -->
+      <div>
+        <div class="toolbar">
+          <span id="results-count" class="text-soft" aria-live="polite"></span>
+          <div class="field" style="margin:0; display:flex; align-items:center; gap:8px;">
+            <label for="sort-select" style="margin:0; font-size: 0.88rem;">Sort by</label>
+            <select id="sort-select" style="min-width: 180px;">
+              <option value="recent">Most Recent</option>
+              <option value="upvoted">Most Upvoted</option>
+              <option value="alphabetical">Alphabetical</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="resource-grid" id="browse-results-grid"></div>
+
+        <div class="empty-state" id="browse-empty-state" hidden>
+          <h3>No resources found — be the first to upload!</h3>
+          <p>Try clearing a filter, or share the resource yourself.</p>
+          <a href="upload.html" class="btn btn-accent">Upload a Resource</a>
+        </div>
+
+        <nav class="pagination" id="pagination" aria-label="Pagination"></nav>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer" id="site-footer"></footer>
+
+<script src="js/main.js"></script>
+<script src="js/browse.js"></script>
+</body>
+</html>

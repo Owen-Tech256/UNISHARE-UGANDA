@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload a Resource — UniShare Uganda</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="upload">
+<a href="#main-content" class="skip-link">Skip to content</a>
+<header class="site-header" id="site-header"></header>
+
+<main id="main-content">
+  <div class="container" style="max-width: 760px;">
+    <div class="page-header">
+      <h1>Upload a resource</h1>
+      <p class="text-soft">Share notes, slides, a past paper, or a summary with your coursemates. Every
+        upload is reviewed by a moderator before it goes live.</p>
+    </div>
+
+    <form id="upload-form" novalidate>
+      <fieldset>
+        <legend>Course details</legend>
+
+        <div class="field">
+          <label for="upload-university">University</label>
+          <select id="upload-university" required></select>
+          <p class="error-msg"></p>
+        </div>
+
+        <div class="grid-2">
+          <div class="field autocomplete-wrap">
+            <label for="upload-course-code">Course Code</label>
+            <input type="text" id="upload-course-code" placeholder="e.g. CSC201" autocomplete="off" required>
+            <div class="autocomplete-list" id="course-autocomplete-list"></div>
+            <p class="error-msg"></p>
+          </div>
+          <div class="field">
+            <label for="upload-course-name">Course Name</label>
+            <input type="text" id="upload-course-name" placeholder="e.g. Data Structures & Algorithms" required>
+            <p class="hint">Filled in automatically when you pick a course code above — feel free to edit it.</p>
+            <p class="error-msg"></p>
+          </div>
+        </div>
+
+        <div class="field autocomplete-wrap">
+          <label for="upload-lecturer">Lecturer</label>
+          <input type="text" id="upload-lecturer" placeholder="Start typing a lecturer's name…" autocomplete="off" required>
+          <div class="autocomplete-list" id="lecturer-autocomplete-list"></div>
+          <p class="error-msg"></p>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="upload-year">Academic Year</label>
+            <select id="upload-year" required></select>
+            <p class="error-msg"></p>
+          </div>
+          <div class="field">
+            <label for="upload-semester">Semester</label>
+            <select id="upload-semester" required></select>
+            <p class="error-msg"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="upload-type">Resource Type</label>
+          <select id="upload-type" required></select>
+          <p class="error-msg"></p>
+        </div>
+
+        <div id="duplicate-warning" class="alert alert-warning" hidden>
+          <strong>Similar resources already exist.</strong> You can still upload — just double-check
+          you're not duplicating an existing resource.
+          <div style="margin-top: 8px;">
+            <a href="#" id="duplicate-view-link" class="btn btn-outline btn-sm">View Existing Resources</a>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Resource details</legend>
+
+        <div class="field">
+          <label for="upload-title">Title</label>
+          <input type="text" id="upload-title" placeholder="e.g. Week 1–6 Lecture Notes" required>
+          <p class="error-msg"></p>
+        </div>
+
+        <div class="field">
+          <label for="upload-description">Description</label>
+          <textarea id="upload-description" placeholder="What does this resource cover?"></textarea>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>File</legend>
+        <div class="field" style="margin-bottom: 0;">
+          <label for="file-input">Attach file</label>
+          <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-describedby="file-hint">
+            <p><strong>Drag & Drop your file here</strong></p>
+            <p class="text-soft">or</p>
+            <span class="btn btn-outline btn-sm">Browse Files</span>
+          </div>
+          <input type="file" id="file-input" class="visually-hidden" accept=".pdf,.docx,.pptx,.jpg,.jpeg,.png">
+          <p class="hint" id="file-hint">Accepted formats: PDF, DOCX, PPTX, JPG, PNG.</p>
+          <p class="error-msg" id="file-error" style="display:none;"></p>
+
+          <div class="file-chip" id="file-chip" hidden>
+            <div>
+              <strong class="file-chip-name"></strong>
+              <div class="text-soft file-chip-meta" style="font-size: 0.82rem;"></div>
+            </div>
+            <button type="button" class="btn btn-ghost btn-sm remove-file-btn">Remove</button>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="field">
+        <div class="checkbox-row">
+          <input type="checkbox" id="upload-confirm">
+          <label for="upload-confirm">I confirm this content is accurate and mine to share or permitted for redistribution.</label>
+        </div>
+        <p class="error-msg"></p>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" id="upload-submit-btn">Submit Resource</button>
+    </form>
+
+    <div class="alert alert-success" id="upload-success" hidden style="margin-top: var(--space-5);">
+      <h3 style="margin-bottom: var(--space-2);">Submitted — pending moderation review.</h3>
+      <p style="margin-bottom: var(--space-3);">Thanks for contributing! A moderator will review your
+        upload before it appears in Browse.</p>
+      <a href="my_uploads.html" class="btn btn-accent">View My Uploads</a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer" id="site-footer"></footer>
+
+<script src="js/main.js"></script>
+<script src="js/upload.js"></script>
+</body>
+</html>
