@@ -28,7 +28,8 @@
           </div>
           <div class="field field-query">
             <label for="homeQuery">Course code, course name or lecturer</label>
-            <input type="text" id="homeQuery" class="input" placeholder="Search by course code, course name or lecturer…">
+            <input type="search" id="homeQuery" class="input" list="homeSearchSuggestions" autocomplete="off" placeholder="Search by course code, course name or lecturer…">
+            <datalist id="homeSearchSuggestions"></datalist>
           </div>
         </div>
         <div style="margin-top: 16px; display:flex; justify-content:flex-end;">
@@ -96,8 +97,15 @@
 
     <section class="section" id="contact" aria-label="Contact and reporting">
       <div class="card">
-        <h2>Contact &amp; Terms</h2>
-        <p style="margin-top:12px; color:var(--color-text-secondary);">Questions, issues, or something to report? Reach the UniShare team at <a href="mailto:hello@unishare.ug">hello@unishare.ug</a>. By using UniShare, you agree to share only original or permitted academic material.</p>
+        <h2>Contact</h2>
+        <p id="report" tabindex="-1" style="margin-top:12px; color:var(--color-text-secondary);">Questions, issues, or something to report? Reach the UniShare team at <a href="mailto:hello@unishare.ug">hello@unishare.ug</a>.</p>
+      </div>
+    </section>
+
+    <section class="section" id="terms" aria-label="Terms">
+      <div class="card">
+        <h2>Terms, in short</h2>
+        <p style="margin-top:12px; color:var(--color-text-secondary);">By using UniShare, you agree to share only Original or Permitted Academic Material. </p>
       </div>
     </section>
   </div>
@@ -109,6 +117,7 @@
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     populateUniversitySelect(document.getElementById("homeUniversity"), true);
+    populateHomeSearchSuggestions();
 
     const grid = document.getElementById("recentGrid");
     const recent = RESOURCES.filter(r => r.approved).slice().sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 8);

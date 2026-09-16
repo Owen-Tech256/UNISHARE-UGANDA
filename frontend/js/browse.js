@@ -136,12 +136,27 @@ function populateFilterOptions() {
   yearSelect.innerHTML = `<option value="">Any Year</option>` + years.map(y => `<option value="${y}">${y}</option>`).join("");
 }
 
+function populateSearchSuggestions() {
+  const suggestions = new Set();
+  RESOURCES.filter(r => r.approved !== false).forEach(r => {
+    [r.course_code, r.course_name, r.title, r.lecturer, r.university].forEach(value => suggestions.add(value));
+  });
+
+  const datalist = document.getElementById("searchSuggestions");
+  datalist.replaceChildren(...Array.from(suggestions).sort().map(value => {
+    const option = document.createElement("option");
+    option.value = value;
+    return option;
+  }));
+}
+
 function initBrowsePage() {
   const container = document.getElementById("resultsList");
   if (!container) return;
 
   browseState.all = RESOURCES.slice();
   populateFilterOptions();
+  populateSearchSuggestions();
 
   const params = new URLSearchParams(window.location.search);
   if (params.get("q")) { browseState.query = params.get("q"); document.getElementById("searchInput").value = browseState.query; }
@@ -152,9 +167,15 @@ function initBrowsePage() {
     if (cb) cb.checked = true;
   }
 
+  const searchInput = document.getElementById("searchInput");
+  searchInput.addEventListener("input", () => {
+    browseState.query = searchInput.value;
+    applyFilters();
+  });
+
   document.getElementById("searchForm").addEventListener("submit", (e) => {
     e.preventDefault();
-    browseState.query = document.getElementById("searchInput").value;
+    browseState.query = searchInput.value;
     applyFilters();
   });
 

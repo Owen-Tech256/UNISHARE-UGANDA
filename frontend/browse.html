@@ -21,7 +21,8 @@
 
     <form id="searchForm" style="margin-bottom: 20px;">
       <div class="field" style="margin-bottom:0; display:flex; gap:12px;">
-        <input type="text" id="searchInput" class="input" placeholder="Search by course code, course name or lecturer…">
+        <input type="search" id="searchInput" class="input" list="searchSuggestions" autocomplete="off" placeholder="Search by course code, course name or lecturer…" aria-label="Search resources">
+        <datalist id="searchSuggestions"></datalist>
         <button type="submit" class="btn btn-primary"><span data-icon="search"></span></button>
       </div>
     </form>

@@ -191,6 +191,7 @@ function initBrowsePage() {
   if (!grid) return;
 
   populateBrowseFilterOptions();
+  populateSearchSuggestions("browse-search-suggestions");
   readStateFromQueryParams();
   applyStateToControls();
   wireBrowseControls();
