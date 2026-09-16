@@ -220,6 +220,23 @@ function getAllResources() {
   return [...getUserUploads(), ...MOCK_RESOURCES];
 }
 
+function populateSearchSuggestions(listId) {
+  const datalist = document.getElementById(listId);
+  if (!datalist) return;
+  const suggestions = new Set();
+  getAllResources()
+    .filter((resource) => resource.status === "approved" || resource.status === undefined)
+    .forEach((resource) => {
+      [resource.courseCode, resource.courseName, resource.title, resource.lecturer, resource.university]
+        .forEach((value) => suggestions.add(value));
+    });
+  datalist.replaceChildren(...Array.from(suggestions).sort().map((value) => {
+    const option = document.createElement("option");
+    option.value = value;
+    return option;
+  }));
+}
+
 function getResourceById(id) {
   return getAllResources().find((r) => r.id === id) || null;
 }
@@ -558,6 +575,7 @@ function renderHomepage() {
 
   const heroForm = document.getElementById("hero-search-form");
   if (heroForm) {
+    populateSearchSuggestions("hero-search-suggestions");
     heroForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const q = document.getElementById("hero-search-input").value.trim();

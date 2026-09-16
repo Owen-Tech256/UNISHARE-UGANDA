@@ -279,6 +279,12 @@ button{ font-family: inherit; }
   margin-top: var(--space-8);
   padding: var(--space-7) 0 var(--space-5);
 }
+section[id] { scroll-margin-top: 84px; }
+section:target, #report:target { animation: target-highlight 1.4s ease-out; }
+@keyframes target-highlight {
+  0% { outline: 3px solid rgba(226, 169, 72, 0.8); outline-offset: 8px; }
+  100% { outline: 3px solid transparent; outline-offset: 2px; }
+}
 .footer-grid{
   display: grid;
   grid-template-columns: 1.4fr 1fr 1fr;
