@@ -1,5 +1,5 @@
 /* ==========================================================================
-   UniShare Uganda — admin.js
+   UniShare Uganda - admin.js
    Handles admin/moderation_queue.html and admin/reports.html
    ========================================================================== */
 

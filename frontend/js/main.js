@@ -1,5 +1,5 @@
 /* =========================================================
-   UniShare Uganda — main.js
+   UniShare Uganda - main.js
    Shared demo data + shared UI wiring (header, footer, nav,
    notifications, toasts, auth state).
 
@@ -8,7 +8,7 @@
    object below. Right now each method resolves with local
    in-memory arrays. When the Flask backend exists, replace
    the body of each method with a fetch() call to the matching
-   endpoint (already noted in comments) — nothing that calls
+   endpoint (already noted in comments) - nothing that calls
    `api.*` needs to change.
    ========================================================= */
 
@@ -28,32 +28,45 @@ const UNIVERSITIES = [
 ];
 
 const RESOURCE_TYPES = ["Notes", "Past Paper", "Slides", "Summary"];
+const SCHOOL_CATEGORIES = ["School of Computing", "School of Business", "School of Law", "School of Health Sciences", "School of Science", "School of Education", "School of Social Sciences"];
+
+function getSchoolCategory(resource) {
+  const code = resource.course_code.toUpperCase();
+  const name = resource.course_name.toLowerCase();
+  if (/^(BIT|CIT|CIS|CSC|CS|COM)/.test(code) || /computer|software|database|information|network|web|operating system/.test(name)) return "School of Computing";
+  if (/^(ACC|ECO|FIN|MKT|MGT|BUS|BBA)/.test(code) || /account|econom|finance|market|business|management/.test(name)) return "School of Business";
+  if (/^LAW/.test(code) || /law/.test(name)) return "School of Law";
+  if (/^(MED|PHE|NUT|BCH)/.test(code) || /health|anatom|physiology|nutrition|biochem/.test(name)) return "School of Health Sciences";
+  if (/^(CHE|MTH|MAT|STA)/.test(code) || /chemistry|algebra|calculus|statistics|mathematics/.test(name)) return "School of Science";
+  if (/^EDU/.test(code) || /education|psychology/.test(name)) return "School of Education";
+  return "School of Social Sciences";
+}
 
 const RESOURCES = [
   { id: 1, title: "Database Management Systems Past Paper", course_code: "BIT210", course_name: "Database Management Systems", university: "Nkumba University", lecturer: "Dr. Sarah Namukasa", year: "2024/2025", semester: "Semester 1", type: "Past Paper", uploader_name: "John Student", upvote_count: 42, file_type: "PDF", file_size: "1.8 MB", date: "2026-08-14", approved: true, reports: 0 },
   { id: 2, title: "Introduction to Microeconomics Notes", course_code: "ECO101", course_name: "Microeconomics", university: "Makerere University", lecturer: "Dr. Peter Okello", year: "2025/2026", semester: "Semester 1", type: "Notes", uploader_name: "Grace N.", upvote_count: 87, file_type: "DOCX", file_size: "620 KB", date: "2026-09-02", approved: true, reports: 0 },
-  { id: 3, title: "Data Structures & Algorithms Slides — Trees", course_code: "CIT301", course_name: "Data Structures and Algorithms", university: "Makerere University", lecturer: "Dr. Ivan Mugisha", year: "2025/2026", semester: "Semester 1", type: "Slides", uploader_name: "Brian K.", upvote_count: 65, file_type: "PPTX", file_size: "3.2 MB", date: "2026-09-05", approved: true, reports: 0 },
+  { id: 3, title: "Data Structures & Algorithms Slides - Trees", course_code: "CIT301", course_name: "Data Structures and Algorithms", university: "Makerere University", lecturer: "Dr. Ivan Mugisha", year: "2025/2026", semester: "Semester 1", type: "Slides", uploader_name: "Brian K.", upvote_count: 65, file_type: "PPTX", file_size: "3.2 MB", date: "2026-09-05", approved: true, reports: 0 },
   { id: 4, title: "Financial Accounting Summary Notes", course_code: "ACC110", course_name: "Financial Accounting I", university: "MUBS", lecturer: "Ms. Ritah Nabirye", year: "2024/2025", semester: "Semester 2", type: "Summary", uploader_name: "Patience A.", upvote_count: 120, file_type: "PDF", file_size: "980 KB", date: "2026-07-29", approved: true, reports: 1 },
   { id: 5, title: "Organic Chemistry Past Paper 2024", course_code: "CHE202", course_name: "Organic Chemistry", university: "Mbarara University of Science and Technology", lecturer: "Dr. Allan Tumwesigye", year: "2023/2024", semester: "Semester 2", type: "Past Paper", uploader_name: "Diana M.", upvote_count: 54, file_type: "PDF", file_size: "2.1 MB", date: "2026-06-18", approved: true, reports: 0 },
   { id: 6, title: "Principles of Marketing Slides", course_code: "MKT201", course_name: "Principles of Marketing", university: "Uganda Christian University", lecturer: "Mr. Joseph Ssebunya", year: "2025/2026", semester: "Semester 1", type: "Slides", uploader_name: "Esther K.", upvote_count: 33, file_type: "PPTX", file_size: "4.0 MB", date: "2026-09-10", approved: true, reports: 0 },
-  { id: 7, title: "Human Anatomy Notes — Musculoskeletal System", course_code: "MED150", course_name: "Human Anatomy", university: "Gulu University", lecturer: "Dr. Christine Aciro", year: "2024/2025", semester: "Semester 1", type: "Notes", uploader_name: "Moses O.", upvote_count: 98, file_type: "PDF", file_size: "1.4 MB", date: "2026-05-21", approved: true, reports: 0 },
+  { id: 7, title: "Human Anatomy Notes - Musculoskeletal System", course_code: "MED150", course_name: "Human Anatomy", university: "Gulu University", lecturer: "Dr. Christine Aciro", year: "2024/2025", semester: "Semester 1", type: "Notes", uploader_name: "Moses O.", upvote_count: 98, file_type: "PDF", file_size: "1.4 MB", date: "2026-05-21", approved: true, reports: 0 },
   { id: 8, title: "Business Statistics Past Paper", course_code: "STA150", course_name: "Business Statistics", university: "Kyambogo University", lecturer: "Dr. Fred Ochieng", year: "2024/2025", semester: "Semester 2", type: "Past Paper", uploader_name: "Angela T.", upvote_count: 71, file_type: "PDF", file_size: "1.1 MB", date: "2026-04-30", approved: true, reports: 0 },
-  { id: 9, title: "Software Engineering Summary — SDLC Models", course_code: "CIT350", course_name: "Software Engineering", university: "Busitema University", lecturer: "Dr. Ivan Mugisha", year: "2025/2026", semester: "Semester 1", type: "Summary", uploader_name: "Kevin W.", upvote_count: 45, file_type: "PDF", file_size: "700 KB", date: "2026-09-01", approved: false, reports: 0 },
+  { id: 9, title: "Software Engineering Summary - SDLC Models", course_code: "CIT350", course_name: "Software Engineering", university: "Busitema University", lecturer: "Dr. Ivan Mugisha", year: "2025/2026", semester: "Semester 1", type: "Summary", uploader_name: "Kevin W.", upvote_count: 45, file_type: "PDF", file_size: "700 KB", date: "2026-09-01", approved: false, reports: 0 },
   { id: 10, title: "Constitutional Law Notes", course_code: "LAW220", course_name: "Constitutional Law", university: "Nkumba University", lecturer: "Ms. Harriet Nansubuga", year: "2024/2025", semester: "Semester 2", type: "Notes", uploader_name: "John Student", upvote_count: 29, file_type: "DOCX", file_size: "540 KB", date: "2026-03-11", approved: true, reports: 0 },
-  { id: 11, title: "Public Health Slides — Epidemiology Basics", course_code: "PHE210", course_name: "Epidemiology", university: "Muni University", lecturer: "Dr. Sarah Namukasa", year: "2025/2026", semester: "Semester 1", type: "Slides", uploader_name: "Ruth A.", upvote_count: 22, file_type: "PPTX", file_size: "2.6 MB", date: "2026-08-27", approved: true, reports: 0 },
+  { id: 11, title: "Public Health Slides - Epidemiology Basics", course_code: "PHE210", course_name: "Epidemiology", university: "Muni University", lecturer: "Dr. Sarah Namukasa", year: "2025/2026", semester: "Semester 1", type: "Slides", uploader_name: "Ruth A.", upvote_count: 22, file_type: "PPTX", file_size: "2.6 MB", date: "2026-08-27", approved: true, reports: 0 },
   { id: 12, title: "Linear Algebra Past Paper 2023", course_code: "MTH120", course_name: "Linear Algebra", university: "Kabale University", lecturer: "Dr. Peter Okello", year: "2023/2024", semester: "Semester 1", type: "Past Paper", uploader_name: "Brian K.", upvote_count: 40, file_type: "PDF", file_size: "1.6 MB", date: "2026-02-14", approved: true, reports: 0 },
   { id: 13, title: "Operating Systems Summary", course_code: "CIT220", course_name: "Operating Systems", university: "Makerere University", lecturer: "Dr. Allan Tumwesigye", year: "2025/2026", semester: "Semester 1", type: "Summary", uploader_name: "Patience A.", upvote_count: 0, file_type: "PDF", file_size: "800 KB", date: "2026-09-08", approved: false, reports: 0 },
   { id: 14, title: "Calculus II Notes", course_code: "MTH210", course_name: "Calculus II", university: "MUBS", lecturer: "Dr. Christine Aciro", year: "2024/2025", semester: "Semester 2", type: "Notes", uploader_name: "Diana M.", upvote_count: 3, file_type: "DOCX", file_size: "1.2 MB", date: "2026-01-20", approved: false, reports: 0 },
   { id: 15, title: "Macroeconomics Past Paper 2025", course_code: "ECO202", course_name: "Macroeconomics", university: "Uganda Christian University", lecturer: "Dr. Fred Ochieng", year: "2024/2025", semester: "Semester 2", type: "Past Paper", uploader_name: "Angela T.", upvote_count: 55, file_type: "PDF", file_size: "1.9 MB", date: "2026-06-05", approved: true, reports: 0 },
-  { id: 16, title: "Database Systems Slides — ER Modeling", course_code: "CIT310", course_name: "Database Systems", university: "Makerere University", lecturer: "Dr. Ivan Mugisha", year: "2025/2026", semester: "Semester 1", type: "Slides", uploader_name: "Kevin W.", upvote_count: 38, file_type: "PPTX", file_size: "3.5 MB", date: "2026-09-12", approved: true, reports: 0 },
-  { id: 17, title: "Human Physiology Notes — Cardiovascular System", course_code: "MED200", course_name: "Human Physiology", university: "Gulu University", lecturer: "Dr. Sarah Namukasa", year: "2024/2025", semester: "Semester 1", type: "Notes", uploader_name: "Moses O.", upvote_count: 80, file_type: "PDF", file_size: "1.7 MB", date: "2026-05-15", approved: true, reports: 0 },
+  { id: 16, title: "Database Systems Slides - ER Modeling", course_code: "CIT310", course_name: "Database Systems", university: "Makerere University", lecturer: "Dr. Ivan Mugisha", year: "2025/2026", semester: "Semester 1", type: "Slides", uploader_name: "Kevin W.", upvote_count: 38, file_type: "PPTX", file_size: "3.5 MB", date: "2026-09-12", approved: true, reports: 0 },
+  { id: 17, title: "Human Physiology Notes - Cardiovascular System", course_code: "MED200", course_name: "Human Physiology", university: "Gulu University", lecturer: "Dr. Sarah Namukasa", year: "2024/2025", semester: "Semester 1", type: "Notes", uploader_name: "Moses O.", upvote_count: 80, file_type: "PDF", file_size: "1.7 MB", date: "2026-05-15", approved: true, reports: 0 },
   { id: 18, title: "Business Law Past Paper", course_code: "LAW310", course_name: "Business Law", university: "Kyambogo University", lecturer: "Ms. Ritah Nabirye", year: "2024/2025", semester: "Semester 2", type: "Past Paper", uploader_name: "Esther K.", upvote_count: 60, file_type: "PDF", file_size: "1.3 MB", date: "2026-04-25", approved: true, reports: 0 },
   { id: 19, title: "Principles of Management Slides", course_code: "MGT101", course_name: "Principles of Management", university: "Busitema University", lecturer: "Mr. Joseph Ssebunya", year: "2025/2026", semester: "Semester 1", type: "Slides", uploader_name: "Ruth A.", upvote_count: 25, file_type: "PPTX", file_size: "2.8 MB", date: "2026-08-30", approved: true, reports: 0 },
   { id: 20, title: "Statistics for Business Summary", course_code: "STA250", course_name: "Statistics for Business", university: "Muni University", lecturer: "Dr. Allan Tumwesigye", year: "2025/2026", semester: "Semester 1", type: "Summary", uploader_name: "Diana M.", upvote_count: 15, file_type: "PDF", file_size: "900 KB", date: "2026-09-03", approved: true, reports: 0 },
   { id: 21, title: "Introduction to Psychology Notes", course_code: "PSY101", course_name: "Introduction to Psychology", university: "Makerere University", lecturer: "Dr. Christine Aciro", year: "2024/2025", semester: "Semester 2", type: "Notes", uploader_name: "John Student", upvote_count: 70, file_type: "DOCX", file_size: "1.5 MB", date: "2026-03-18", approved: true, reports: 0 },
   { id: 22, title: "Financial Management Past Paper", course_code: "FIN210", course_name: "Financial Management", university: "MUBS", lecturer: "Dr. Fred Ochieng", year: "2024/2025", semester: "Semester 1", type: "Past Paper", uploader_name: "Grace N.", upvote_count: 48, file_type: "PDF", file_size: "1.2 MB", date: "2026-02-28", approved: true, reports: 0 },
-  { id: 23, title: "Database Design Slides — Normalization", course_code: "CIT320", course_name: "Database Design", university: "Makerere University", lecturer: "Dr. Ivan Mugisha", year: "2025/2026", semester: "Semester 1", type: "Slides", uploader_name: "Brian K.", upvote_count: 30, file_type: "PPTX", file_size: "3.0 MB", date: "2026-09-07", approved: true, reports: 0 },
-  { id: 24, title: "Human Nutrition Notes — Macronutrients", course_code: "NUT101", course_name: "Human Nutrition", university: "Gulu University", lecturer: "Dr. Sarah Namukasa", year: "2024/2025", semester: "Semester 2", type: "Notes", uploader_name: "Patience A.", upvote_count: 55, file_type: "PDF", file_size: "1.1 MB", date: "2026-05-10", approved: true, reports: 0 },
+  { id: 23, title: "Database Design Slides - Normalization", course_code: "CIT320", course_name: "Database Design", university: "Makerere University", lecturer: "Dr. Ivan Mugisha", year: "2025/2026", semester: "Semester 1", type: "Slides", uploader_name: "Brian K.", upvote_count: 30, file_type: "PPTX", file_size: "3.0 MB", date: "2026-09-07", approved: true, reports: 0 },
+  { id: 24, title: "Human Nutrition Notes - Macronutrients", course_code: "NUT101", course_name: "Human Nutrition", university: "Gulu University", lecturer: "Dr. Sarah Namukasa", year: "2024/2025", semester: "Semester 2", type: "Notes", uploader_name: "Patience A.", upvote_count: 55, file_type: "PDF", file_size: "1.1 MB", date: "2026-05-10", approved: true, reports: 0 },
   { id: 25, title: "Business Ethics Past Paper", course_code: "BUS220", course_name: "Business Ethics", university: "Kyambogo University", lecturer: "Ms. Ritah Nabirye", year: "2024/2025", semester: "Semester 1", type: "Past Paper", uploader_name: "Angela T.", upvote_count: 62, file_type: "PDF", file_size: "1.4 MB", date: "2026-04-15", approved: true, reports: 0 },
   { id: 26, title: "Organizational Behavior Slides", course_code: "MGT310", course_name: "Organizational Behavior", university: "Busitema University", lecturer: "Mr. Joseph Ssebunya", year: "2025/2026", semester: "Semester 1", type: "Slides", uploader_name: "Esther K.", upvote_count: 28, file_type: "PPTX", file_size: "2.5 MB", date: "2026-08-25", approved: true, reports: 0 },
   { id: 27, title: "Business Communication Summary", course_code: "COM101", course_name: "Business Communication", university: "Muni University", lecturer: "Dr. Allan Tumwesigye", year: "2025/2026", semester: "Semester 1", type: "Summary", uploader_name: "Kevin W.", upvote_count: 18, file_type: "PDF", file_size: "850 KB", date: "2026-09-06", approved: true, reports: 0 },
@@ -108,6 +121,22 @@ function clearAuthState() {
   try { sessionStorage.removeItem(AUTH_KEY); } catch (e) {}
 }
 
+const ACCOUNTS_KEY = "unishare_demo_accounts";
+function getRegisteredAccounts() {
+  try {
+    const raw = localStorage.getItem(ACCOUNTS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) { return []; }
+}
+function saveRegisteredAccount(account) {
+  try {
+    const accounts = getRegisteredAccounts();
+    accounts.push(account);
+    localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
+    return true;
+  } catch (e) { return false; }
+}
+
 /* ---------- API shim (swap bodies for fetch() later) ---------- */
 
 const api = {
@@ -122,9 +151,17 @@ const api = {
   // GET /api/notifications
   getNotifications: () => Promise.resolve(NOTIFICATIONS),
   // POST /api/login
-  login: (email, password) => Promise.resolve({ ok: true, user: { name: email.split("@")[0] || "Student", email } }),
+  login: (email, password) => {
+    const account = getRegisteredAccounts().find(user => user.email.toLowerCase() === email.trim().toLowerCase());
+    if (!account || account.password !== password) return Promise.resolve({ ok: false });
+    return Promise.resolve({ ok: true, user: { name: account.name, email: account.email } });
+  },
   // POST /api/register
-  register: (payload) => Promise.resolve({ ok: true }),
+  register: (payload) => {
+    const exists = getRegisteredAccounts().some(user => user.email.toLowerCase() === payload.email.trim().toLowerCase());
+    if (exists || !saveRegisteredAccount({ ...payload, email: payload.email.trim() })) return Promise.resolve({ ok: false });
+    return Promise.resolve({ ok: true });
+  },
   // POST /api/resources/{id}/vote
   vote: (id) => Promise.resolve({ ok: true }),
   // POST /api/resources/{id}/report
@@ -194,7 +231,8 @@ function renderHeader(activePage) {
        </div>
        <button class="avatar-btn" id="profileBtn" aria-label="Profile menu">
          <span class="avatar-circle">${(user.name || "U").charAt(0).toUpperCase()}</span>
-       </button>`
+       </button>
+       <button type="button" class="btn btn-ghost btn-sm" id="logoutBtn">Logout</button>`
     : `<a href="${p}login.html" class="btn btn-ghost btn-sm">Login</a>
        <a href="${p}register.html" class="btn btn-primary btn-sm">Register</a>`;
 
@@ -266,6 +304,9 @@ function renderHeader(activePage) {
 
   const profileBtn = document.getElementById("profileBtn");
   profileBtn?.addEventListener("click", () => { window.location.href = `${p}profile.html`; });
+
+  const logoutBtn = document.getElementById("logoutBtn");
+  logoutBtn?.addEventListener("click", () => { clearAuthState(); window.location.href = `${p}index.html`; });
 }
 
 function renderFooter() {
@@ -301,6 +342,12 @@ function populateUniversitySelect(select, includeAll) {
   if (includeAll) html += `<option value="">All Universities</option>`;
   html += UNIVERSITIES.map(u => `<option value="${u}">${u}</option>`).join("");
   select.innerHTML = html;
+}
+
+function populateSchoolCategorySelect(select, includeAll) {
+  if (!select) return;
+  select.innerHTML = (includeAll ? `<option value="">All Schools</option>` : `<option value="">Select school</option>`) +
+    SCHOOL_CATEGORIES.map(category => `<option value="${category}">${category}</option>`).join("");
 }
 
 function populateHomeSearchSuggestions() {
