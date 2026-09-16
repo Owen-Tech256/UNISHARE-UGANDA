@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resource Details - UniShare Uganda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="detail">
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="site-header"></div>
+
+<main id="main" class="page-main">
+  <div class="container">
+    <div id="detailContent"></div>
+
+    <section class="section" id="moreSection" style="display:none;">
+      <div class="section-head"><h2>More resources for this course</h2></div>
+      <div class="resource-grid" id="moreGrid"></div>
+    </section>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+
+<!-- Report modal -->
+<div class="modal-overlay" id="reportModal">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
+    <div class="modal-head">
+      <h3 id="reportModalTitle">Report this resource</h3>
+      <button class="modal-close" id="reportModalClose" aria-label="Close"><span data-icon="x"></span></button>
+    </div>
+    <div class="field">
+      <label for="reportReason">Reason</label>
+      <select id="reportReason" class="input">
+        <option>Wrong course</option>
+        <option>Outdated</option>
+        <option>Incorrect content</option>
+        <option>Duplicate</option>
+        <option>Inappropriate</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="reportComment">Comment (optional)</label>
+      <textarea id="reportComment" class="input" placeholder="Add any extra detail…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="reportModalCancel">Cancel</button>
+      <button class="btn btn-danger" id="reportModalSubmit">Submit Report</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/main.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const id = Number(params.get("id")) || RESOURCES[0].id;
+
+    api.getResource(id).then(r => {
+      if (!r) {
+        document.getElementById("detailContent").innerHTML = `
+          <div class="empty-state">
+            <h3>Resource not found</h3>
+            <p>This resource may have been removed.</p>
+            <a href="browse.html" class="btn btn-primary">Back to Browse</a>
+          </div>`;
+        return;
+      }
+
+      document.title = r.title + " - UniShare Uganda";
+
+      document.getElementById("detailContent").innerHTML = `
+        <div class="detail-grid">
+          <div>
+            <div class="card">
+              <div class="detail-top">
+                <span class="badge ${typeBadgeClass(r.type)}">${r.type}</span>
+                <h1>${r.title}</h1>
+                <span class="approved-flag"><span data-icon="check"></span> Moderator Approved</span>
+              </div>
+
+              <div class="detail-meta-grid">
+                <div class="meta-item"><div class="meta-label">Course Code</div><div class="meta-value">${r.course_code}</div></div>
+                <div class="meta-item"><div class="meta-label">Course Name</div><div class="meta-value">${r.course_name}</div></div>
+                <div class="meta-item"><div class="meta-label">University</div><div class="meta-value">${r.university}</div></div>
+                <div class="meta-item"><div class="meta-label">Lecturer</div><div class="meta-value">${r.lecturer}</div></div>
+                <div class="meta-item"><div class="meta-label">Academic Year</div><div class="meta-value">${r.year}</div></div>
+                <div class="meta-item"><div class="meta-label">Semester</div><div class="meta-value">${r.semester}</div></div>
+                <div class="meta-item"><div class="meta-label">Uploader</div><div class="meta-value">${r.uploader_name}</div></div>
+                <div class="meta-item"><div class="meta-label">Upload Date</div><div class="meta-value">${r.date}</div></div>
+              </div>
+
+              <div class="preview-box">
+                <div class="file-icon" style="display:flex;justify-content:center;" data-icon="file"></div>
+                <div class="file-name">${r.title}.${r.file_type.toLowerCase()}</div>
+                <div class="file-meta">${r.file_type} &middot; ${r.file_size}</div>
+              </div>
+
+              <div class="action-row">
+                <button class="btn btn-primary" id="downloadBtn"><span data-icon="upload" style="transform:rotate(180deg);display:inline-block;"></span> Download</button>
+                <button class="btn btn-secondary" id="upvoteBtn"><span data-icon="upvote"></span> Upvote (<span id="upvoteCount">${r.upvote_count}</span>)</button>
+                <button class="btn btn-outline" id="shareBtn">Share</button>
+                <button class="btn btn-ghost" id="reportBtn">Report</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card side-card">
+              <h4>About the uploader</h4>
+              <p class="text-secondary" style="font-size:0.9rem;">${r.uploader_name} has contributed resources for ${r.university}. All uploads are reviewed by moderators before appearing publicly.</p>
+            </div>
+            <div class="card side-card">
+              <h4>Usage note</h4>
+              <p class="text-secondary" style="font-size:0.9rem;">Please confirm this matches your course outline before relying on it for revision. Spotted a problem? Use the Report button.</p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      hydrateIcons(document.getElementById("detailContent"));
+
+      document.getElementById("upvoteBtn").addEventListener("click", () => {
+        api.vote(r.id).then(() => {
+          r.upvote_count += 1;
+          document.getElementById("upvoteCount").textContent = r.upvote_count;
+          showToast("Upvoted - thanks for the feedback.", "success");
+        });
+      });
+      document.getElementById("downloadBtn").addEventListener("click", () => {
+        showToast("Download would start here once connected to the backend.", null);
+      });
+      document.getElementById("shareBtn").addEventListener("click", () => {
+        showToast("Link copied to clipboard.", "success");
+      });
+      document.getElementById("reportBtn").addEventListener("click", () => {
+        document.getElementById("reportModal").classList.add("open");
+      });
+
+      const more = RESOURCES.filter(x => x.course_code === r.course_code && x.id !== r.id && x.approved).slice(0, 4);
+      if (more.length) {
+        document.getElementById("moreSection").style.display = "block";
+        document.getElementById("moreGrid").innerHTML = more.map(resourceCardHtml).join("");
+      }
+    });
+
+    document.getElementById("reportModalClose").addEventListener("click", () => document.getElementById("reportModal").classList.remove("open"));
+    document.getElementById("reportModalCancel").addEventListener("click", () => document.getElementById("reportModal").classList.remove("open"));
+    document.getElementById("reportModalSubmit").addEventListener("click", () => {
+      const reason = document.getElementById("reportReason").value;
+      api.report(id, reason, document.getElementById("reportComment").value).then(() => {
+        document.getElementById("reportModal").classList.remove("open");
+        document.getElementById("reportComment").value = "";
+        showToast("Report submitted. A moderator will review it.", "success");
+      });
+    });
+  });
+</script>
+</body>
+</html>

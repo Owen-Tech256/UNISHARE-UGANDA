@@ -24,6 +24,20 @@ const RESOURCE_TYPES = [
   { id: "summary", label: "Summary", tabClass: "tab-summary", badgeClass: "badge-type-summary" }
 ];
 
+const SCHOOL_CATEGORIES = ["School of Computing", "School of Business", "School of Law", "School of Health Sciences", "School of Science", "School of Education", "School of Social Sciences"];
+
+function getSchoolCategory(resource) {
+  const code = resource.courseCode.toUpperCase();
+  const name = resource.courseName.toLowerCase();
+  if (/^(BIT|CIT|CIS|CSC|CS|COM)/.test(code) || /computer|software|database|information|network|web|operating system/.test(name)) return "School of Computing";
+  if (/^(ACC|ECO|FIN|MKT|MGT|BUS|BBA)/.test(code) || /account|econom|finance|market|business|management/.test(name)) return "School of Business";
+  if (/^LAW/.test(code) || /law/.test(name)) return "School of Law";
+  if (/^(MED|PHE|NUT|BCH)/.test(code) || /health|anatom|physiology|nutrition|biochem/.test(name)) return "School of Health Sciences";
+  if (/^(CHE|MTH|MAT|STA)/.test(code) || /chemistry|algebra|calculus|statistics|mathematics/.test(name)) return "School of Science";
+  if (/^EDU/.test(code) || /education|psychology/.test(name)) return "School of Education";
+  return "School of Social Sciences";
+}
+
 const COURSES = [
   { code: "CS101", name: "Introduction to Computer Science" },
   { code: "CSC201", name: "Data Structures & Algorithms" },
@@ -218,6 +232,29 @@ function getUserUploads() {
 /** Mock catalog + anything the current session has uploaded. */
 function getAllResources() {
   return [...getUserUploads(), ...MOCK_RESOURCES];
+}
+
+function populateSearchSuggestions(listId) {
+  const datalist = document.getElementById(listId);
+  if (!datalist) return;
+  const suggestions = new Set();
+  getAllResources()
+    .filter((resource) => resource.status === "approved" || resource.status === undefined)
+    .forEach((resource) => {
+      [resource.courseCode, resource.courseName, resource.title, resource.lecturer, resource.university]
+        .forEach((value) => suggestions.add(value));
+    });
+  datalist.replaceChildren(...Array.from(suggestions).sort().map((value) => {
+    const option = document.createElement("option");
+    option.value = value;
+    return option;
+  }));
+}
+
+function populateSchoolCategorySelect(select, includeAll) {
+  if (!select) return;
+  select.innerHTML = (includeAll ? `<option value="">All Schools</option>` : `<option value="">Select school</option>`) +
+    SCHOOL_CATEGORIES.map(category => `<option value="${category}">${category}</option>`).join("");
 }
 
 function getResourceById(id) {
@@ -555,16 +592,22 @@ function renderHomepage() {
     uniSelect.innerHTML = `<option value="">All universities</option>` +
       UNIVERSITIES.map((u) => `<option value="${escapeHtml(u)}">${escapeHtml(u)}</option>`).join("");
   }
+  populateSchoolCategorySelect(document.getElementById("hero-school-select"), true);
+  const resourceCount = document.getElementById("resource-count");
+  if (resourceCount) resourceCount.textContent = getAllResources().filter((r) => r.approved !== false).length.toLocaleString();
 
   const heroForm = document.getElementById("hero-search-form");
   if (heroForm) {
+    populateSearchSuggestions("hero-search-suggestions");
     heroForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const q = document.getElementById("hero-search-input").value.trim();
       const uni = uniSelect ? uniSelect.value : "";
+      const school = document.getElementById("hero-school-select")?.value || "";
       const params = new URLSearchParams();
       if (q) params.set("q", q);
       if (uni) params.set("university", uni);
+      if (school) params.set("school", school);
       window.location.href = `browse.html${params.toString() ? "?" + params.toString() : ""}`;
     });
   }

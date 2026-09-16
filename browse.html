@@ -19,7 +19,8 @@
 
       <div class="search-bar" style="max-width: 640px;">
         <label for="search-input" class="visually-hidden">Search notes, courses, lecturers</label>
-        <input type="search" id="search-input" placeholder="Search notes, courses, lecturers…" autocomplete="off">
+        <input type="search" id="search-input" list="browse-search-suggestions" placeholder="Search notes, courses, lecturers…" autocomplete="off">
+        <datalist id="browse-search-suggestions"></datalist>
       </div>
     </div>
 
@@ -38,6 +39,11 @@
         <div class="filter-group">
           <label for="filter-university">University</label>
           <select id="filter-university"></select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filter-school">School Category</label>
+          <select id="filter-school"></select>
         </div>
 
         <div class="filter-group">
