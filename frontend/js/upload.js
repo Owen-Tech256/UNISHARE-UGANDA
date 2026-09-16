@@ -1,5 +1,5 @@
 /* =========================================================
-   UniShare Uganda — upload.js
+   UniShare Uganda - upload.js
    ========================================================= */
 
 const ACCEPTED_EXT = ["pdf", "docx", "pptx", "jpg", "jpeg", "png"];

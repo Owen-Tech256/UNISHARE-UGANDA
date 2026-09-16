@@ -1,5 +1,5 @@
 /* =========================================================
-   UniShare Uganda — admin.js
+   UniShare Uganda - admin.js
    ========================================================= */
 
 const PENDING_QUEUE = [
@@ -14,7 +14,7 @@ const REPORTED = [
       { reason: "Outdated", reporter: "Diana M.", date: "2026-09-10" },
       { reason: "Incorrect content", reporter: "Kevin W.", date: "2026-09-09" }
     ], status: "Open" },
-  { resource_id: 9, title: "Software Engineering Summary — SDLC Models", course_code: "CIT350", reports: [
+  { resource_id: 9, title: "Software Engineering Summary - SDLC Models", course_code: "CIT350", reports: [
       { reason: "Duplicate", reporter: "Grace N.", date: "2026-09-05" }
     ], status: "Resolved" }
 ];

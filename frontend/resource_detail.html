@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Resource Details — UniShare Uganda</title>
+<title>Resource Details - UniShare Uganda</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
@@ -71,7 +71,7 @@
         return;
       }
 
-      document.title = r.title + " — UniShare Uganda";
+      document.title = r.title + " - UniShare Uganda";
 
       document.getElementById("detailContent").innerHTML = `
         <div class="detail-grid">
@@ -128,7 +128,7 @@
         api.vote(r.id).then(() => {
           r.upvote_count += 1;
           document.getElementById("upvoteCount").textContent = r.upvote_count;
-          showToast("Upvoted — thanks for the feedback.", "success");
+          showToast("Upvoted - thanks for the feedback.", "success");
         });
       });
       document.getElementById("downloadBtn").addEventListener("click", () => {
