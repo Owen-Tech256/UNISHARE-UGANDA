@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Profile — UniShare Uganda</title>
+<title>My Profile - UniShare Uganda</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
@@ -20,12 +20,12 @@
       <div>
         <div class="card" style="margin-bottom:20px;">
           <h3 style="margin-bottom:16px;">Profile Information</h3>
-          <div class="info-row"><span>Full Name</span><span id="infoName">Grace Nakato</span></div>
-          <div class="info-row"><span>Email</span><span id="infoEmail">g****@students.mak.ac.ug</span></div>
-          <div class="info-row"><span>University</span><span id="infoUniversity">Makerere University</span></div>
-          <div class="info-row"><span>Course of Study</span><span>Bachelor of Information Technology</span></div>
-          <div class="info-row"><span>Year of Study</span><span>Year 3</span></div>
-          <div class="info-row"><span>Member Since</span><span>January 2025</span></div>
+          <div class="info-row"><span>Full Name</span><span id="infoName"></span></div>
+          <div class="info-row"><span>Email</span><span id="infoEmail"></span></div>
+          <div class="info-row"><span>University</span><span id="infoUniversity"></span></div>
+          <div class="info-row"><span>Course of Study</span><span id="infoCourse"></span></div>
+          <div class="info-row"><span>Year of Study</span><span id="infoYear"></span></div>
+          <div class="info-row"><span>Member Since</span><span id="infoMemberSince"></span></div>
         </div>
 
         <div class="card">
@@ -33,7 +33,7 @@
           <form id="editProfileForm">
             <div class="field">
               <label for="editName">Full Name</label>
-              <input type="text" id="editName" class="input" value="Grace Nakato">
+              <input type="text" id="editName" class="input">
             </div>
             <div class="field">
               <label for="editUniversity">University</label>
@@ -41,21 +41,21 @@
             </div>
             <div class="field">
               <label for="editCourse">Course</label>
-              <input type="text" id="editCourse" class="input" value="Bachelor of Information Technology">
+              <input type="text" id="editCourse" class="input">
             </div>
             <div class="field">
               <label for="editYear">Year</label>
               <select id="editYear" class="input">
                 <option value="1">Year 1</option>
                 <option value="2">Year 2</option>
-                <option value="3" selected>Year 3</option>
+                <option value="3">Year 3</option>
                 <option value="4">Year 4</option>
                 <option value="5">Year 5</option>
               </select>
             </div>
             <div class="field">
               <label for="editEmail">Email</label>
-              <input type="email" id="editEmail" class="input" value="grace.nakato@students.mak.ac.ug" disabled>
+              <input type="email" id="editEmail" class="input" disabled>
               <span class="hint">Email cannot be changed.</span>
             </div>
             <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -113,8 +113,22 @@
   document.addEventListener("DOMContentLoaded", () => {
     if (!requireAuth("login.html")) return;
 
+    const currentUser = getAuthState();
+    const account = getRegisteredAccounts().find(user => user.email.toLowerCase() === currentUser.email.toLowerCase()) || currentUser;
+    const yearLabel = account.year && /^\d+$/.test(String(account.year)) ? `Year ${account.year}` : (account.year || "");
+    document.getElementById("infoName").textContent = account.name || "";
+    document.getElementById("infoEmail").textContent = account.email || "";
+    document.getElementById("infoUniversity").textContent = account.university || "";
+    document.getElementById("infoCourse").textContent = account.course || "";
+    document.getElementById("infoYear").textContent = yearLabel;
+    document.getElementById("infoMemberSince").textContent = account.createdAt ? new Date(account.createdAt).toLocaleDateString("en-UG", { month: "long", year: "numeric" }) : "";
+    document.getElementById("editName").value = account.name || "";
+    document.getElementById("editCourse").value = account.course || "";
+    document.getElementById("editEmail").value = account.email || "";
+
     populateUniversitySelect(document.getElementById("editUniversity"), false);
-    document.getElementById("editUniversity").value = "Makerere University";
+    document.getElementById("editUniversity").value = account.university || "";
+    document.getElementById("editYear").value = account.year || "";
 
     document.getElementById("profileStats").innerHTML = `
       <div class="summary-card"><div class="sc-num">4</div><div class="sc-label">Total Uploads</div></div>
