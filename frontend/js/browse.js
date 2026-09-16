@@ -1,5 +1,5 @@
 /* =========================================================
-   UniShare Uganda — browse.js
+   UniShare Uganda - browse.js
    ========================================================= */
 
 const PAGE_SIZE = 20;
@@ -9,6 +9,7 @@ const browseState = {
   filtered: [],
   query: "",
   university: "",
+  schoolCategory: "",
   courseCode: "",
   lecturer: "",
   academicYear: "",
@@ -56,6 +57,7 @@ function applyFilters() {
     );
   }
   if (s.university) list = list.filter(r => r.university === s.university);
+  if (s.schoolCategory) list = list.filter(r => getSchoolCategory(r) === s.schoolCategory);
   if (s.courseCode.trim()) list = list.filter(r => r.course_code.toLowerCase().includes(s.courseCode.trim().toLowerCase()));
   if (s.lecturer.trim()) list = list.filter(r => r.lecturer.toLowerCase().includes(s.lecturer.trim().toLowerCase()));
   if (s.academicYear) list = list.filter(r => r.year === s.academicYear);
@@ -101,7 +103,7 @@ function renderResults() {
       api.vote(id).then(() => {
         item.upvote_count += 1;
         btn.querySelector(".vote-num").textContent = item.upvote_count;
-        showToast("Upvoted — thanks for the feedback.", "success");
+        showToast("Upvoted - thanks for the feedback.", "success");
       });
     });
   });
@@ -130,10 +132,25 @@ function renderPagination(totalPages) {
 
 function populateFilterOptions() {
   populateUniversitySelect(document.getElementById("filterUniversity"), true);
+  populateSchoolCategorySelect(document.getElementById("filterSchool"), true);
 
   const years = Array.from(new Set(RESOURCES.map(r => r.year))).sort().reverse();
   const yearSelect = document.getElementById("filterYear");
   yearSelect.innerHTML = `<option value="">Any Year</option>` + years.map(y => `<option value="${y}">${y}</option>`).join("");
+}
+
+function populateSearchSuggestions() {
+  const suggestions = new Set();
+  RESOURCES.filter(r => r.approved !== false).forEach(r => {
+    [r.course_code, r.course_name, r.title, r.lecturer, r.university].forEach(value => suggestions.add(value));
+  });
+
+  const datalist = document.getElementById("searchSuggestions");
+  datalist.replaceChildren(...Array.from(suggestions).sort().map(value => {
+    const option = document.createElement("option");
+    option.value = value;
+    return option;
+  }));
 }
 
 function initBrowsePage() {
@@ -142,24 +159,33 @@ function initBrowsePage() {
 
   browseState.all = RESOURCES.slice();
   populateFilterOptions();
+  populateSearchSuggestions();
 
   const params = new URLSearchParams(window.location.search);
   if (params.get("q")) { browseState.query = params.get("q"); document.getElementById("searchInput").value = browseState.query; }
   if (params.get("university")) { browseState.university = params.get("university"); document.getElementById("filterUniversity").value = browseState.university; }
+  if (params.get("school")) { browseState.schoolCategory = params.get("school"); document.getElementById("filterSchool").value = browseState.schoolCategory; }
   if (params.get("type")) {
     browseState.types = [params.get("type")];
     const cb = document.querySelector(`input[name="resourceType"][value="${params.get("type")}"]`);
     if (cb) cb.checked = true;
   }
 
+  const searchInput = document.getElementById("searchInput");
+  searchInput.addEventListener("input", () => {
+    browseState.query = searchInput.value;
+    applyFilters();
+  });
+
   document.getElementById("searchForm").addEventListener("submit", (e) => {
     e.preventDefault();
-    browseState.query = document.getElementById("searchInput").value;
+    browseState.query = searchInput.value;
     applyFilters();
   });
 
   document.getElementById("applyFiltersBtn").addEventListener("click", () => {
     browseState.university = document.getElementById("filterUniversity").value;
+    browseState.schoolCategory = document.getElementById("filterSchool").value;
     browseState.courseCode = document.getElementById("filterCourseCode").value;
     browseState.lecturer = document.getElementById("filterLecturer").value;
     browseState.academicYear = document.getElementById("filterYear").value;
@@ -171,12 +197,13 @@ function initBrowsePage() {
 
   document.getElementById("clearFiltersBtn").addEventListener("click", () => {
     document.getElementById("filterUniversity").value = "";
+    document.getElementById("filterSchool").value = "";
     document.getElementById("filterCourseCode").value = "";
     document.getElementById("filterLecturer").value = "";
     document.getElementById("filterYear").value = "";
     document.getElementById("filterSemester").value = "";
     document.querySelectorAll('input[name="resourceType"]').forEach(cb => cb.checked = false);
-    Object.assign(browseState, { university: "", courseCode: "", lecturer: "", academicYear: "", semester: "", types: [] });
+    Object.assign(browseState, { university: "", schoolCategory: "", courseCode: "", lecturer: "", academicYear: "", semester: "", types: [] });
     applyFilters();
   });
 

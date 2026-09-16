@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UniShare Uganda — Academic Resources for Ugandan Students</title>
+<title>UniShare Uganda - Academic Resources for Ugandan Students</title>
 <meta name="description" content="Discover, search, and share class notes, past papers, slides, and summaries from universities across Uganda.">
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -19,16 +19,19 @@
     <div class="container">
       <h1>Your Academic Resources, All in One Place.</h1>
       <p class="lede">Discover notes, past papers, slides, and summaries shared by students from
-        universities across Uganda — search by course, lecturer, or topic in seconds.</p>
+        universities across Uganda - search by course, lecturer, or topic in seconds.</p>
 
       <form class="hero-search" id="hero-search-form">
         <label for="hero-search-input" class="visually-hidden">Search by course code, course name, or lecturer</label>
         <div class="search-bar">
-          <input type="search" id="hero-search-input" placeholder="Search by course code, course name, or lecturer…" autocomplete="off">
+          <input type="search" id="hero-search-input" list="hero-search-suggestions" placeholder="Search by course code, course name, or lecturer…" autocomplete="off">
+          <datalist id="hero-search-suggestions"></datalist>
         </div>
         <div class="hero-search-row">
           <label for="hero-university-select" class="visually-hidden">University</label>
           <select id="hero-university-select" aria-label="Filter by university"></select>
+          <label for="hero-school-select" class="visually-hidden">School category</label>
+          <select id="hero-school-select" aria-label="Filter by school category"></select>
           <button type="submit" class="btn btn-accent">Search Resources</button>
         </div>
       </form>
@@ -78,7 +81,7 @@
     <div class="container">
       <div class="stats-strip">
         <div class="stat-block">
-          <div class="stat-number">1,250+</div>
+          <div class="stat-number" id="resource-count">0</div>
           <div class="stat-label">Resources shared</div>
         </div>
         <div class="stat-block">
@@ -109,7 +112,7 @@
         <div id="report">
           <h2>Report an issue</h2>
           <p class="text-soft">Found a resource that's outdated, mislabeled, or inappropriate? Open it and
-            use the Report button — our moderators review every report.</p>
+            use the Report button - our moderators review every report.</p>
         </div>
       </div>
     </div>
@@ -120,7 +123,7 @@
       <h2>Terms, in short</h2>
       <p class="text-soft">Only upload material you created or have the right to redistribute. Content is
         reviewed by student moderators before it appears publicly. This is a student-built demonstration
-        project — no real accounts or files are stored on a server.</p>
+        project - no real accounts or files are stored on a server.</p>
     </div>
   </section>
 
