@@ -1,5 +1,5 @@
 /* ==========================================================================
-   UniShare Uganda — browse.js
+   UniShare Uganda - browse.js
    Search + filter + sort + paginate the resource catalog on browse.html
    ========================================================================== */
 

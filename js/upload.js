@@ -1,7 +1,7 @@
 /* ==========================================================================
-   UniShare Uganda — upload.js
+   UniShare Uganda - upload.js
    Handles the resource upload form on upload.html. Frontend-only: nothing
-   is actually uploaded — the "file" is just remembered by name/size/type.
+   is actually uploaded - the "file" is just remembered by name/size/type.
    ========================================================================== */
 
 const ALLOWED_EXTENSIONS = ["pdf", "docx", "pptx", "jpg", "jpeg", "png"];
@@ -44,7 +44,7 @@ function wireAutocomplete(inputId, listId, dataset, onPick) {
   function renderOptions(matches) {
     if (!matches.length) { list.classList.remove("open"); list.innerHTML = ""; return; }
     list.innerHTML = matches.slice(0, 6).map((item, i) => {
-      const label = typeof item === "string" ? item : `${item.code} — ${item.name}`;
+      const label = typeof item === "string" ? item : `${item.code} - ${item.name}`;
       return `<button type="button" data-index="${i}">${escapeHtml(label)}</button>`;
     }).join("");
     list.classList.add("open");

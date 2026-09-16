@@ -1,5 +1,5 @@
 /* ==========================================================================
-   UniShare Uganda — auth.js
+   UniShare Uganda - auth.js
    Handles login.html and register.html: validation, mock session, redirects.
    ========================================================================== */
 
@@ -148,7 +148,7 @@ function initRegisterPage() {
 
       document.getElementById("register-success").hidden = false;
       form.hidden = true;
-      showToast("Account created — please log in.", "success");
+      showToast("Account created - please log in.", "success");
       setTimeout(() => { window.location.href = "login.html"; }, 1400);
     }, 600);
   });

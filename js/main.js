@@ -1,7 +1,7 @@
 /* ==========================================================================
-   UniShare Uganda — main.js
+   UniShare Uganda - main.js
    Shared data, mock auth, navigation, footer, toasts, modals, utilities.
-   Nothing here talks to a server — everything lives in memory + localStorage.
+   Nothing here talks to a server - everything lives in memory + localStorage.
    ========================================================================== */
 
 /* ---------------------------- Constants / Mock Data ---------------------------- */
@@ -88,7 +88,7 @@ function buildMockResources() {
 
     resources.push({
       id: "res-" + (i + 1),
-      title: `${course.code} — ${titles[type.id]} (${semester})`,
+      title: `${course.code} - ${titles[type.id]} (${semester})`,
       courseCode: course.code,
       courseName: course.name,
       type: type.id,
@@ -416,7 +416,7 @@ function renderFooter() {
         </div>
       </div>
       <div class="footer-bottom">
-        <span>&copy; ${year} UniShare Uganda. A student project — for demonstration only.</span>
+        <span>&copy; ${year} UniShare Uganda. A student project - for demonstration only.</span>
         <span>Built for students, by students.</span>
       </div>
     </div>
@@ -512,7 +512,7 @@ function renderResourceCard(resource) {
   `;
 }
 
-/** Delegated upvote handling — works for any grid rendered with renderResourceCard(). */
+/** Delegated upvote handling - works for any grid rendered with renderResourceCard(). */
 function wireUpvoteDelegation(containerSelector) {
   const container = document.querySelector(containerSelector);
   if (!container) return;
@@ -534,7 +534,7 @@ function wireUpvoteDelegation(containerSelector) {
     btn.setAttribute("aria-pressed", "true");
     const countEl = btn.querySelector(".vote-count");
     countEl.textContent = String(Number(countEl.textContent) + 1);
-    showToast("Upvoted — thanks for the feedback!", "success");
+    showToast("Upvoted - thanks for the feedback!", "success");
   });
 }
 
