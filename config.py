@@ -13,3 +13,5 @@ class Config:
     ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx', 'ppt', 'pptx', 'txt', 'jpg', 'jpeg', 'png'}
     TEMP_PASSWORD_EXPIRY_HOURS = 24
     WTF_CSRF_ENABLED = True
+    # Registration domain check (haily enforced @nkumbauniversity.ac.ug)
+    STUDENT_EMAIL_DOMAIN = 'unishare.ug'
