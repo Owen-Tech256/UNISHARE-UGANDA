@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}{{ resource.title }} - UniShare Nkumba{% endblock %}
+
+{% block content %}
+<div class="container">
+    <a href="{{ url_for('resources.browse') }}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Browse</a>
+
+    <div class="resource-detail-card">
+        <div class="resource-detail-header">
+            <div class="resource-type-badge">{{ resource.resource_type }}</div>
+            <div class="resource-status-badge status-{{ resource.status }}">{{ resource.status|title }}</div>
+        </div>
+
+        <h1 class="resource-title">{{ resource.title }}</h1>
+
+        <div class="resource-meta-grid">
+            <div class="meta-item">
+                <i class="fas fa-hashtag"></i>
+                <div>
+                    <small>Course Code</small>
+                    <strong>{{ resource.course_code }}</strong>
+                </div>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-book"></i>
+                <div>
+                    <small>Course Name</small>
+                    <strong>{{ resource.course_name }}</strong>
+                </div>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <div>
+                    <small>Lecturer</small>
+                    <strong>{{ resource.lecturer_name }}</strong>
+                </div>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-calendar-alt"></i>
+                <div>
+                    <small>Academic Year</small>
+                    <strong>{{ resource.academic_year }}</strong>
+                </div>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-calendar-week"></i>
+                <div>
+                    <small>Semester</small>
+                    <strong>{{ resource.semester }}</strong>
+                </div>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-university"></i>
+                <div>
+                    <small>School</small>
+                    <strong>{{ resource.school.school_name }}</strong>
+                </div>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-clock"></i>
+                <div>
+                    <small>Uploaded</small>
+                    <strong>{{ resource.created_at.strftime('%d %b %Y') }}</strong>
+                </div>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-file-alt"></i>
+                <div>
+                    <small>File</small>
+                    <strong>{{ resource.original_filename }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="resource-actions">
+            <button class="btn btn-primary btn-lg" id="downloadBtn">
+                <i class="fas fa-download"></i> Download Resource
+            </button>
+            <button class="btn btn-outline" id="upvoteBtn">
+                <i class="fas fa-thumbs-up"></i>
+                <span id="upvoteCount">{{ resource.upvotes }}</span>
+                <span id="upvoteLabel">Upvote</span>
+            </button>
+            <button class="btn btn-outline btn-danger-outline" id="reportBtn">
+                <i class="fas fa-flag"></i> Report
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Report Modal -->
+<div class="modal" id="reportModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-flag"></i> Report Resource</h3>
+            <button class="modal-close" onclick="closeModal('reportModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p class="modal-subtitle">Help us keep UniShare Nkumba a quality resource platform.</p>
+            <div class="form-group">
+                <label>Reason for report</label>
+                <select id="reportReason" required>
+                    <option value="">Select a reason</option>
+                    <option>Wrong academic material</option>
+                    <option>Duplicate resource</option>
+                    <option>Inappropriate content</option>
+                    <option>Incorrect course information</option>
+                    <option>Copyright/problematic material</option>
+                    <option>Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Additional comments (optional)</label>
+                <textarea id="reportComment" rows="3" placeholder="Provide more details..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('reportModal')">Cancel</button>
+            <button class="btn btn-primary" id="submitReport">Submit Report</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const resourceId = {{ resource.resource_id }};
+</script>
+<script src="{{ url_for('static', filename='js/browse.js') }}"></script>
+{% endblock %}

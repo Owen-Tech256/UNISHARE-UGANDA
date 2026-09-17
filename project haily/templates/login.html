@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block title %}Sign In - UniShare Nkumba{% endblock %}
+
+{% block content %}
+<div class="login-page">
+    <!-- Left Side - Branding -->
+    <div class="login-branding">
+        <div class="branding-content">
+            <div class="brand-logo">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h1>UniShare</h1>
+            <p class="brand-subtitle">Nkumba University</p>
+            <p class="brand-description">
+                Access your centralized academic resource repository. 
+                Discover lecture notes, past papers, slides, and course summaries.
+            </p>
+            <div class="brand-features">
+                <div class="feature-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Quality-assured academic materials</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Resources from all 7 schools</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Secure and moderated platform</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side - Login Form -->
+    <div class="login-form-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h2>Welcome Back</h2>
+                <p>Sign in to continue to your dashboard</p>
+            </div>
+
+            <!-- Role Toggle -->
+            <div class="role-toggle">
+                <button type="button" class="toggle-btn active" data-role="student" id="toggleStudent">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Student / Class Rep</span>
+                </button>
+                <button type="button" class="toggle-btn" data-role="staff" id="toggleStaff">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>School Staff</span>
+                </button>
+            </div>
+
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="identifier" id="identifierLabel">
+                        <i class="fas fa-id-card"></i>
+                        Student Number
+                    </label>
+                    <input 
+                        type="text" 
+                        id="identifier" 
+                        name="identifier" 
+                        required 
+                        pattern="\d{10}" 
+                        maxlength="10" 
+                        inputmode="numeric"
+                        placeholder="2400100000" 
+                        autocomplete="username"
+                        class="form-input"
+                    >
+                    <small class="form-hint" id="identifierHint">Must contain exactly 10 digits</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i>
+                        Password
+                    </label>
+                    <div class="password-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            required 
+                            minlength="8" 
+                            placeholder="Enter your password" 
+                            autocomplete="current-password"
+                            class="form-input"
+                        >
+                        <button 
+                            type="button" 
+                            class="password-toggle" 
+                            onclick="togglePassword('password', this)" 
+                            tabindex="-1"
+                            aria-label="Toggle password visibility"
+                        >
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <a href="#" class="forgot-link" id="forgotLink">
+                        <i class="fas fa-question-circle"></i>
+                        Forgot Password?
+                    </a>
+                </div>
+
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <span id="btnText">Sign In</span>
+                    <i class="fas fa-arrow-right" id="btnIcon"></i>
+                    <i class="fas fa-spinner fa-spin" id="btnSpinner" style="display:none;"></i>
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <p id="registerPrompt">
+                    Don't have an account? 
+                    <a href="{{ url_for('auth.register') }}" class="register-link">
+                        Register here
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </p>
+            </div>
+
+            <!-- Security Notice -->
+            <div class="security-notice">
+                <i class="fas fa-shield-alt"></i>
+                <span>Your credentials are encrypted and secure</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Force Change Password Modal -->
+<div class="modal" id="forceChangeModal" data-backdrop="static">
+    <div class="modal-content modal-small">
+        <div class="modal-header">
+            <h3>
+                <i class="fas fa-exclamation-triangle"></i>
+                Action Required
+            </h3>
+        </div>
+        <div class="modal-body">
+            <div class="alert-icon">
+                <i class="fas fa-key"></i>
+            </div>
+            <p class="modal-message">
+                You are using a temporary password. For security reasons, you must create a new permanent password before continuing.
+            </p>
+            <form id="forceChangeForm">
+                <div class="form-group">
+                    <label for="fcNewPassword">
+                        <i class="fas fa-lock"></i>
+                        New Password
+                    </label>
+                    <input 
+                        type="password" 
+                        id="fcNewPassword" 
+                        required 
+                        minlength="8"
+                        placeholder="Minimum 8 characters"
+                        class="form-input"
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="fcConfirmPassword">
+                        <i class="fas fa-lock"></i>
+                        Confirm New Password
+                    </label>
+                    <input 
+                        type="password" 
+                        id="fcConfirmPassword" 
+                        required 
+                        minlength="8"
+                        placeholder="Re-enter new password"
+                        class="form-input"
+                    >
+                </div>
+                <button type="submit" class="btn-login">
+                    <span>Set Permanent Password</span>
+                    <i class="fas fa-check"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+{% endblock %}
