@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}User Management - UniShare Nkumba{% endblock %}
+
+{% block content %}
+<div class="admin-page">
+    <!-- Page Header -->
+    <div class="page-header-modern">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-users-cog"></i>
+            </div>
+            <div>
+                <h1>User Management</h1>
+                <p>Manage students and class representatives in {{ current_user.school.school_name }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid-modern">
+        <div class="stat-card-modern stat-students">
+            <div class="stat-card-content">
+                <div class="stat-icon-wrapper">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-number" id="statStudents">{{ total_students }}</span>
+                    <span class="stat-label">Total Students</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card-modern stat-reps">
+            <div class="stat-card-content">
+                <div class="stat-icon-wrapper">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-number" id="statReps">{{ total_class_reps }}</span>
+                    <span class="stat-label">Class Representatives</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card-modern stat-moderators">
+            <div class="stat-card-content">
+                <div class="stat-icon-wrapper">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-number" id="statModerators">{{ total_moderators }}</span>
+                    <span class="stat-label">Moderators</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card-modern stat-admins">
+            <div class="stat-card-content">
+                <div class="stat-icon-wrapper">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-number" id="statAdmins">{{ total_admins }}</span>
+                    <span class="stat-label">Administrators</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="filters-panel">
+        <div class="search-box-modern">
+            <i class="fas fa-search"></i>
+            <input 
+                type="text" 
+                id="userSearch" 
+                placeholder="Search by name, student number, staff ID, or email..."
+                class="search-input"
+            >
+        </div>
+        
+        <div class="filters-group">
+            <select id="roleFilter" class="filter-select">
+                <option value="">All Roles</option>
+                <option value="student">Students</option>
+                <option value="class_rep">Class Representatives</option>
+                <option value="moderator">Moderators</option>
+                <option value="admin">Admins</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Users Table Container (CRITICAL: This ID must match the JS) -->
+    <div class="table-container-modern">
+        <div class="table-header">
+            <div class="table-title">
+                <h3>All Users</h3>
+                <span class="table-count" id="userCount">Loading...</span>
+            </div>
+        </div>
+
+        <!-- THIS IS THE MISSING PIECE -->
+        <div class="table-wrapper">
+            <div id="usersList">
+                <div class="loading-state" style="padding: 3rem; text-align: center;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i>
+                    <p>Loading users...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination Container -->
+        <div class="pagination-modern" id="pagination"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

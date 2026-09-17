@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}401 - Unauthorized{% endblock %}
+
+{% block content %}
+<div class="error-page-container">
+    <div class="error-content">
+        <div class="error-icon">
+            <i class="fas fa-lock"></i>
+        </div>
+        <h1 class="error-code">401</h1>
+        <h2 class="error-title">Unauthorized</h2>
+        <p class="error-message">
+            You need to be logged in to access this page.
+        </p>
+        <div class="error-actions">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </a>
+            <a href="{{ url_for('auth.index') }}" class="btn btn-outline">
+                <i class="fas fa-home"></i> Go Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
