@@ -22,8 +22,8 @@ auth_bp = Blueprint('auth', __name__)
 REDIRECT_MAP = {
     'student': '/index.html',
     'coordinator': '/upload.html',
-    'moderator': '/admin/moderation_queue.html',
-    'super_admin': '/admin/users.html',
+    'moderator': '/moderation_queue.html',
+    'super_admin': '/users.html',
 }
 
 

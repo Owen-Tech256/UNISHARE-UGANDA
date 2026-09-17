@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile - UniShare Uganda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body data-page="profile">
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="site-header"></div>
+
+<main id="main" class="page-main">
+  <div class="container">
+    <div class="page-header"><h1>My Profile</h1></div>
+
+    <div class="profile-grid">
+      <div>
+        <div class="card" style="margin-bottom:20px;">
+          <h3 style="margin-bottom:16px;">Profile Information</h3>
+          <div class="info-row"><span>Full Name</span><span id="infoName"></span></div>
+          <div class="info-row"><span>Email</span><span id="infoEmail"></span></div>
+          <div class="info-row"><span>School</span><span id="infoSchool"></span></div>
+          <div class="info-row"><span>Role</span><span id="infoRole"></span></div>
+          <div class="info-row"><span>Member Since</span><span id="infoMemberSince"></span></div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:16px;">Edit Profile</h3>
+          <form id="editProfileForm">
+            <div class="field">
+              <label for="editName">Full Name</label>
+              <input type="text" id="editName" class="input">
+            </div>
+            <div class="field">
+              <label for="editEmail">Email</label>
+              <input type="email" id="editEmail" class="input" disabled>
+              <span class="hint">Email cannot be changed.</span>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </form>
+        </div>
+      </div>
+
+      <div>
+        <div class="card" style="margin-bottom:20px;" id="contribStatsCard">
+          <h3 style="margin-bottom:16px;">Contribution Statistics</h3>
+          <div class="summary-cards" style="margin-bottom:0;" id="profileStats"></div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px;" id="recentUploadsCard">
+          <div class="section-head" style="margin-bottom:12px;"><h3>Recent Uploads</h3></div>
+          <div id="profileRecentList"></div>
+          <a href="/my_uploads.html" class="btn btn-outline btn-block" style="margin-top:8px;">View All My Uploads</a>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:12px;">Account Settings</h3>
+          <div style="margin-bottom:16px;">
+            <h4 style="font-size:0.95rem; margin-bottom:8px;">Change Password</h4>
+            <button class="btn btn-outline btn-sm" id="changePwBtn">Change Password</button>
+          </div>
+          <div class="danger-zone">
+            <h4 style="font-size:0.95rem; margin-bottom:8px;">Delete Account</h4>
+            <p>Your approved uploads would remain attributed as "Deleted User".</p>
+            <button class="btn btn-danger btn-sm" id="deleteAccountBtn" disabled title="Coming soon">Delete Account</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+
+<!-- Change password modal -->
+<div class="modal-overlay" id="changePwModal">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="changePwTitle">
+    <div class="modal-head">
+      <h3 id="changePwTitle">Change password</h3>
+      <button class="modal-close" id="changePwClose" aria-label="Close"><span data-icon="x"></span></button>
+    </div>
+    <form id="changePwForm">
+      <div class="field">
+        <label for="pwCurrent">Current password</label>
+        <input type="password" id="pwCurrent" class="input" required>
+      </div>
+      <div class="field">
+        <label for="pwNew">New password</label>
+        <input type="password" id="pwNew" class="input" minlength="8" required>
+      </div>
+      <div class="field">
+        <label for="pwConfirm">Confirm new password</label>
+        <input type="password" id="pwConfirm" class="input" minlength="8" required>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="changePwCancel">Cancel</button>
+        <button type="submit" class="btn btn-primary">Update Password</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/static/js/main.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (!requireAuth("/login.html")) return;
+
+    const user = getAuthState();
+    const canUpload = ["coordinator", "moderator", "super_admin"].includes(user.role);
+
+    /* ---------- Profile info + edit form ---------- */
+    document.getElementById("infoName").textContent = user.full_name || "";
+    document.getElementById("infoEmail").textContent = user.email || "";
+    document.getElementById("infoSchool").textContent = user.school_name || "—";
+    document.getElementById("infoRole").textContent =
+      user.role === "super_admin" ? "Super Admin" :
+      user.role.charAt(0).toUpperCase() + user.role.slice(1);
+    document.getElementById("infoMemberSince").textContent = user.created_at
+      ? new Date(user.created_at).toLocaleDateString("en-GB", { month: "long", year: "numeric" }) : "";
+    document.getElementById("editName").value = user.full_name || "";
+    document.getElementById("editEmail").value = user.email || "";
+
+    document.getElementById("editProfileForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const fullName = document.getElementById("editName").value.trim();
+      if (fullName.length < 3) { showToast("Full name must be at least 3 characters.", "error"); return; }
+      try {
+        const r = await apiFetch("/api/profile", { method: "PUT", body: JSON.stringify({ full_name: fullName, email: user.email }) });
+        user.full_name = r.data.full_name;
+        document.getElementById("infoName").textContent = user.full_name;
+        showToast("Profile updated.", "success");
+      } catch (err) {
+        showToast(err.message, "error");
+      }
+    });
+
+    /* ---------- Contribution stats + recent uploads (uploaders only) ---------- */
+    if (canUpload) {
+      api.getMyUploads({ per_page: 100 }).then(data => {
+        const list = data.resources;
+        const approved = list.filter(u => u.status === "approved").length;
+        const pending = list.filter(u => u.status === "pending").length;
+        const rejected = list.filter(u => u.status === "rejected").length;
+        const totalUpvotes = list.reduce((s, u) => s + (u.upvotes || 0), 0);
+        document.getElementById("profileStats").innerHTML = `
+          <div class="summary-card"><div class="sc-num">${list.length}</div><div class="sc-label">Total Uploads</div></div>
+          <div class="summary-card"><div class="sc-num">${approved}</div><div class="sc-label">Approved</div></div>
+          <div class="summary-card"><div class="sc-num">${pending}</div><div class="sc-label">Pending</div></div>
+          <div class="summary-card"><div class="sc-num">${rejected}</div><div class="sc-label">Rejected</div></div>
+          <div class="summary-card"><div class="sc-num">${totalUpvotes}</div><div class="sc-label">Total Upvotes</div></div>
+        `;
+        document.getElementById("profileRecentList").innerHTML = list.slice(0, 3).map(u => `
+          <div class="info-row">
+            <span>${escapeHtml(u.title)}</span>
+            <span class="status-badge status-${u.status}">${u.status.charAt(0).toUpperCase() + u.status.slice(1)}</span>
+          </div>
+        `).join("") || `<div class="info-row"><span class="text-secondary">No uploads yet.</span></div>`;
+      }).catch(() => {
+        document.getElementById("contribStatsCard").style.display = "none";
+        document.getElementById("recentUploadsCard").style.display = "none";
+      });
+    } else {
+      /* Students cannot upload; stats/recent sections are not applicable. */
+      document.getElementById("contribStatsCard").style.display = "none";
+      document.getElementById("recentUploadsCard").style.display = "none";
+    }
+
+    /* ---------- Change password modal ---------- */
+    const changePwModal = document.getElementById("changePwModal");
+    document.getElementById("changePwBtn").addEventListener("click", () => changePwModal.classList.add("open"));
+    document.getElementById("changePwClose").addEventListener("click", () => changePwModal.classList.remove("open"));
+    document.getElementById("changePwCancel").addEventListener("click", () => changePwModal.classList.remove("open"));
+
+    document.getElementById("changePwForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const payload = {
+        current_password: document.getElementById("pwCurrent").value,
+        new_password: document.getElementById("pwNew").value,
+        confirm_password: document.getElementById("pwConfirm").value
+      };
+      if (payload.new_password !== payload.confirm_password) {
+        showToast("Passwords do not match.", "error"); return;
+      }
+      try {
+        await apiFetch("/change-password", { method: "POST", body: JSON.stringify(payload) });
+        showToast("Password changed successfully.", "success");
+        changePwModal.classList.remove("open");
+        document.getElementById("changePwForm").reset();
+      } catch (err) {
+        showToast(err.message, "error");
+      }
+    });
+  });
+</script>
+</body>
+</html>
