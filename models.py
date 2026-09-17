@@ -1,7 +1,7 @@
 """
 UniShare Uganda - SQLAlchemy models.
 
-Schema ported from project haily (see MIGRATION_PLAN.md section 5) with two
+Schema ported from project haily (see docs/migration_plan.md section 5) with two
 adaptations:
   - Roles are: student | coordinator | moderator | super_admin
     (haily's class_rep -> coordinator, admin -> super_admin)

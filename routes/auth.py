@@ -1,7 +1,7 @@
 """
 Authentication routes - ported from project haily's routes/auth.py.
 
-Changes vs haily (per MIGRATION_PLAN.md):
+Changes vs haily (per docs/migration_plan.md):
   - /register becomes a JSON API (POST /api/auth/register) with auto-login
   - Registration requires haily's 10-digit student number and
     institutional email domain (configurable via STUDENT_EMAIL_DOMAIN)

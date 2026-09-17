@@ -2,7 +2,7 @@
 Schools API - powers the school selector in the register page.
 
 The schools table doubles as this project's school-category list
-(single-university scope, per MIGRATION_PLAN.md).
+(single-university scope, per docs/migration_plan.md).
 """
 from flask import jsonify
 

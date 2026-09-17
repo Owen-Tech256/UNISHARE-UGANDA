@@ -1,7 +1,7 @@
 """
 Admin routes - moderation & super admin. Ported from project haily's routes/admin.py.
 
-Changes vs haily (per MIGRATION_PLAN.md):
+Changes vs haily (per docs/migration_plan.md):
   - Roles: admin/class_rep -> super_admin/moderator/coordinator.
   - Moderation endpoints exist for BOTH roles:
       moderator    -> school-scoped (haily behavior)

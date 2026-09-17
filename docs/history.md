@@ -328,10 +328,27 @@ unchanged; temp passwords flagged by both `login` and `me`.
 | `REDIRECT_MAP` paths corrected | Stale values pointed at the old `/admin/*` page routes that don't exist in the new layout. |
 | Phases 3 folded into 2; error pages done early (0.3/7.1) | Keep-every-commit-functional principle: pages needed the endpoints; the error-handler split needed templates to render. |
 
-## 6. How to extend this history
+## 6. Post-migration workspace cleanup
+
+With the migration complete and documented, the working tree was consolidated
+so the root shows the live project at a glance:
+
+- All migration-era reference material moved into `reference/` via `git mv`
+  (history-preserving renames): `project haily/` (logic donor), `frontend/`,
+  `css/`, `js/`, `admin/` (design donors), and the eleven `ignore_*` legacy
+  files. Nothing deleted; nothing in the live app references them.
+- `MIGRATION_PLAN.md` joined the other documents at `docs/migration_plan.md`,
+  and every code comment/doc that pointed at it was repointed.
+- Doc updates (README layout section, architecture.md tree) went in the same
+  commit so the tree and its documentation never disagree.
+- Verified before moving: zero runtime imports or asset links pointing into
+  the reference material (all page assets come from `/static/`), and a full
+  boot + page/API smoke test after the move.
+
+## 7. How to extend this history
 
 Future work should follow the same rhythm: **small step → verify (curl or the
 browser, assert the exact status codes) → one clean commit → push.** The
-"Open Items Deferred" list in `MIGRATION_PLAN.md` (multi-university model,
+"Open Items Deferred" list in `docs/migration_plan.md` (multi-university model,
 delete-account, email verification, CSRF tokens, production WSGI server) is
 the natural backlog, in that order of likely demand.

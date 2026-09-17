@@ -1,9 +1,9 @@
 """
 Static page serving - serves the adapted frontend-design HTML pages.
 
-The live pages are copies of the frontend/ design, adapted to talk to the
-real API. They are served from the pages/ directory so the frontend/
-reference folder is never modified.
+The live pages are copies of the reference/frontend/ design mockup, adapted to
+talk to the real API. They are served from the pages/ directory so the design
+reference (now under reference/) is never modified.
 """
 from flask import Blueprint, send_from_directory, abort
 import os

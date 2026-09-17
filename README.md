@@ -6,9 +6,9 @@ is only required to upvote, comment, or report a resource.
 
 ## Architecture
 
-Flask 3 + SQLite + Jinja2 + vanilla JS (design adapted from the `frontend/`
-reference). Session-cookie auth; JSON REST API under `/api/*` consumed by the
-static pages via `fetch()`.
+Flask 3 + SQLite + Jinja2 + vanilla JS (design adapted from the
+`reference/frontend/` mockup). Session-cookie auth; JSON REST API under `/api/*`
+consumed by the static pages via `fetch()`.
 
 ```
 app.py                 App factory: blueprint registry, JSON/HTML error split
@@ -25,14 +25,21 @@ routes/
 static/css, static/js  The app's own styling/scripts (adapted from frontend/)
 pages/                 Live HTML pages (frontend design)
 templates/errors/      Styled error pages (HTML for pages, JSON for /api/*)
+reference/             Migration-era reference material (see below)
+docs/                  History, architecture, runbook, original migration plan
 ```
 
-### Reference-only folders (do not edit)
+### The `reference/` folder (do not edit)
 
-`frontend/`, `css/`, `js/`, `admin/` are the original design references that
-the live app was adapted from. `ignore_*.html` / `ignore_*.js` / `ignore_*.css`
-at the repo root are legacy files kept only for reference. The live app serves
-its assets from `static/` and its pages from `pages/`.
+Everything the project was built *from* lives here, kept for traceability:
+
+- `reference/project haily/` — the original Flask app whose logic was ported
+- `reference/frontend/`, `reference/css/`, `reference/js/`, `reference/admin/`
+  — the original design mockups the live pages were adapted from
+- `reference/ignore_*` — the legacy root files, renamed at migration start
+
+None of it is imported or served at runtime; the live app serves its assets
+from `static/` and its pages from `pages/`.
 
 ## Roles & permissions
 

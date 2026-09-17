@@ -1,7 +1,7 @@
 """
 Resource routes - ported from project haily's routes/resources.py.
 
-Changes vs haily (per MIGRATION_PLAN.md section 2):
+Changes vs haily (per docs/migration_plan.md section 2):
   - Browsing, detail, and downloading are PUBLIC (no login required)
   - Detail is a JSON API returning the resource + related resources
   - Non-approved resources remain visible only to their uploader and

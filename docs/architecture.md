@@ -11,15 +11,15 @@ code. Companion documents: [`history.md`](history.md) (how we got here) and
 
 | Layer | Choice | Why |
 |-------|--------|-----|
-| Backend | **Flask 3** (sync, JSON API) | Mirrors `project haily/`, our logic donor, so ports are verifiable line-by-line; tiny surface for a v1. |
+| Backend | **Flask 3** (sync, JSON API) | Mirrors `reference/project haily/`, our logic donor, so ports are verifiable line-by-line; tiny surface for a v1. |
 | Database | **SQLite** via Flask-SQLAlchemy | Zero-ops for v1; single-writer is fine at this scale. Swapping to Postgres later only touches `SQLALCHEMY_DATABASE_URI`. |
 | Auth | **Server-side sessions** (signed cookie) | Haily's model; keeps tokens out of JS entirely and makes role revocation instant (no client-held credentials to expire). |
 | Frontend | **Static HTML in `pages/` + vanilla JS in `static/js/`** | The design donor was a static mockup; preserving its structure exactly was the requirement. No build step, no framework drift. |
-| Styling | `static/css/style.css` — a copy of `frontend/css/style.css` | Flask must serve assets itself; the `frontend/` original is never modified. |
+| Styling | `static/css/style.css` — a copy of `reference/frontend/css/style.css` | Flask must serve assets itself; the `reference/frontend/` original is never modified. |
 | Errors | JSON for `/api/*`, HTML for pages | Browsers show a friendly page; `fetch()` callers get machine-readable errors — one contract for each consumer. |
 
 **Deliberately not used (v1):** JS frameworks, a build step, email/notifications,
-background jobs. See the deferred list in `MIGRATION_PLAN.md` §7.
+background jobs. See the deferred list in `docs/migration_plan.md` §7.
 
 ---
 
@@ -40,7 +40,7 @@ routes/
   admin.py              Moderation, reports, stats, user management (moderator + super admin)
   pages.py              Serves pages/*.html (path-traversal guard; / -> index or role landing)
 
-pages/                  The live HTML (adapted from frontend/ — design preserved)
+pages/                  The live HTML (adapted from reference/frontend/ — design preserved)
 static/css|js           The app's own assets (copies adapted to the real API)
 templates/errors/       Styled 400/401/403/404/500 for page requests
 
@@ -49,14 +49,15 @@ utils/
   permissions.py        Resource-access predicates (can_user_access_resource, can_moderate_resource)
   file_handler.py       Secure filename + uuid storage, path resolution, delete
 
-project haily/          LOGIC REFERENCE ONLY — never imported at runtime
-frontend/, css/, js/, admin/, ignore_*   DESIGN REFERENCES ONLY — never modified
+reference/              MIGRATION REFERENCE ONLY — never imported at runtime
+  project haily/          the logic donor (original Flask app)
+  frontend/, css/, js/, admin/, ignore_*   the design donors & legacy files — never modified
 ```
 
-The two "reference" zones are the key invariant of this codebase: the live app
+The `reference/` folder is the key invariant of this codebase: the live app
 is `app.py` + `routes/` + `models.py` + `utils/` + `pages/` + `static/` +
-`templates/`. Everything else exists so the sources of our logic and design
-stay inspectable.
+`templates/` (+ `docs/` for documentation). Everything in `reference/` exists
+so the sources of our logic and design stay inspectable.
 
 ---
 

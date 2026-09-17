@@ -1,7 +1,7 @@
 """
 Upload routes - ported from project haily's routes/uploads.py.
 
-Changes vs haily (per MIGRATION_PLAN.md):
+Changes vs haily (per docs/migration_plan.md):
   - class_rep_required -> uploader_required (coordinator + moderator + super_admin:
     the user's rule is that all three assigned roles can upload educational resources)
   - Description field added (frontend design's upload form has one)
