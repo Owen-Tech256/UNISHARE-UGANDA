@@ -158,12 +158,22 @@ function renderHeader(activePage) {
   if (!mount) return;
   const user = getAuthState();
 
+  const role = user ? user.role : null;
   const navLinks = [
     { href: `/index.html`, label: "Home", key: "home" },
-    { href: `/browse.html`, label: "Browse", key: "browse" },
-    { href: `/upload.html`, label: "Upload", key: "upload" },
-    { href: `/my_uploads.html`, label: "My Uploads", key: "my_uploads" }
+    { href: `/browse.html`, label: "Browse", key: "browse" }
   ];
+  if (role) navLinks.push({ href: `/upload.html`, label: "Upload", key: "upload" });
+  if (role === 'coordinator' || role === 'moderator' || role === 'super_admin') {
+    navLinks.push({ href: `/my_uploads.html`, label: "My Uploads", key: "my_uploads" });
+  }
+  if (role === 'moderator' || role === 'super_admin') {
+    navLinks.push({ href: `/moderation_queue.html`, label: "Moderation", key: "moderation" });
+  }
+  if (role === 'super_admin') {
+    navLinks.push({ href: `/users.html`, label: "Users", key: "users" });
+    navLinks.push({ href: `/reports.html`, label: "Reports", key: "reports" });
+  }
 
   const navHtml = navLinks.map(l =>
     `<a href="${l.href}" ${activePage === l.key ? 'aria-current="page"' : ''}>${l.label}</a>`
@@ -182,8 +192,9 @@ function renderHeader(activePage) {
     : `<a href="/login.html" class="btn btn-ghost btn-sm">Login</a>
        <a href="/register.html" class="btn btn-primary btn-sm">Register</a>`;
 
+  const canUpload = role === 'coordinator' || role === 'moderator' || role === 'super_admin';
   const mobileAuth = user
-    ? `<hr><a href="/profile.html">Profile</a><a href="/my_uploads.html">My Uploads</a>
+    ? `<hr><a href="/profile.html">Profile</a>${canUpload ? `<a href="/my_uploads.html">My Uploads</a>` : ""}
        <button type="button" class="link-like" id="mobileLogout">Logout</button>`
     : `<hr><a href="/login.html">Login</a><a href="/register.html">Register</a>`;
 

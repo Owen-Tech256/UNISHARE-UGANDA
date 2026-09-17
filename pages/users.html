@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Management - UniShare Uganda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body data-page="admin">
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="site-header"></div>
+
+<main id="main" class="page-main">
+  <div class="container">
+    <div class="page-header">
+      <h1>User Management</h1>
+      <p>Assign or revoke staff roles at any time. Revocation takes effect immediately.</p>
+    </div>
+
+    <div class="admin-stats" id="userStats">
+      <div class="summary-card"><div class="sc-num" id="statStudents">–</div><div class="sc-label">Students</div></div>
+      <div class="summary-card"><div class="sc-num" id="statCoordinators">–</div><div class="sc-label">Coordinators</div></div>
+      <div class="summary-card"><div class="sc-num" id="statModerators">–</div><div class="sc-label">Moderators</div></div>
+      <div class="summary-card"><div class="sc-num" id="statOpenReports">–</div><div class="sc-label">Open Reports</div></div>
+    </div>
+
+    <div class="admin-toolbar">
+      <div class="admin-filters">
+        <input type="search" id="userSearch" class="input" placeholder="Search name, ID or email…">
+        <select id="userRoleFilter" class="input">
+          <option value="">All Roles</option>
+          <option value="student">Students</option>
+          <option value="coordinator">Coordinators</option>
+          <option value="moderator">Moderators</option>
+          <option value="super_admin">Super Admins</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" id="addStaffBtn">+ Add Staff</button>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th><th>ID</th><th>Email</th><th>School</th><th>Role</th><th>Joined</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="usersTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="empty-state" id="usersEmpty" style="display:none;">
+      <h3>No users found</h3>
+      <p>Try a different search or role filter.</p>
+    </div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+
+<!-- Add staff modal -->
+<div class="modal-overlay" id="staffModal">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="staffModalTitle">
+    <div class="modal-head">
+      <h3 id="staffModalTitle">Add staff account</h3>
+      <button class="modal-close" id="staffModalClose" aria-label="Close"><span data-icon="x"></span></button>
+    </div>
+    <p class="text-secondary" style="font-size:0.85rem; margin-bottom:12px;">
+      A temporary password is generated and shown once after creation. It expires in 24 hours.
+    </p>
+    <form id="staffForm">
+      <div class="field">
+        <label for="staffName">Full name</label>
+        <input type="text" id="staffName" class="input" required>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div class="field">
+          <label for="staffId">Staff ID</label>
+          <input type="text" id="staffId" class="input" placeholder="STF-XXX-000" required>
+        </div>
+        <div class="field">
+          <label for="staffEmail">Email</label>
+          <input type="email" id="staffEmail" class="input" required>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div class="field">
+          <label for="staffRole">Role</label>
+          <select id="staffRole" class="input">
+            <option value="coordinator">Coordinator (can upload)</option>
+            <option value="moderator">Moderator (can upload + moderate)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="staffSchool">School</label>
+          <select id="staffSchool" class="input"></select>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="staffModalCancel">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create Account</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- One-time temp password modal -->
+<div class="modal-overlay" id="tempPwModal">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="tempPwTitle">
+    <div class="modal-head">
+      <h3 id="tempPwTitle">Temporary password</h3>
+      <button class="modal-close" id="tempPwClose" aria-label="Close"><span data-icon="x"></span></button>
+    </div>
+    <div class="notice-box notice-warning">
+      <span data-icon="warn"></span> Share this password now — it will not be shown again.
+    </div>
+    <div class="field">
+      <label for="tempPwUser">For</label>
+      <input type="text" id="tempPwUser" class="input" readonly>
+    </div>
+    <div class="field">
+      <label for="tempPwValue">Password</label>
+      <input type="text" id="tempPwValue" class="input" readonly style="font-family:monospace; font-size:1.1rem; letter-spacing:1px;">
+    </div>
+    <div class="field">
+      <label for="tempPwExpiry">Expires</label>
+      <input type="text" id="tempPwExpiry" class="input" readonly>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-primary" id="tempPwDone">Done</button>
+    </div>
+  </div>
+</div>
+
+<script src="/static/js/main.js"></script>
+<script src="/static/js/users.js"></script>
+</body>
+</html>
