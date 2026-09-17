@@ -1,0 +1,17 @@
+# Python
+venv/
+__pycache__/
+*.py[cod]
+
+# Environment / secrets
+.env
+
+# Database
+unishare_uganda.db
+*.db-journal
+
+# Uploaded files
+uploads/
+
+# Editor / tooling
+.kilo/
