@@ -8,7 +8,7 @@ Changes vs haily (per MIGRATION_PLAN.md section 2):
     same-school staff
 """
 from flask import Blueprint, request, jsonify, session, send_file
-from models import db, Resource, User, Upvote, Report
+from models import db, Resource, User, Upvote, Report, Comment
 from utils.file_handler import get_full_path
 from utils.auth import login_required
 import os
@@ -218,3 +218,72 @@ def report_resource(resource_id):
     db.session.commit()
 
     return jsonify({'success': True, 'message': 'Report submitted successfully'})
+
+
+# ============ COMMENTS (new feature - haily patterns) ============
+
+@resources_bp.route('/api/resources/<int:resource_id>/comments')
+def get_comments(resource_id):
+    """List comments for a resource. Public reading; login only to post."""
+    resource = Resource.query.get(resource_id)
+    if not resource or resource.is_deleted:
+        return jsonify({'success': False, 'message': 'Resource not found'}), 404
+
+    comments = Comment.query.filter_by(
+        resource_id=resource_id, is_deleted=False
+    ).order_by(Comment.created_at.asc()).all()
+
+    return jsonify({
+        'success': True,
+        'data': {'comments': [c.to_dict() for c in comments]}
+    })
+
+
+@resources_bp.route('/api/resources/<int:resource_id>/comments', methods=['POST'])
+@login_required
+def add_comment(resource_id):
+    """Post a comment. Login required; body must be 1-2000 characters."""
+    user = User.query.get(session['user_id'])
+    resource = Resource.query.get(resource_id)
+
+    if not resource or resource.is_deleted:
+        return jsonify({'success': False, 'message': 'Resource not found'}), 404
+
+    data = request.get_json(silent=True) or {}
+    body = str(data.get('body', '')).strip()
+
+    if not body:
+        return jsonify({'success': False, 'message': 'Comment cannot be empty'}), 400
+    if len(body) > 2000:
+        return jsonify({'success': False, 'message': 'Comment must be at most 2000 characters'}), 400
+
+    comment = Comment(resource_id=resource_id, user_id=user.user_id, body=body)
+    db.session.add(comment)
+    db.session.commit()
+
+    return jsonify({
+        'success': True,
+        'message': 'Comment posted',
+        'data': {'comment': comment.to_dict()}
+    }), 201
+
+
+@resources_bp.route('/api/comments/<int:comment_id>', methods=['DELETE'])
+@login_required
+def delete_comment(comment_id):
+    """Soft-delete a comment. Allowed for its author or same-school staff."""
+    user = User.query.get(session['user_id'])
+    comment = Comment.query.get(comment_id)
+
+    if not comment or comment.is_deleted:
+        return jsonify({'success': False, 'message': 'Comment not found'}), 404
+
+    is_owner = comment.user_id == user.user_id
+    is_staff = user.role in ['moderator', 'super_admin'] and user.school_id == comment.resource.school_id
+    if not (is_owner or is_staff):
+        return jsonify({'success': False, 'message': 'You can only delete your own comments'}), 403
+
+    comment.is_deleted = True
+    db.session.commit()
+
+    return jsonify({'success': True, 'message': 'Comment deleted'})
