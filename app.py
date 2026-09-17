@@ -83,4 +83,9 @@ def create_app():
 if __name__ == '__main__':
     app = create_app()
     # DEBUG is a development convenience; never in production profile.
-    app.run(debug=(Config.APP_ENV != 'production'), host='0.0.0.0', port=5000)
+    # PORT lets you avoid a clash with another dev server (see docs/runbook.md).
+    app.run(
+        debug=(Config.APP_ENV != 'production'),
+        host='0.0.0.0',
+        port=int(os.environ.get('PORT', '5000')),
+    )

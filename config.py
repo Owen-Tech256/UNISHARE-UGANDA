@@ -20,6 +20,10 @@ APP_ENV = os.environ.get('APP_ENV', 'development')
 
 
 class Config:
+    # Expose the active profile on the class itself (also lands in
+    # app.config via from_object) so callers can use Config.APP_ENV.
+    APP_ENV = APP_ENV
+
     # Fail fast in production: no silent fallback to a dev secret.
     if APP_ENV == 'production' and not os.environ.get('SECRET_KEY'):
         raise RuntimeError(

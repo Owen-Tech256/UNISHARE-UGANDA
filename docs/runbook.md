@@ -24,6 +24,10 @@ python3 -m venv venv
 ./venv/bin/python app.py                       # serves on http://localhost:5000
 ```
 
+> **Using an activated venv?** If you ran `source venv/bin/activate`, plain
+> `python app.py` and `pip install -r requirements.txt` are equivalent to the
+> `./venv/bin/...` forms above — both work in every command in this runbook.
+
 `init_db.py` is **idempotent** — safe to re-run; it only prints the super
 admin password when it creates the account for the first time. The database
 file is `unishare_uganda.db` (gitignored). To start over: delete it, re-run
@@ -35,6 +39,7 @@ file is `unishare_uganda.db` (gitignored). To start over: delete it, re-run
 |---|---|---|
 | `APP_ENV` | `development` | Set to `production` in deployment — forces DEBUG off and **refuses to boot** without `SECRET_KEY`. |
 | `SECRET_KEY` | dev fallback | Required in production: `export SECRET_KEY="$(python3 -c 'import secrets; print(secrets.token_hex(32))')"` |
+| `PORT` | `5000` | Port for `python app.py`. Use e.g. `PORT=5001 python app.py` when 5000 is taken. |
 | `SUPER_ADMIN_PASSWORD` | `UniShare@2026` | Set before the **first** `init_db.py` run to choose the real super admin password. |
 | `STUDENT_EMAIL_DOMAIN` | `unishare.ug` | Change if deploying for a different institution. |
 
@@ -291,7 +296,7 @@ change-password modal, delete-account card (**disabled — coming soon**).
 | Symptom | Cause / fix |
 |---|---|
 | `RuntimeError: SECRET_KEY environment variable is required…` | You set `APP_ENV=production` without a secret — export `SECRET_KEY` or unset `APP_ENV`. |
-| Port 5000 already in use | Another instance (or the old haily dev server) is running: `fuser -k 5000/tcp` or use `port=5001`. |
+| Port 5000 already in use | Run on another port: `PORT=5001 python app.py` — or free the port: `fuser -k 5000/tcp`. |
 | Login says "Invalid Student Number/Staff ID or password." | Generic by design (no user enumeration). Check you used the right identifier type — staff accounts log in by Staff ID or email, not student number. |
 | "Temporary password has expired." | Temp passwords last 24 h. Ask a super admin to **Reset Password** and get a fresh one. |
 | Super admin password unknown | Re-run the seed with it set: `SUPER_ADMIN_PASSWORD=YourNewPass ./venv/bin/python init_db.py` (only helps if the account doesn't exist yet; otherwise reset via SQL or recreate the DB). |
