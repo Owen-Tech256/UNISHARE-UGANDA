@@ -752,3 +752,84 @@ input[type="checkbox"]:disabled { cursor: not-allowed; opacity: 0.55; background
 /* keep the original first-line alignment inside .checkbox-row
    (declared after the base rule above so it wins the cascade) */
 .checkbox-row input { margin-top: 3px; }
+
+/* =========================================================
+   Custom dropdown (dropdown.js) — palette-styled open list.
+   The native select is hidden but remains the source of truth;
+   the trigger mirrors it and the listbox renders at body level
+   so modal overflow never clips it.
+   ========================================================= */
+
+select.input.dd-native {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  clip: rect(0 0 0 0); overflow: hidden;
+}
+
+.dd-trigger {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.dd-trigger::after {
+  content: "";
+  width: 12px; height: 8px; flex-shrink: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' fill='none' stroke='%23174A7E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain;
+  transition: transform 0.15s ease;
+}
+.dd-trigger[aria-expanded="true"]::after { transform: rotate(180deg); }
+.dd-trigger.is-placeholder .dd-label { color: var(--color-text-secondary); }
+.dd-trigger.has-error { border-color: var(--color-error); }
+.dd-trigger.has-error::after {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' fill='none' stroke='%23D64545' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+.dd-trigger:hover:not(:disabled),
+.dd-trigger:focus-visible { border-color: var(--color-primary); }
+.dd-trigger:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--color-primary-light); }
+.dd-trigger:disabled { cursor: not-allowed; opacity: 0.6; }
+
+.dd-listbox {
+  position: fixed;
+  z-index: 4000; /* above modals (300) and mobile drawer (300) */
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  max-height: 260px;
+  overflow-y: auto;
+  display: none;
+}
+
+.dd-option {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);
+  width: 100%;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-family: inherit; font-size: 0.92rem; color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+}
+.dd-option + .dd-option { margin-top: 2px; }
+.dd-option:hover { background: var(--color-primary-light); color: var(--color-primary-dark); }
+.dd-option.dd-active { background: var(--color-primary-light); color: var(--color-primary-dark); }
+.dd-option.dd-selected {
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-weight: 600;
+}
+.dd-option.dd-selected::after {
+  content: "";
+  width: 11px; height: 9px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10' viewBox='0 0 12 10'%3E%3Cpath d='M1 5L4.5 8.5L11 1.5' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+.dd-option.dd-placeholder { color: var(--color-text-secondary); }
+.dd-option.dd-disabled { color: var(--color-text-secondary); cursor: not-allowed; opacity: 0.55; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dd-trigger::after { transition: none; }
+}
