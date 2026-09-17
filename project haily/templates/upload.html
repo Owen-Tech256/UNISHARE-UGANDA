@@ -2,94 +2,297 @@
 {% block title %}Upload Resource - UniShare Nkumba{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="page-header">
-        <h1><i class="fas fa-upload"></i> Upload Academic Resource</h1>
-        <p>Share quality materials with your fellow students. All uploads are reviewed by your school's moderator.</p>
+<div class="container" style="padding-top: 2rem; padding-bottom: 4rem; max-width: 900px;">
+    <!-- Page Header -->
+    <div class="page-header-modern" style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); padding: 2rem; border-radius: var(--radius-lg); margin-bottom: 2rem; color: var(--card);">
+        <div class="header-content" style="display: flex; align-items: center; gap: 1.5rem;">
+            <div class="header-icon" style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--card);"></i>
+            </div>
+            <div>
+                <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.25rem; color: var(--card);">Upload Resource</h1>
+                <p style="opacity: 0.9; margin: 0; color: rgba(255,255,255,0.9);">Share academic materials with your school. All uploads require moderator approval.</p>
+            </div>
+        </div>
     </div>
 
-    <form id="uploadForm" class="upload-form" enctype="multipart/form-data">
-        <div class="form-section">
-            <h3><i class="fas fa-info-circle"></i> Resource Details</h3>
-            <div class="form-group">
-                <label for="title">Resource Title *</label>
-                <input type="text" id="title" name="title" required placeholder="e.g. Introduction to Data Structures - Complete Notes">
+    <!-- Upload Form -->
+    <div class="upload-card" style="background: var(--card); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow); border: 1px solid var(--border);">
+        <form method="POST" action="{{ url_for('uploads.upload_resource') }}" enctype="multipart/form-data" id="uploadForm">
+            <!-- Resource Title -->
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.75rem;">
+                    <i class="fas fa-heading" style="color: var(--primary);"></i>
+                    Resource Title <span style="color: var(--error);">*</span>
+                </label>
+                <input type="text" name="title" class="form-input" placeholder="e.g. Introduction to Database Systems" required style="width: 100%; padding: 0.875rem 1rem; border: 2px solid var(--border); border-radius: var(--radius-lg); font-size: 1rem; transition: all 0.3s;">
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="course_code">Course Code *</label>
-                    <input type="text" id="course_code" name="course_code" required placeholder="e.g. CSC 210" style="text-transform: uppercase;">
-                </div>
-                <div class="form-group">
-                    <label for="course_name">Course Name *</label>
-                    <input type="text" id="course_name" name="course_name" required placeholder="e.g. Data Structures and Algorithms">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="lecturer_name">Lecturer Name *</label>
-                <input type="text" id="lecturer_name" name="lecturer_name" required placeholder="e.g. Dr. Jane Smith">
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="academic_year">Academic Year *</label>
-                    <input type="text" id="academic_year" name="academic_year" required placeholder="e.g. 2024/2025">
-                </div>
-                <div class="form-group">
-                    <label for="semester">Semester *</label>
-                    <select id="semester" name="semester" required>
-                        <option value="">Select semester</option>
-                        <option value="Semester 1">Semester 1</option>
-                        <option value="Semester 2">Semester 2</option>
-                        <option value="Semester 3">Semester 3</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="resource_type">Resource Type *</label>
-                    <select id="resource_type" name="resource_type" required>
-                        <option value="">Select type</option>
-                        <option value="Notes">Notes</option>
-                        <option value="Past Paper">Past Paper</option>
-                        <option value="Slides">Slides</option>
-                        <option value="Summary">Summary</option>
-                    </select>
-                </div>
-            </div>
-        </div>
 
-        <div class="form-section">
-            <h3><i class="fas fa-file-upload"></i> File Upload</h3>
-            <div class="file-upload-area" id="fileUploadArea">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Drag & drop your file here or <label for="file" class="file-link">browse</label></p>
-                <small>Supported formats: {{ allowed_extensions|join(', ')|upper }} (Max 16MB)</small>
-                <input type="file" id="file" name="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt" required style="display:none;">
+            <!-- Course Info Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                <div class="form-group">
+                    <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.75rem;">
+                        <i class="fas fa-hashtag" style="color: var(--primary);"></i>
+                        Course Code <span style="color: var(--error);">*</span>
+                    </label>
+                    <input type="text" name="course_code" class="form-input" placeholder="e.g. BCS 345" required style="width: 100%; padding: 0.875rem 1rem; border: 2px solid var(--border); border-radius: var(--radius-lg); font-size: 1rem;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.75rem;">
+                        <i class="fas fa-book" style="color: var(--primary);"></i>
+                        Course Name <span style="color: var(--error);">*</span>
+                    </label>
+                    <input type="text" name="course_name" class="form-input" placeholder="e.g. Database Systems" required style="width: 100%; padding: 0.875rem 1rem; border: 2px solid var(--border); border-radius: var(--radius-lg); font-size: 1rem;">
+                </div>
             </div>
-            <div id="filePreview" class="file-preview" style="display:none;">
-                <i class="fas fa-file"></i>
-                <span id="fileName"></span>
-                <span id="fileSize"></span>
-                <button type="button" class="btn-icon" onclick="clearFile()"><i class="fas fa-times"></i></button>
-            </div>
-        </div>
 
-        <div id="duplicateWarning" class="alert alert-warning" style="display:none;">
-            <i class="fas fa-exclamation-triangle"></i>
-            <div>
-                <strong>Potential duplicates found!</strong>
-                <p id="duplicateDetails"></p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                <div class="form-group">
+                    <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.75rem;">
+                        <i class="fas fa-chalkboard-teacher" style="color: var(--primary);"></i>
+                        Lecturer <span style="color: var(--error);">*</span>
+                    </label>
+                    <input type="text" name="lecturer" class="form-input" placeholder="e.g. Dr. John Doe" required style="width: 100%; padding: 0.875rem 1rem; border: 2px solid var(--border); border-radius: var(--radius-lg); font-size: 1rem;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.75rem;">
+                        <i class="fas fa-calendar-alt" style="color: var(--primary);"></i>
+                        Academic Year <span style="color: var(--error);">*</span>
+                    </label>
+                    <input type="text" name="academic_year" class="form-input" placeholder="e.g. 2024/2025" required style="width: 100%; padding: 0.875rem 1rem; border: 2px solid var(--border); border-radius: var(--radius-lg); font-size: 1rem;">
+                </div>
             </div>
-        </div>
 
-        <div class="form-actions">
-            <button type="button" class="btn btn-outline" onclick="window.history.back()">Cancel</button>
-            <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
-                <i class="fas fa-paper-plane"></i> Submit for Review
-            </button>
-        </div>
-    </form>
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.75rem;">
+                    <i class="fas fa-calendar-week" style="color: var(--primary);"></i>
+                    Semester <span style="color: var(--error);">*</span>
+                </label>
+                <select name="semester" class="form-input" required style="width: 100%; padding: 0.875rem 1rem; border: 2px solid var(--border); border-radius: var(--radius-lg); font-size: 1rem; background: var(--card);">
+                    <option value="">Select Semester</option>
+                    <option value="Semester 1">Semester 1</option>
+                    <option value="Semester 2">Semester 2</option>
+                </select>
+            </div>
+
+            <!-- Custom Resource Type Dropdown (Icons, No Emojis) -->
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.75rem;">
+                    <i class="fas fa-tag" style="color: var(--primary);"></i>
+                    Resource Type <span style="color: var(--error);">*</span>
+                </label>
+                
+                <div class="custom-select-wrapper" style="position: relative; width: 100%;">
+                    <!-- Hidden input to store the actual value for Flask -->
+                    <input type="hidden" name="resource_type" id="resource_type_hidden" required>
+                    
+                    <div class="custom-select" id="resourceTypeSelect" style="position: relative; width: 100%; user-select: none;">
+                        <div class="select-trigger" style="display: flex; justify-content: space-between; align-items: center; padding: 0.875rem 1rem; border: 2px solid var(--border); border-radius: var(--radius-lg); background: var(--card); cursor: pointer; transition: all 0.3s;">
+                            <span class="select-placeholder" style="color: var(--text-muted); font-size: 1rem;">Select resource type</span>
+                            <i class="fas fa-chevron-down select-arrow" style="color: var(--text-muted); transition: transform 0.3s;"></i>
+                        </div>
+                        <div class="select-options" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--card); border: 2px solid var(--primary); border-top: none; border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg); max-height: 250px; overflow-y: auto; z-index: 100; display: none; box-shadow: var(--shadow-lg); margin-top: -2px;">
+                            <div class="select-option" data-value="Notes" style="padding: 0.875rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; color: var(--text-main); font-size: 1rem; transition: background 0.2s;">
+                                <i class="fas fa-file-alt" style="color: var(--primary); width: 20px; text-align: center;"></i> Lecture Notes
+                            </div>
+                            <div class="select-option" data-value="Past Paper" style="padding: 0.875rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; color: var(--text-main); font-size: 1rem; transition: background 0.2s;">
+                                <i class="fas fa-scroll" style="color: var(--primary); width: 20px; text-align: center;"></i> Past Paper
+                            </div>
+                            <div class="select-option" data-value="Slides" style="padding: 0.875rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; color: var(--text-main); font-size: 1rem; transition: background 0.2s;">
+                                <i class="fas fa-chalkboard-teacher" style="color: var(--primary); width: 20px; text-align: center;"></i> Presentation Slides
+                            </div>
+                            <div class="select-option" data-value="Summary" style="padding: 0.875rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; color: var(--text-main); font-size: 1rem; transition: background 0.2s;">
+                                <i class="fas fa-clipboard-list" style="color: var(--primary); width: 20px; text-align: center;"></i> Course Summary
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modern File Upload Zone -->
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.75rem;">
+                    <i class="fas fa-file-upload" style="color: var(--primary);"></i>
+                    Upload File <span style="color: var(--error);">*</span>
+                </label>
+                
+                <div class="upload-zone" id="uploadZone" style="position: relative; border: 2px dashed var(--border); border-radius: var(--radius-lg); background: var(--card); padding: 2.5rem; text-align: center; transition: all 0.3s; cursor: pointer;">
+                    <input type="file" id="fileInput" name="file" class="file-input" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt" required style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10;">
+                    
+                    <div class="upload-content" style="pointer-events: none;">
+                        <div class="upload-icon" style="width: 80px; height: 80px; margin: 0 auto 1.5rem; background: var(--bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid var(--border); transition: all 0.3s;">
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 2.5rem; color: var(--primary);"></i>
+                        </div>
+                        <h3 class="upload-title" style="font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">Drag & Drop your file here</h3>
+                        <p class="upload-subtitle" style="color: var(--text-muted); font-size: 0.9375rem; margin-bottom: 1.5rem;">or <span style="color: var(--primary); font-weight: 600; text-decoration: underline;">browse</span> to choose a file</p>
+                        
+                        <div class="file-types" style="display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <span style="padding: 0.375rem 0.875rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.75rem; font-weight: 600; color: var(--text-muted); font-family: monospace;">PDF</span>
+                            <span style="padding: 0.375rem 0.875rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.75rem; font-weight: 600; color: var(--text-muted); font-family: monospace;">DOC/DOCX</span>
+                            <span style="padding: 0.375rem 0.875rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.75rem; font-weight: 600; color: var(--text-muted); font-family: monospace;">PPT/PPTX</span>
+                            <span style="padding: 0.375rem 0.875rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.75rem; font-weight: 600; color: var(--text-muted); font-family: monospace;">TXT</span>
+                        </div>
+                        
+                        <p style="font-size: 0.8125rem; color: var(--text-muted); margin: 0;">
+                            <i class="fas fa-info-circle" style="color: var(--primary); margin-right: 0.25rem;"></i>
+                            Maximum file size: 16MB
+                        </p>
+                    </div>
+                    
+                    <!-- File Preview (shown after selection) -->
+                    <div class="file-preview" id="filePreview" style="display: none; align-items: center; gap: 1rem; padding: 1.25rem; background: var(--bg); border: 2px solid var(--success); border-radius: var(--radius); margin-top: 1.5rem; pointer-events: none; position: relative; z-index: 5;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--success) 0%, #0d9488 100%); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <i class="fas fa-file-alt" style="font-size: 1.5rem; color: var(--card);"></i>
+                        </div>
+                        <div style="flex: 1; text-align: left;">
+                            <div class="preview-name" id="previewFileName" style="font-weight: 600; color: var(--text-main); font-size: 0.9375rem; word-break: break-all;">filename.pdf</div>
+                            <div class="preview-size" id="previewFileSize" style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 0.25rem;">2.5 MB</div>
+                        </div>
+                        <button type="button" class="remove-file" id="removeFile" title="Remove file" style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border: none; background: var(--error); color: var(--card); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; pointer-events: all;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-actions" style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2.5rem; padding-top: 2rem; border-top: 2px solid var(--border);">
+                <button type="button" class="btn-cancel" onclick="window.history.back()" style="padding: 0.875rem 2rem; background: var(--card); color: var(--text-main); border: 2px solid var(--border); border-radius: var(--radius-lg); font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="submit" class="btn-submit" id="submitBtn" style="padding: 0.875rem 2.5rem; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: var(--card); border: none; border-radius: var(--radius-lg); font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 4px 12px rgba(23, 74, 126, 0.3);">
+                    <i class="fas fa-paper-plane"></i> Submit for Review
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}
 
 {% block extra_scripts %}
-<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // --- Custom Dropdown Logic ---
+    const customSelect = document.getElementById('resourceTypeSelect');
+    const trigger = customSelect.querySelector('.select-trigger');
+    const options = customSelect.querySelectorAll('.select-option');
+    const hiddenInput = document.getElementById('resource_type_hidden');
+    const placeholder = customSelect.querySelector('.select-placeholder');
+
+    trigger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        customSelect.classList.toggle('open');
+        const isOpen = customSelect.classList.contains('open');
+        document.querySelector('.select-options').style.display = isOpen ? 'block' : 'none';
+        trigger.querySelector('.select-arrow').style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0)';
+        trigger.style.borderBottomLeftRadius = isOpen ? '0' : 'var(--radius-lg)';
+        trigger.style.borderBottomRightRadius = isOpen ? '0' : 'var(--radius-lg)';
+    });
+
+    options.forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.stopPropagation();
+            options.forEach(opt => opt.style.background = '');
+            this.style.background = 'rgba(23, 74, 126, 0.05)';
+            this.style.fontWeight = '600';
+            
+            const value = this.getAttribute('data-value');
+            hiddenInput.value = value;
+            
+            placeholder.innerHTML = this.innerHTML;
+            placeholder.style.color = 'var(--text-main)';
+            
+            customSelect.classList.remove('open');
+            document.querySelector('.select-options').style.display = 'none';
+            trigger.querySelector('.select-arrow').style.transform = 'rotate(0)';
+            trigger.style.borderBottomLeftRadius = 'var(--radius-lg)';
+            trigger.style.borderBottomRightRadius = 'var(--radius-lg)';
+        });
+    });
+
+    document.addEventListener('click', function() {
+        customSelect.classList.remove('open');
+        document.querySelector('.select-options').style.display = 'none';
+        trigger.querySelector('.select-arrow').style.transform = 'rotate(0)';
+        trigger.style.borderBottomLeftRadius = 'var(--radius-lg)';
+        trigger.style.borderBottomRightRadius = 'var(--radius-lg)';
+    });
+
+    // --- File Upload Logic ---
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('fileInput');
+    const filePreview = document.getElementById('filePreview');
+    const previewFileName = document.getElementById('previewFileName');
+    const previewFileSize = document.getElementById('previewFileSize');
+    const removeFile = document.getElementById('removeFile');
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadZone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            uploadZone.style.borderColor = 'var(--primary)';
+            uploadZone.style.background = 'rgba(23, 74, 126, 0.05)';
+        }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadZone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            uploadZone.style.borderColor = 'var(--border)';
+            uploadZone.style.background = 'var(--card)';
+        }, false);
+    });
+
+    uploadZone.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            handleFileSelect(files[0]);
+        }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleFileSelect(e.target.files[0]);
+        }
+    });
+
+    function handleFileSelect(file) {
+        const maxSize = 16 * 1024 * 1024;
+        if (file.size > maxSize) {
+            alert('File size exceeds 16MB limit.');
+            fileInput.value = '';
+            return;
+        }
+        previewFileName.textContent = file.name;
+        previewFileSize.textContent = formatFileSize(file.size);
+        filePreview.style.display = 'flex';
+        uploadZone.style.borderColor = 'var(--success)';
+    }
+
+    removeFile.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fileInput.value = '';
+        filePreview.style.display = 'none';
+        uploadZone.style.borderColor = 'var(--border)';
+    });
+
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    }
+
+    // Form Validation for Custom Select
+    const form = document.getElementById('uploadForm');
+    form.addEventListener('submit', function(e) {
+        if (!hiddenInput.value) {
+            e.preventDefault();
+            alert('Please select a Resource Type.');
+            trigger.click();
+        }
+    });
+});
+</script>
 {% endblock %}

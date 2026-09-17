@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify, session
+from flask import Blueprint, render_template, request, jsonify, session, flash, redirect, url_for
 from werkzeug.utils import secure_filename
 from models import db, Resource, School, User
 from utils.auth import login_required, class_rep_required
@@ -13,6 +13,77 @@ uploads_bp = Blueprint('uploads', __name__)
 def upload_page():
     schools = School.query.all()
     return render_template('upload.html', schools=schools, allowed_extensions=ALLOWED_EXTENSIONS)
+
+
+# THIS IS THE CORRECT, UNIFIED UPLOAD FUNCTION
+@uploads_bp.route('/upload', methods=['POST'])
+@class_rep_required
+def upload_resource():
+    user = User.query.get(session['user_id'])
+
+    # 1. Get data from the form
+    title = request.form.get('title', '').strip()
+    course_code = request.form.get('course_code', '').strip()
+    course_name = request.form.get('course_name', '').strip()
+    lecturer_name = request.form.get('lecturer', '').strip() # Matches HTML name="lecturer"
+    academic_year = request.form.get('academic_year', '').strip()
+    semester = request.form.get('semester', '').strip()
+    resource_type = request.form.get('resource_type', '').strip()
+    file = request.files.get('file')
+
+    # 2. Validation
+    errors = []
+    if not title or len(title) < 3:
+        errors.append('Title must be at least 3 characters.')
+    if not course_code:
+        errors.append('Course code is required.')
+    if not course_name:
+        errors.append('Course name is required.')
+    if not lecturer_name:
+        errors.append('Lecturer name is required.')
+    if not academic_year:
+        errors.append('Academic year is required.')
+    if semester not in ['Semester 1', 'Semester 2', 'Semester 3']:
+        errors.append('Please select a valid semester.')
+    if resource_type not in ['Notes', 'Past Paper', 'Slides', 'Summary']:
+        errors.append('Please select a valid resource type.')
+    if not file or file.filename == '':
+        errors.append('Please select a file to upload.')
+
+    if errors:
+        for error in errors:
+            flash(error, 'error')
+        return redirect(url_for('uploads.upload_page'))
+
+    # 3. Save file using your existing utility
+    try:
+        file_path = save_uploaded_file(file)
+    except ValueError as e:
+        flash(str(e), 'error')
+        return redirect(url_for('uploads.upload_page'))
+
+    original_filename = secure_filename(file.filename)
+
+    # 4. Save to Database
+    new_resource = Resource(
+        title=title,
+        course_code=course_code.upper(),
+        course_name=course_name,
+        lecturer_name=lecturer_name,
+        academic_year=academic_year,
+        semester=semester,
+        resource_type=resource_type,
+        file_path=file_path,
+        original_filename=original_filename,
+        status='pending',
+        uploader_id=user.user_id,
+        school_id=user.school_id
+    )
+    db.session.add(new_resource)
+    db.session.commit()
+
+    flash('Resource uploaded successfully! It is now pending moderator approval.', 'success')
+    return redirect(url_for('uploads.my_uploads'))
 
 
 @uploads_bp.route('/my-uploads')
@@ -74,74 +145,6 @@ def check_duplicate():
             'count': len(duplicates)
         }
     })
-
-
-@uploads_bp.route('/api/uploads', methods=['POST'])
-@class_rep_required
-def upload_resource():
-    user = User.query.get(session['user_id'])
-
-    title = request.form.get('title', '').strip()
-    course_code = request.form.get('course_code', '').strip()
-    course_name = request.form.get('course_name', '').strip()
-    lecturer_name = request.form.get('lecturer_name', '').strip()
-    academic_year = request.form.get('academic_year', '').strip()
-    semester = request.form.get('semester', '').strip()
-    resource_type = request.form.get('resource_type', '').strip()
-    file = request.files.get('file')
-
-    # Validation
-    errors = []
-    if not title or len(title) < 3:
-        errors.append('Title must be at least 3 characters.')
-    if not course_code:
-        errors.append('Course code is required.')
-    if not course_name:
-        errors.append('Course name is required.')
-    if not lecturer_name:
-        errors.append('Lecturer name is required.')
-    if not academic_year:
-        errors.append('Academic year is required.')
-    if semester not in ['Semester 1', 'Semester 2', 'Semester 3']:
-        errors.append('Please select a valid semester.')
-    if resource_type not in ['Notes', 'Past Paper', 'Slides', 'Summary']:
-        errors.append('Please select a valid resource type.')
-    if not file or file.filename == '':
-        errors.append('Please select a file to upload.')
-
-    if errors:
-        return jsonify({'success': False, 'message': '; '.join(errors)}), 400
-
-    # Save file
-    try:
-        file_path = save_uploaded_file(file)
-    except ValueError as e:
-        return jsonify({'success': False, 'message': str(e)}), 400
-
-    original_filename = secure_filename(file.filename)
-
-    resource = Resource(
-        title=title,
-        course_code=course_code.upper(),
-        course_name=course_name,
-        lecturer_name=lecturer_name,
-        academic_year=academic_year,
-        semester=semester,
-        resource_type=resource_type,
-        file_path=file_path,
-        original_filename=original_filename,
-        status='pending',
-        uploader_id=user.user_id,
-        school_id=user.school_id
-    )
-    db.session.add(resource)
-    db.session.commit()
-
-    return jsonify({
-        'success': True,
-        'message': 'Resource uploaded successfully. Awaiting moderation.',
-        'data': resource.to_dict()
-    }), 201
 
 
 @uploads_bp.route('/api/uploads/<int:resource_id>', methods=['PUT'])

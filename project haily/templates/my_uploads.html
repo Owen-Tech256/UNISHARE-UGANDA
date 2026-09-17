@@ -2,123 +2,120 @@
 {% block title %}My Uploads - UniShare Nkumba{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="page-header">
-        <div>
-            <h1><i class="fas fa-list"></i> My Uploads</h1>
-            <p>Track the status of your contributed resources</p>
+<div class="my-uploads-page">
+    <!-- Page Header -->
+    <div class="page-header-modern">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <div>
+                <h1>My Uploads</h1>
+                <p>Track the status of your contributed resources</p>
+            </div>
         </div>
         <a href="{{ url_for('uploads.upload_page') }}" class="btn btn-primary">
             <i class="fas fa-plus"></i> New Upload
         </a>
     </div>
 
-    <div class="stats-row">
+    <!-- Stats Cards -->
+    <div class="stats-grid-modern">
         <div class="stat-card stat-pending">
-            <i class="fas fa-clock"></i>
-            <div>
-                <h3 id="statPending">0</h3>
-                <p>Pending</p>
+            <div class="stat-card-content">
+                <div class="stat-icon-wrapper">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-number" id="statPending">0</span>
+                    <span class="stat-label">Pending Review</span>
+                </div>
             </div>
         </div>
+
         <div class="stat-card stat-approved">
-            <i class="fas fa-check-circle"></i>
-            <div>
-                <h3 id="statApproved">0</h3>
-                <p>Approved</p>
+            <div class="stat-card-content">
+                <div class="stat-icon-wrapper">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-number" id="statApproved">0</span>
+                    <span class="stat-label">Approved</span>
+                </div>
             </div>
         </div>
+
         <div class="stat-card stat-rejected">
-            <i class="fas fa-times-circle"></i>
-            <div>
-                <h3 id="statRejected">0</h3>
-                <p>Rejected</p>
+            <div class="stat-card-content">
+                <div class="stat-icon-wrapper">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-number" id="statRejected">0</span>
+                    <span class="stat-label">Rejected</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="filter-bar">
-        <button class="filter-btn active" data-status="">All</button>
-        <button class="filter-btn" data-status="pending">Pending</button>
-        <button class="filter-btn" data-status="approved">Approved</button>
-        <button class="filter-btn" data-status="rejected">Rejected</button>
-    </div>
-
-    <div id="uploadsList" class="uploads-list">
-        <div class="loading-state">
-            <i class="fas fa-spinner fa-spin"></i>
-            <p>Loading your uploads...</p>
+    <!-- Filters -->
+    <div class="filters-bar">
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all">
+                <i class="fas fa-list"></i> All
+            </button>
+            <button class="filter-tab" data-filter="pending">
+                <i class="fas fa-clock"></i> Pending
+            </button>
+            <button class="filter-tab" data-filter="approved">
+                <i class="fas fa-check-circle"></i> Approved
+            </button>
+            <button class="filter-tab" data-filter="rejected">
+                <i class="fas fa-times-circle"></i> Rejected
+            </button>
+        </div>
+        
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchUploads" placeholder="Search your uploads..." class="search-input">
         </div>
     </div>
 
-    <div class="pagination" id="pagination"></div>
+    <!-- Uploads List -->
+    <div class="uploads-container">
+        <div class="uploads-list" id="uploadsList">
+            <!-- Loading State -->
+            <div class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading your uploads...</p>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-modern" id="pagination"></div>
+    </div>
 </div>
 
-<!-- Edit Modal -->
-<div class="modal" id="editModal">
-    <div class="modal-content modal-large">
+<!-- Resource Actions Modal -->
+<div class="modal" id="resourceModal">
+    <div class="modal-content modal-medium">
         <div class="modal-header">
-            <h3><i class="fas fa-edit"></i> Edit Resource</h3>
-            <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+            <h3><i class="fas fa-info-circle"></i> Resource Details</h3>
+            <button class="modal-close" onclick="closeModal('resourceModal')">&times;</button>
         </div>
-        <form id="editForm" enctype="multipart/form-data">
-            <div class="modal-body">
-                <input type="hidden" id="editResourceId">
-                <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" id="editTitle" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Course Code</label>
-                        <input type="text" id="editCourseCode" required style="text-transform: uppercase;">
-                    </div>
-                    <div class="form-group">
-                        <label>Course Name</label>
-                        <input type="text" id="editCourseName" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Lecturer</label>
-                    <input type="text" id="editLecturer" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Academic Year</label>
-                        <input type="text" id="editYear" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Semester</label>
-                        <select id="editSemester" required>
-                            <option value="Semester 1">Semester 1</option>
-                            <option value="Semester 2">Semester 2</option>
-                            <option value="Semester 3">Semester 3</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Resource Type</label>
-                        <select id="editType" required>
-                            <option value="Notes">Notes</option>
-                            <option value="Past Paper">Past Paper</option>
-                            <option value="Slides">Slides</option>
-                            <option value="Summary">Summary</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Replace file (optional)</label>
-                    <input type="file" id="editFile" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline" onclick="closeModal('editModal')">Cancel</button>
-                <button type="submit" class="btn btn-primary">Save & Resubmit</button>
-            </div>
-        </form>
+        <div class="modal-body" id="modalContent">
+            <!-- Content will be loaded here -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('resourceModal')">Close</button>
+            <button class="btn btn-primary" id="resubmitBtn" style="display:none;">
+                <i class="fas fa-redo"></i> Resubmit
+            </button>
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_scripts %}
-<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+<script src="{{ url_for('static', filename='js/my_uploads.js') }}"></script>
 {% endblock %}
