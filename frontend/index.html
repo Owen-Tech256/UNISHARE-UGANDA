@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UniShare Uganda — Find academic resources from students across Uganda</title>
+<title>UniShare Uganda - Find academic resources from students across Uganda</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
@@ -26,9 +26,14 @@
             <label for="homeUniversity">Select your university</label>
             <select id="homeUniversity" class="input"></select>
           </div>
+          <div class="field field-uni">
+            <label for="homeSchool">School category</label>
+            <select id="homeSchool" class="input"></select>
+          </div>
           <div class="field field-query">
             <label for="homeQuery">Course code, course name or lecturer</label>
-            <input type="text" id="homeQuery" class="input" placeholder="Search by course code, course name or lecturer…">
+            <input type="search" id="homeQuery" class="input" list="homeSearchSuggestions" autocomplete="off" placeholder="Search by course code, course name or lecturer…">
+            <datalist id="homeSearchSuggestions"></datalist>
           </div>
         </div>
         <div style="margin-top: 16px; display:flex; justify-content:flex-end;">
@@ -72,7 +77,7 @@
 
     <section class="section" aria-label="Platform statistics">
       <div class="stats-band">
-        <div class="stat-card"><div class="stat-num">12,480</div><div class="stat-label">Resources</div></div>
+        <div class="stat-card"><div class="stat-num" id="resourceCount">0</div><div class="stat-label">Resources</div></div>
         <div class="stat-card"><div class="stat-num">15</div><div class="stat-label">Universities</div></div>
         <div class="stat-card"><div class="stat-num">3,240</div><div class="stat-label">Contributors</div></div>
       </div>
@@ -90,14 +95,21 @@
     <section class="section" id="about" aria-label="About UniShare Uganda">
       <div class="card">
         <h2>About UniShare Uganda</h2>
-        <p style="margin-top:12px; color:var(--color-text-secondary);">UniShare Uganda is a shared, moderator-reviewed library of notes, slides, summaries and past papers, contributed by students at universities across the country — built so that finding a past paper doesn't depend on which WhatsApp group you're in.</p>
+        <p style="margin-top:12px; color:var(--color-text-secondary);">UniShare Uganda is a shared, moderator-reviewed library of notes, slides, summaries and past papers, contributed by students at universities across the country-built so that finding a past paper doesn't depend on which WhatsApp group you're in.</p>
       </div>
     </section>
 
     <section class="section" id="contact" aria-label="Contact and reporting">
       <div class="card">
-        <h2>Contact &amp; Terms</h2>
-        <p style="margin-top:12px; color:var(--color-text-secondary);">Questions, issues, or something to report? Reach the UniShare team at <a href="mailto:hello@unishare.ug">hello@unishare.ug</a>. By using UniShare, you agree to share only original or permitted academic material.</p>
+        <h2>Contact</h2>
+        <p id="report" tabindex="-1" style="margin-top:12px; color:var(--color-text-secondary);">Questions, issues, or something to report? Reach the UniShare team at <a href="mailto:hello@unishare.ug">hello@unishare.ug</a>.</p>
+      </div>
+    </section>
+
+    <section class="section" id="terms" aria-label="Terms">
+      <div class="card">
+        <h2>Terms, in short</h2>
+        <p style="margin-top:12px; color:var(--color-text-secondary);">By using UniShare, you agree to share only Original or Permitted Academic Material. </p>
       </div>
     </section>
   </div>
@@ -109,6 +121,9 @@
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     populateUniversitySelect(document.getElementById("homeUniversity"), true);
+    populateSchoolCategorySelect(document.getElementById("homeSchool"), true);
+    populateHomeSearchSuggestions();
+    document.getElementById("resourceCount").textContent = RESOURCES.filter(r => r.approved).length.toLocaleString();
 
     const grid = document.getElementById("recentGrid");
     const recent = RESOURCES.filter(r => r.approved).slice().sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 8);
@@ -117,9 +132,11 @@
     document.getElementById("homeSearchForm").addEventListener("submit", (e) => {
       e.preventDefault();
       const uni = document.getElementById("homeUniversity").value;
+      const school = document.getElementById("homeSchool").value;
       const q = document.getElementById("homeQuery").value;
       const params = new URLSearchParams();
       if (uni) params.set("university", uni);
+      if (school) params.set("school", school);
       if (q) params.set("q", q);
       window.location.href = "browse.html" + (params.toString() ? "?" + params.toString() : "");
     });

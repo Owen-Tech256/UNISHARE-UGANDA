@@ -1,5 +1,5 @@
 /* =========================================================
-   UniShare Uganda — auth.js
+   UniShare Uganda - auth.js
    Login / Register form logic (frontend-only, fake auth)
    ========================================================= */
 
@@ -41,6 +41,9 @@ function isValidInstitutionalEmail(value) {
 function initLoginForm() {
   const form = document.getElementById("loginForm");
   if (!form) return;
+  const loginTitle = document.getElementById("loginTitle");
+  const currentUser = getAuthState();
+  if (currentUser && loginTitle) loginTitle.textContent = "Welcome back";
   wirePasswordToggle("loginPwToggle", "loginPassword");
 
   form.addEventListener("submit", (e) => {
@@ -71,6 +74,13 @@ function initLoginForm() {
     submitBtn.textContent = "Logging in...";
 
     api.login(email, password).then((res) => {
+      if (!res.ok) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Login";
+        alertBox.textContent = "No registered account was found with those details. Please register first.";
+        alertBox.classList.add("show");
+        return;
+      }
       setAuthState(res.user);
       window.location.href = "index.html";
     });
@@ -130,7 +140,13 @@ function initRegisterForm() {
     submitBtn.disabled = true;
     submitBtn.textContent = "Creating account...";
 
-    api.register({ name, email, university, password, course, year }).then(() => {
+    api.register({ name, email, university, password, course, year, createdAt: new Date().toISOString() }).then((res) => {
+      if (!res.ok) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Create Account";
+        setFieldError("regEmail", "regEmailError", "An account with this email already exists.");
+        return;
+      }
       setAuthState({ name, email });
       window.location.href = "index.html";
     });

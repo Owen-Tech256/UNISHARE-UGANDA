@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% block title %}{{ resource.title }} - UniShare Nkumba{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <!-- Back Link -->
+    <a href="{{ url_for('resources.browse') }}" class="back-link" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-muted); margin-bottom: 1.5rem; font-weight: 500; text-decoration: none;">
+        <i class="fas fa-arrow-left"></i> Back to Browse
+    </a>
+
+    <div class="resource-detail-card" style="background: var(--card); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow); border: 1px solid var(--border);">
+        
+        <!-- Header -->
+        <div class="resource-detail-header" style="display: flex; gap: 0.75rem; margin-bottom: 1rem; align-items: center;">
+            <span class="resource-type-badge" style="display: inline-block; padding: 0.375rem 0.875rem; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: var(--card); border-radius: 999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                {{ resource.resource_type }}
+            </span>
+            <span class="resource-status-badge status-{{ resource.status }}" style="padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: #d1fae5; color: #065f46;">
+                {{ resource.status|title }}
+            </span>
+        </div>
+
+        <h1 class="resource-title" style="font-size: 2rem; margin-bottom: 1.5rem; color: var(--text-main); font-weight: 800;">
+            {{ resource.title }}
+        </h1>
+
+        <!-- Metadata Grid -->
+        <div class="resource-meta-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; padding: 1.5rem; background: var(--bg); border-radius: var(--radius);">
+            <div class="meta-item" style="display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fas fa-hashtag" style="font-size: 1.25rem; color: var(--primary); width: 24px;"></i>
+                <div>
+                    <small style="display: block; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Course Code</small>
+                    <strong style="color: var(--text-main);">{{ resource.course_code }}</strong>
+                </div>
+            </div>
+            <div class="meta-item" style="display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fas fa-book" style="font-size: 1.25rem; color: var(--primary); width: 24px;"></i>
+                <div>
+                    <small style="display: block; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Course Name</small>
+                    <strong style="color: var(--text-main);">{{ resource.course_name }}</strong>
+                </div>
+            </div>
+            <div class="meta-item" style="display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fas fa-chalkboard-teacher" style="font-size: 1.25rem; color: var(--primary); width: 24px;"></i>
+                <div>
+                    <small style="display: block; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Lecturer</small>
+                    <strong style="color: var(--text-main);">{{ resource.lecturer_name }}</strong>
+                </div>
+            </div>
+            <div class="meta-item" style="display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fas fa-calendar-alt" style="font-size: 1.25rem; color: var(--primary); width: 24px;"></i>
+                <div>
+                    <small style="display: block; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Academic Year</small>
+                    <strong style="color: var(--text-main);">{{ resource.academic_year }}</strong>
+                </div>
+            </div>
+            <div class="meta-item" style="display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fas fa-calendar-week" style="font-size: 1.25rem; color: var(--primary); width: 24px;"></i>
+                <div>
+                    <small style="display: block; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Semester</small>
+                    <strong style="color: var(--text-main);">{{ resource.semester }}</strong>
+                </div>
+            </div>
+            <div class="meta-item" style="display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fas fa-university" style="font-size: 1.25rem; color: var(--primary); width: 24px;"></i>
+                <div>
+                    <small style="display: block; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">School</small>
+                    <strong style="color: var(--text-main);">{{ resource.school.school_name }}</strong>
+                </div>
+            </div>
+            <div class="meta-item" style="display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fas fa-clock" style="font-size: 1.25rem; color: var(--primary); width: 24px;"></i>
+                <div>
+                    <small style="display: block; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Uploaded</small>
+                    <strong style="color: var(--text-main);">{{ resource.created_at.strftime('%d %b %Y') }}</strong>
+                </div>
+            </div>
+            <div class="meta-item" style="display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fas fa-file-alt" style="font-size: 1.25rem; color: var(--primary); width: 24px;"></i>
+                <div>
+                    <small style="display: block; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">File</small>
+                    <strong style="color: var(--text-main);">{{ resource.original_filename }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="resource-actions" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a href="{{ url_for('resources.download_resource', resource_id=resource.resource_id) }}" class="btn btn-primary btn-lg" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.875rem 1.75rem; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: var(--card); border: none; border-radius: var(--radius); font-weight: 700; font-size: 1rem; text-decoration: none; box-shadow: 0 4px 12px rgba(23, 74, 126, 0.3); transition: all 0.2s;">
+                <i class="fas fa-download"></i> Download Resource
+            </a>
+            
+            <button class="btn btn-outline btn-lg" id="upvoteBtn" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.875rem 1.75rem; background: transparent; color: var(--primary); border: 2px solid var(--primary); border-radius: var(--radius); font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s;">
+                <i class="fas fa-thumbs-up"></i>
+                <span id="upvoteCount">{{ resource.upvotes }}</span>
+                <span id="upvoteLabel">Upvote</span>
+            </button>
+            
+            <button class="btn btn-outline btn-lg" id="reportBtn" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.875rem 1.75rem; background: transparent; color: var(--error); border: 2px solid var(--error); border-radius: var(--radius); font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s;">
+                <i class="fas fa-flag"></i> Report
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Report Modal -->
+<div class="modal" id="reportModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 1rem;">
+    <div class="modal-content" style="background: var(--card); border-radius: var(--radius-lg); max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s;">
+        <div class="modal-header" style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-main); font-size: 1.125rem;"><i class="fas fa-flag" style="color: var(--primary);"></i> Report Resource</h3>
+            <button class="modal-close" onclick="closeModal('reportModal')" style="background: none; border: none; font-size: 1.75rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+        </div>
+        <div class="modal-body" style="padding: 1.5rem;">
+            <p class="modal-subtitle" style="color: var(--text-muted); margin-bottom: 1rem;">Help us keep UniShare Nkumba a quality resource platform.</p>
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-main);">Reason for report</label>
+                <select id="reportReason" required style="width: 100%; padding: 0.75rem 0.875rem; border: 1.5px solid var(--border); border-radius: var(--radius); font-size: 0.9375rem; background: var(--card);">
+                    <option value="">Select a reason</option>
+                    <option>Wrong academic material</option>
+                    <option>Duplicate resource</option>
+                    <option>Inappropriate content</option>
+                    <option>Incorrect course information</option>
+                    <option>Copyright/problematic material</option>
+                    <option>Other</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-main);">Additional comments (optional)</label>
+                <textarea id="reportComment" rows="3" placeholder="Provide more details..." style="width: 100%; padding: 0.75rem 0.875rem; border: 1.5px solid var(--border); border-radius: var(--radius); font-size: 0.9375rem; background: var(--card); font-family: inherit;"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer" style="padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; gap: 0.75rem; justify-content: flex-end;">
+            <button class="btn btn-outline" onclick="closeModal('reportModal')" style="padding: 0.625rem 1.25rem; border: 2px solid var(--primary); background: transparent; color: var(--primary); border-radius: var(--radius); font-weight: 600; cursor: pointer;">Cancel</button>
+            <button class="btn btn-primary" id="submitReport" style="padding: 0.625rem 1.25rem; background: var(--primary); color: var(--card); border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer;">Submit Report</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Pass resource ID to JS
+    const resourceId = {{ resource.resource_id }};
+
+    // Simple modal functions for this page
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    // Upvote Logic
+    document.getElementById('upvoteBtn').addEventListener('click', async () => {
+        try {
+            const response = await fetch(`/api/resources/${resourceId}/upvote`, { 
+                method: 'POST',
+                credentials: 'same-origin'
+            });
+            const data = await response.json();
+            if (data.success) {
+                document.getElementById('upvoteCount').textContent = data.data.upvotes;
+                document.getElementById('upvoteLabel').textContent = data.data.upvoted ? 'Upvoted' : 'Upvote';
+            }
+        } catch (e) { console.error(e); }
+    });
+
+    // Report Logic
+    document.getElementById('reportBtn').addEventListener('click', () => openModal('reportModal'));
+    
+    document.getElementById('submitReport').addEventListener('click', async () => {
+        const reason = document.getElementById('reportReason').value;
+        const comment = document.getElementById('reportComment').value;
+
+        if (!reason) { alert('Please select a reason'); return; }
+
+        try {
+            const response = await fetch(`/api/resources/${resourceId}/report`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({ reason, comment })
+            });
+            const data = await response.json();
+            if (data.success) {
+                alert('Report submitted. Thank you!');
+                closeModal('reportModal');
+            } else {
+                alert(data.message || 'Failed to submit report');
+            }
+        } catch (e) { console.error(e); }
+    });
+</script>
+{% endblock %}

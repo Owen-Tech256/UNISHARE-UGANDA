@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Browse Resources — UniShare Uganda</title>
+<title>Browse Resources - UniShare Uganda</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body data-page="browse">
@@ -19,7 +19,8 @@
 
       <div class="search-bar" style="max-width: 640px;">
         <label for="search-input" class="visually-hidden">Search notes, courses, lecturers</label>
-        <input type="search" id="search-input" placeholder="Search notes, courses, lecturers…" autocomplete="off">
+        <input type="search" id="search-input" list="browse-search-suggestions" placeholder="Search notes, courses, lecturers…" autocomplete="off">
+        <datalist id="browse-search-suggestions"></datalist>
       </div>
     </div>
 
@@ -38,6 +39,11 @@
         <div class="filter-group">
           <label for="filter-university">University</label>
           <select id="filter-university"></select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filter-school">School Category</label>
+          <select id="filter-school"></select>
         </div>
 
         <div class="filter-group">
@@ -88,7 +94,7 @@
         <div class="resource-grid" id="browse-results-grid"></div>
 
         <div class="empty-state" id="browse-empty-state" hidden>
-          <h3>No resources found — be the first to upload!</h3>
+          <h3>No resources found - be the first to upload!</h3>
           <p>Try clearing a filter, or share the resource yourself.</p>
           <a href="upload.html" class="btn btn-accent">Upload a Resource</a>
         </div>

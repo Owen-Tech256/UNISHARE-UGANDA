@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Resource Details — UniShare Uganda</title>
+<title>Resource Details - UniShare Uganda</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body data-page="resource_detail">
@@ -103,7 +103,7 @@
           <div class="preview-panel">
             <div class="preview-icon">${escapeHtml(resource.fileType)}</div>
             <p style="color: rgba(255,255,255,0.85); margin-top: var(--space-3);">
-              ${fileTypeBlurb(resource.fileType)} preview — open the download to view the full file.
+              ${fileTypeBlurb(resource.fileType)} preview - open the download to view the full file.
             </p>
           </div>
 
@@ -128,7 +128,7 @@
           <h4>At a glance</h4>
           <div class="card-meta stack-sm">
             <span><strong>University:</strong> ${escapeHtml(resource.university)}</span>
-            <span><strong>Course:</strong> ${escapeHtml(resource.courseCode)} — ${escapeHtml(resource.courseName)}</span>
+            <span><strong>Course:</strong> ${escapeHtml(resource.courseCode)} - ${escapeHtml(resource.courseName)}</span>
             <span><strong>Lecturer:</strong> ${escapeHtml(resource.lecturer)}</span>
             <span><strong>Year / Semester:</strong> ${escapeHtml(resource.academicYear)}, ${escapeHtml(resource.semester)}</span>
             <span><strong>Type:</strong> ${type.label}</span>
@@ -155,7 +155,7 @@
       .slice(0, 4);
     const mount = document.getElementById("related-resources-grid");
     if (related.length === 0) {
-      mount.innerHTML = `<p class="text-soft">No other resources for this course yet — be the first to add one.</p>`;
+      mount.innerHTML = `<p class="text-soft">No other resources for this course yet - be the first to add one.</p>`;
       return;
     }
     mount.innerHTML = related.map(renderResourceCard).join("");
@@ -188,7 +188,7 @@
       btn.setAttribute("aria-pressed", "true");
       const countEl = btn.querySelector(".vote-count");
       countEl.textContent = String(Number(countEl.textContent) + 1);
-      showToast("Upvoted — thanks for the feedback!", "success");
+      showToast("Upvoted - thanks for the feedback!", "success");
     });
 
     document.getElementById("submit-report-btn").addEventListener("click", () => {
@@ -197,7 +197,7 @@
       closeModal("report-modal");
       document.getElementById("report-reason").value = "";
       document.getElementById("report-comment").value = "";
-      showToast("Report submitted — our moderators will take a look.", "success");
+      showToast("Report submitted - our moderators will take a look.", "success");
     });
   }
 

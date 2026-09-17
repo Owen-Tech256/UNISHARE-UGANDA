@@ -1,5 +1,5 @@
 /* ==========================================================================
-   UniShare Uganda — browse.js
+   UniShare Uganda - browse.js
    Search + filter + sort + paginate the resource catalog on browse.html
    ========================================================================== */
 
@@ -8,6 +8,7 @@ const PAGE_SIZE = 20;
 const browseState = {
   query: "",
   university: "",
+  schoolCategory: "",
   courseCode: "",
   lecturer: "",
   academicYear: "",
@@ -21,6 +22,7 @@ function populateBrowseFilterOptions() {
   const uniSelect = document.getElementById("filter-university");
   uniSelect.innerHTML = `<option value="">All universities</option>` +
     UNIVERSITIES.map((u) => `<option value="${escapeHtml(u)}">${escapeHtml(u)}</option>`).join("");
+  populateSchoolCategorySelect(document.getElementById("filter-school"), true);
 
   const yearSelect = document.getElementById("filter-year");
   yearSelect.innerHTML = `<option value="">Any year</option>` +
@@ -35,12 +37,14 @@ function readStateFromQueryParams() {
   const params = new URLSearchParams(window.location.search);
   if (params.get("q")) browseState.query = params.get("q");
   if (params.get("university")) browseState.university = params.get("university");
+  if (params.get("school")) browseState.schoolCategory = params.get("school");
   if (params.get("type")) browseState.types = [params.get("type")];
 }
 
 function applyStateToControls() {
   document.getElementById("search-input").value = browseState.query;
   document.getElementById("filter-university").value = browseState.university;
+  document.getElementById("filter-school").value = browseState.schoolCategory;
   document.getElementById("filter-year").value = browseState.academicYear;
   document.getElementById("filter-semester").value = browseState.semester;
   document.querySelectorAll("[data-type-checkbox]").forEach((cb) => {
@@ -56,6 +60,7 @@ function matchesFilters(resource) {
     if (!haystack.includes(q)) return false;
   }
   if (browseState.university && resource.university !== browseState.university) return false;
+  if (browseState.schoolCategory && getSchoolCategory(resource) !== browseState.schoolCategory) return false;
   if (browseState.courseCode && !resource.courseCode.toLowerCase().includes(browseState.courseCode.toLowerCase())) return false;
   if (browseState.lecturer && !resource.lecturer.toLowerCase().includes(browseState.lecturer.toLowerCase())) return false;
   if (browseState.academicYear && resource.academicYear !== browseState.academicYear) return false;
@@ -139,6 +144,9 @@ function wireBrowseControls() {
   document.getElementById("filter-university").addEventListener("change", (e) => {
     browseState.university = e.target.value; browseState.page = 1; renderBrowseResults();
   });
+  document.getElementById("filter-school").addEventListener("change", (e) => {
+    browseState.schoolCategory = e.target.value; browseState.page = 1; renderBrowseResults();
+  });
   document.getElementById("filter-course").addEventListener("input", debounce((e) => {
     browseState.courseCode = e.target.value; browseState.page = 1; renderBrowseResults();
   }, 250));
@@ -191,6 +199,7 @@ function initBrowsePage() {
   if (!grid) return;
 
   populateBrowseFilterOptions();
+  populateSearchSuggestions("browse-search-suggestions");
   readStateFromQueryParams();
   applyStateToControls();
   wireBrowseControls();

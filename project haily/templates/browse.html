@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block title %}Browse Resources - UniShare Nkumba{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="browse-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <div>
+                <h1>Browse Resources</h1>
+                <p>Discover academic materials from all seven Nkumba University schools</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search and Filters Panel -->
+<section class="filters-section">
+    <div class="container">
+        <div class="search-panel">
+            <!-- Main Search -->
+            <div class="search-box-large">
+                <i class="fas fa-search"></i>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Search by title, course code, course name, or lecturer..."
+                    class="search-input-large"
+                >
+                <button class="search-clear-btn" id="clearSearch" style="display:none;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Filter Grid -->
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>
+                        <i class="fas fa-university"></i>
+                        School
+                    </label>
+                    <select id="filterSchool" class="filter-select-modern">
+                        <option value="">All Schools</option>
+                        {% for school in schools %}
+                            <option value="{{ school.school_id }}">{{ school.school_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>
+                        <i class="fas fa-file-alt"></i>
+                        Resource Type
+                    </label>
+                    <select id="filterType" class="filter-select-modern">
+                        <option value="">All Types</option>
+                        <option value="Notes">Notes</option>
+                        <option value="Past Paper">Past Paper</option>
+                        <option value="Slides">Slides</option>
+                        <option value="Summary">Summary</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>
+                        <i class="fas fa-calendar-alt"></i>
+                        Semester
+                    </label>
+                    <select id="filterSemester" class="filter-select-modern">
+                        <option value="">All Semesters</option>
+                        <option value="Semester 1">Semester 1</option>
+                        <option value="Semester 2">Semester 2</option>
+                        <option value="Semester 3">Semester 3</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>
+                        <i class="fas fa-hashtag"></i>
+                        Course Code
+                    </label>
+                    <input 
+                        type="text" 
+                        id="filterCourse" 
+                        placeholder="e.g. CSC 210"
+                        class="filter-input-modern"
+                    >
+                </div>
+
+                <div class="filter-group">
+                    <label>
+                        <i class="fas fa-calendar"></i>
+                        Academic Year
+                    </label>
+                    <input 
+                        type="text" 
+                        id="filterYear" 
+                        placeholder="e.g. 2024/2025"
+                        class="filter-input-modern"
+                    >
+                </div>
+
+                <div class="filter-group">
+                    <label>
+                        <i class="fas fa-sort"></i>
+                        Sort By
+                    </label>
+                    <select id="sortBy" class="filter-select-modern">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="popular">Most Popular</option>
+                        <option value="title">Title (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Active Filters -->
+            <div class="active-filters" id="activeFilters" style="display:none;">
+                <span class="active-filters-label">
+                    <i class="fas fa-filter"></i>
+                    Active Filters:
+                </span>
+                <div class="active-filters-list" id="activeFiltersList">
+                    <!-- Active filter tags will be inserted here -->
+                </div>
+                <button class="btn-clear-all" onclick="clearAllFilters()">
+                    Clear All
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Results Info -->
+<section class="results-info-section">
+    <div class="container">
+        <div class="results-info" id="resultsInfo">
+            <span class="results-count">Loading resources...</span>
+        </div>
+    </div>
+</section>
+
+<!-- Resources Grid -->
+<section class="resources-section">
+    <div class="container">
+        <div class="resources-grid" id="resourcesGrid">
+            <!-- Loading State -->
+            <div class="loading-grid">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>Loading resources...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-container" id="pagination">
+            <!-- Pagination will be inserted here -->
+        </div>
+    </div>
+</section>
+
+<!-- Empty State (Hidden by default) -->
+<div class="empty-state-container" id="emptyState" style="display:none;">
+    <div class="empty-state">
+        <div class="empty-state-icon">
+            <i class="fas fa-search"></i>
+        </div>
+        <h3>No resources found</h3>
+        <p>Try changing your search or filters to find what you're looking for.</p>
+        <button class="btn btn-primary" onclick="clearAllFilters()">
+            <i class="fas fa-redo"></i> Clear All Filters
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/browse.js') }}"></script>
+{% endblock %}

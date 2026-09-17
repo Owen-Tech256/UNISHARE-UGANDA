@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Reports - UniShare Nkumba{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1><i class="fas fa-flag"></i> Reported Resources</h1>
+        <p>Review reports for resources in {{ current_user.school.school_name }}</p>
+    </div>
+
+    <div class="filter-bar">
+        <button class="filter-btn active" data-status="open">Open</button>
+        <button class="filter-btn" data-status="resolved">Resolved</button>
+    </div>
+
+    <div id="reportsList" class="reports-list">
+        <div class="loading-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading reports...</p>
+        </div>
+    </div>
+
+    <div class="pagination" id="pagination"></div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}
