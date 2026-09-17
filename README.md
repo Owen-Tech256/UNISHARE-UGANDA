@@ -78,13 +78,13 @@ The initial super admin password comes from `SUPER_ADMIN_PASSWORD`
 ## API overview
 
 Public (no login): `GET /api/schools`, `GET /api/resources`, `GET /api/resources/<id>`,
-`GET /api/resources/<id>/download`, `GET /api/resources/<id>/comments`,
+`GET /download/<id>` (streams the file), `GET /api/resources/<id>/comments`,
 `GET /api/resources/<id>/upvote-status`
 
 Account required: `POST /api/auth/register`, `POST /api/auth/login`,
 `POST /logout`, `GET /api/auth/me`, `POST /change-password`, `PUT /api/profile`,
 `POST /api/resources/<id>/upvote`, `POST /api/resources/<id>/report`,
-`POST /api/resources/<id>/comments`
+`POST /api/resources/<id>/comments`, `DELETE /api/comments/<id>` (author or staff)
 
 Upload roles: `POST /api/uploads/check-duplicate`, `POST /api/uploads`,
 `GET /api/uploads`, `PUT /api/uploads/<id>`, `POST /api/uploads/<id>/resubmit`,
