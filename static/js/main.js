@@ -35,8 +35,8 @@ const api = {
     const qs = new URLSearchParams(params).toString();
     return apiFetch(`/api/resources${qs ? '?' + qs : ''}`).then(r => r.data);
   },
-  // GET /api/resources/{id}
-  getResource: (id) => apiFetch(`/api/resources/${id}`).then(r => r.data.resource),
+  // GET /api/resources/{id} -> {resource, related}
+  getResource: (id) => apiFetch(`/api/resources/${id}`).then(r => r.data),
   // GET /api/my-uploads
   getMyUploads: (params = {}) => {
     const qs = new URLSearchParams(params).toString();
@@ -298,8 +298,8 @@ function renderFooter() {
 }
 
 function populateSchoolSelect(select, includeAll) {
-  if (!select) return;
-  api.getSchools().then(schools => {
+  if (!select) return Promise.resolve();
+  return api.getSchools().then(schools => {
     let html = includeAll ? `<option value="">All Schools</option>` : `<option value="">Select school</option>`;
     html += schools.map(s => `<option value="${s.school_id}">${s.school_name}</option>`).join("");
     select.innerHTML = html;

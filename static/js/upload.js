@@ -38,8 +38,13 @@ async function initUploadPage() {
     return;
   }
 
-  populateSchoolSelect(document.getElementById("upSchool"), false);
-  document.getElementById("upSchool").value = user.school_id;
+  /* Populate schools, then lock to the coordinator's own school.
+     (The server forces school_id=user.school_id regardless; this is UX.) */
+  populateSchoolSelect(document.getElementById("upSchool"), false).then(() => {
+    const schoolSel = document.getElementById("upSchool");
+    schoolSel.value = user.school_id;
+    schoolSel.disabled = true;
+  });
 
   const dropzone = document.getElementById("dropzone");
   const fileInput = document.getElementById("fileInput");

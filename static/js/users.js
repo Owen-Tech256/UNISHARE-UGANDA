@@ -4,6 +4,9 @@
    the frontend reference (table + modal patterns); real API calls.
    ========================================================= */
 
+let usersPage = 1;
+const USERS_PER_PAGE = 20;
+
 function roleBadgeClass(role) {
   switch (role) {
     case "super_admin": return "status-rejected";

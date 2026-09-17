@@ -112,7 +112,8 @@
     const trigger = document.getElementById("mobileFilterTrigger");
     const closeBtn = document.getElementById("closeFiltersBtn");
     function syncCloseBtn() {
-      closeBtn.style.display = window.matchMedia("(max-width: 1023px)").matches ? "inline-flex" : "none";
+      const mq = window.matchMedia ? window.matchMedia("(max-width: 1023px)") : null;
+      closeBtn.style.display = (mq && mq.matches) ? "inline-flex" : "none";
     }
     syncCloseBtn();
     window.addEventListener("resize", syncCloseBtn);
