@@ -158,9 +158,15 @@ def api_login():
 def api_me():
     """Current session user (or null) for the frontend header."""
     user = None
+    must_change_password = False
     if 'user_id' in session:
         user = User.query.get(session['user_id'])
-    return jsonify({'success': True, 'data': {'user': user.to_dict() if user else None}})
+        if user:
+            must_change_password = bool(user.is_temp_password)
+    return jsonify({'success': True, 'data': {
+        'user': user.to_dict() if user else None,
+        'must_change_password': must_change_password
+    }})
 
 
 @auth_bp.route('/logout', methods=['POST', 'GET'])

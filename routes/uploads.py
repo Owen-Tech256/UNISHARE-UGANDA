@@ -2,14 +2,15 @@
 Upload routes - ported from project haily's routes/uploads.py.
 
 Changes vs haily (per MIGRATION_PLAN.md):
-  - class_rep_required -> coordinator_required
+  - class_rep_required -> uploader_required (coordinator + moderator + super_admin:
+    the user's rule is that all three assigned roles can upload educational resources)
   - Description field added (frontend design's upload form has one)
   - New DELETE /api/uploads/<id> (withdraw a pending upload; soft-delete)
 """
 from flask import Blueprint, request, jsonify, session
 from werkzeug.utils import secure_filename
 from models import db, Resource, User
-from utils.auth import coordinator_required
+from utils.auth import uploader_required
 from utils.file_handler import save_uploaded_file
 
 uploads_bp = Blueprint('uploads', __name__)
@@ -19,7 +20,7 @@ VALID_TYPES = ['Notes', 'Past Paper', 'Slides', 'Summary']
 
 
 @uploads_bp.route('/api/uploads')
-@coordinator_required
+@uploader_required
 def get_my_uploads():
     user = User.query.get(session['user_id'])
     page = request.args.get('page', 1, type=int)
@@ -45,7 +46,7 @@ def get_my_uploads():
 
 
 @uploads_bp.route('/api/uploads/check-duplicate', methods=['POST'])
-@coordinator_required
+@uploader_required
 def check_duplicate():
     """Check for potential duplicates before upload (haily logic)."""
     user = User.query.get(session['user_id'])
@@ -74,7 +75,7 @@ def check_duplicate():
 
 
 @uploads_bp.route('/api/uploads', methods=['POST'])
-@coordinator_required
+@uploader_required
 def upload_resource():
     user = User.query.get(session['user_id'])
 
@@ -144,7 +145,7 @@ def upload_resource():
 
 
 @uploads_bp.route('/api/uploads/<int:resource_id>', methods=['PUT'])
-@coordinator_required
+@uploader_required
 def update_upload(resource_id):
     user = User.query.get(session['user_id'])
     resource = Resource.query.get(resource_id)
@@ -185,7 +186,7 @@ def update_upload(resource_id):
 
 
 @uploads_bp.route('/api/uploads/<int:resource_id>/resubmit', methods=['POST'])
-@coordinator_required
+@uploader_required
 def resubmit_upload(resource_id):
     user = User.query.get(session['user_id'])
     resource = Resource.query.get(resource_id)
@@ -207,7 +208,7 @@ def resubmit_upload(resource_id):
 
 
 @uploads_bp.route('/api/uploads/<int:resource_id>', methods=['DELETE'])
-@coordinator_required
+@uploader_required
 def withdraw_upload(resource_id):
     """Withdraw = soft-delete own upload. Only while still pending."""
     user = User.query.get(session['user_id'])

@@ -42,8 +42,15 @@ def coordinator_required(f):
     return role_required(['coordinator'])(f)
 
 
+def uploader_required(f):
+    """Upload rights: coordinators, moderators and super admins (assigned roles;
+    revocation by the super admin removes access immediately)."""
+    return role_required(['coordinator', 'moderator', 'super_admin'])(f)
+
+
 def moderator_required(f):
-    return role_required(['moderator'])(f)
+    # Super admin can also moderate (globally); see routes/admin.py
+    return role_required(['moderator', 'super_admin'])(f)
 
 
 def super_admin_required(f):
