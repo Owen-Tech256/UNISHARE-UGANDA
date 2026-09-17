@@ -84,6 +84,35 @@ function isModerator(user) {
   return !!user && (user.role === 'moderator' || user.role === 'super_admin');
 }
 
+/* ---------- Utilities ---------- */
+
+function escapeHtml(text) {
+  if (text === undefined || text === null) return "";
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function formatDate(isoString) {
+  if (!isoString) return "";
+  const d = new Date(isoString);
+  if (isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+}
+
+/** Handles login-required errors from apiFetch with a friendly toast.
+    Returns true if the error was an auth error. */
+function handleAuthError(err) {
+  if (err && /authentication required/i.test(err.message)) {
+    showToast("Please log in to continue.", "error");
+    return true;
+  }
+  return false;
+}
+
 /* ---------- Icons (inline SVG, no external assets) ---------- */
 
 const ICONS = {
