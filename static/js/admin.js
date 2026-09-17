@@ -124,11 +124,11 @@ function updateQueueStats() {
   setText("statOldest2", oldestDays ? `${oldestDays} day${oldestDays > 1 ? "s" : ""}` : "0d");
 }
 
-function initModerationQueue() {
+async function initModerationQueue() {
   const mount = document.getElementById("modQueueList");
   if (!mount) return;
 
-  const user = getAuthState();
+  const user = await authReady().then(getAuthState);
   if (!user || !isModerator(user)) {
     mount.innerHTML = `<div class="empty-state"><h3>Staff only</h3><p>You need a moderator or super admin account to view this page.</p></div>`;
     return;
@@ -259,11 +259,11 @@ async function loadReports() {
   }
 }
 
-function initReports() {
+async function initReports() {
   const tbody = document.getElementById("reportsTableBody");
   if (!tbody) return;
 
-  const user = getAuthState();
+  const user = await authReady().then(getAuthState);
   if (!user || user.role !== "super_admin") {
     document.querySelector(".table-wrap")?.style.setProperty("display", "none");
     const gate = document.getElementById("reportsEmpty");
@@ -308,8 +308,9 @@ let isSuperAdminFlag = false;
 function isSuperAdmin() { return isSuperAdminFlag; }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  /* main.js already fetched auth state before rendering the header. */
-  initModerationQueue();
-  initReports();
+  /* main.js's DOMContentLoaded await does NOT block these listeners —
+     each init awaits authReady() before reading the session user. */
+  await initModerationQueue();
+  await initReports();
   hydrateIcons();
 });

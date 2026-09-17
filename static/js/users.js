@@ -96,11 +96,11 @@ function openTempPwModal(data) {
   document.getElementById("tempPwModal").classList.add("open");
 }
 
-function initUsersPage() {
+async function initUsersPage() {
   const tbody = document.getElementById("usersTableBody");
   if (!tbody) return;
 
-  const user = getAuthState();
+  const user = await authReady().then(getAuthState);
   if (!user || user.role !== "super_admin") {
     document.querySelector(".table-wrap").style.display = "none";
     document.getElementById("userStats").style.display = "none";

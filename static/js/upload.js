@@ -16,11 +16,12 @@ function fileExtension(name) {
   return name.split(".").pop().toLowerCase();
 }
 
-function initUploadPage() {
+async function initUploadPage() {
   const form = document.getElementById("uploadForm");
   if (!form) return;
 
   // Gated page: must be logged in. Coordinators only get the real form.
+  await authReady();
   if (!getAuthState()) {
     window.location.href = "/login.html";
     return;

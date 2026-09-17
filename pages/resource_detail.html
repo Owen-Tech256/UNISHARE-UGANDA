@@ -272,6 +272,7 @@
   /* ---------- Init ---------- */
 
   document.addEventListener("DOMContentLoaded", async () => {
+    await authReady(); /* comment form / report gate read the session user */
     hydrateIcons();
 
     if (!resourceId) {

@@ -86,6 +86,15 @@ function getAuthState() {
   return currentUser;
 }
 
+/** Resolves once the session auth state has been fetched.
+    Page scripts must `await authReady()` in their DOMContentLoaded
+    handler BEFORE reading getAuthState(): main.js's own DOMContentLoaded
+    handler awaits the fetch, but later-registered listeners run while
+    it is still in flight (await yields control between listeners). */
+function authReady() {
+  return fetchAuthState();
+}
+
 async function logout() {
   try { await apiFetch('/logout', { method: 'POST' }); } catch (e) { /* ignore */ }
   window.location.href = '/index.html';
@@ -414,6 +423,8 @@ function ensureForceChangeModal() {
 document.addEventListener("DOMContentLoaded", async () => {
   const page = document.body.getAttribute("data-page") || "";
   await fetchAuthState();          // header needs to know the session user
+                                   // NOTE: page scripts await authReady() themselves —
+                                   // this await does NOT block their listeners.
   renderHeader(page);
   renderFooter();
   hydrateIcons();

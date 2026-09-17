@@ -180,7 +180,8 @@ function readStateFromQueryParams() {
 
 /* ---------- Init ---------- */
 
-function initBrowsePage() {
+async function initBrowsePage() {
+  await authReady(); /* first-paint vote highlights need the session user */
   const container = document.getElementById("resultsList");
   if (!container) return;
 
