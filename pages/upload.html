@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Share an academic resource - UniShare Uganda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body data-page="upload">
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="site-header"></div>
+
+<main id="main" class="page-main">
+  <div class="container">
+    <div class="form-wide" style="margin: 0 auto;">
+      <div class="page-header">
+        <h1>Share an academic resource</h1>
+        <p>Help other students by uploading notes, past papers, slides or summaries. Every upload is reviewed by a moderator before it goes live.</p>
+      </div>
+
+      <!-- Role gate: upload is coordinator-only -->
+      <div class="card" id="roleNotice" style="display:none; margin-bottom:20px;">
+        <h3 style="margin-bottom:8px;">Uploading is for coordinators</h3>
+        <p class="text-secondary" style="margin-bottom:12px;">Uploading academic resources is limited to coordinators assigned by your super admin. You can still browse and download everything freely.</p>
+        <a href="/browse.html" class="btn btn-primary btn-sm">Browse Resources</a>
+      </div>
+
+      <div id="uploadFormWrap" class="card">
+        <form id="uploadForm" novalidate>
+          <div class="field">
+            <label for="upSchool">School</label>
+            <select id="upSchool" class="input"></select>
+            <span class="error-text" id="upSchoolError"></span>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="field">
+              <label for="upCourseCode">Course Code</label>
+              <input type="text" id="upCourseCode" class="input" placeholder="e.g. BIT210">
+              <span class="error-text" id="upCourseCodeError"></span>
+            </div>
+            <div class="field">
+              <label for="upCourseName">Course Name</label>
+              <input type="text" id="upCourseName" class="input" placeholder="e.g. Database Management Systems">
+              <span class="error-text" id="upCourseNameError"></span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="upLecturer">Lecturer Name</label>
+            <input type="text" id="upLecturer" class="input" placeholder="e.g. Dr. Sarah Namukasa">
+            <span class="error-text" id="upLecturerError"></span>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+            <div class="field">
+              <label for="upYear">Academic Year</label>
+              <select id="upYear" class="input">
+                <option value="">Select year</option>
+                <option>2025/2026</option>
+                <option>2024/2025</option>
+                <option>2023/2024</option>
+                <option>2022/2023</option>
+              </select>
+              <span class="error-text" id="upYearError"></span>
+            </div>
+            <div class="field">
+              <label for="upSemester">Semester</label>
+              <select id="upSemester" class="input">
+                <option value="">Select semester</option>
+                <option>Semester 1</option>
+                <option>Semester 2</option>
+              </select>
+              <span class="error-text" id="upSemesterError"></span>
+            </div>
+            <div class="field">
+              <label for="upType">Resource Type</label>
+              <select id="upType" class="input">
+                <option value="">Select type</option>
+                <option>Notes</option>
+                <option>Past Paper</option>
+                <option>Slides</option>
+                <option>Summary</option>
+              </select>
+              <span class="error-text" id="upTypeError"></span>
+            </div>
+          </div>
+
+          <div class="notice-box notice-warning" id="duplicateNotice" style="display:none;">
+            <span data-icon="warn"></span>
+            <div>
+              <strong>Similar resources already exist.</strong>
+              <div style="margin-top:6px;"><button type="button" class="btn btn-outline btn-sm" id="viewExistingBtn">View Existing Resources</button></div>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:20px;">
+            <label for="upTitle">Title</label>
+            <input type="text" id="upTitle" class="input" placeholder="e.g. Database Management Systems Past Paper">
+            <span class="error-text" id="upTitleError"></span>
+          </div>
+
+          <div class="field">
+            <label for="upDescription">Description</label>
+            <textarea id="upDescription" class="input" placeholder="Briefly describe what this resource covers…"></textarea>
+          </div>
+
+          <div class="field">
+            <label>File</label>
+            <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload a file">
+              <div class="dz-icon" style="display:flex;justify-content:center;" data-icon="upload"></div>
+              <div><strong>Drag and drop your file here</strong></div>
+              <div class="dz-sub">or <span style="color:var(--color-primary); font-weight:600;">Browse Files</span></div>
+              <div class="dz-sub">Accepted: PDF, DOCX, PPTX, JPG, PNG &middot; Maximum file size: 16 MB</div>
+            </div>
+            <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.jpeg,.png" style="display:none;">
+            <span class="error-text" id="dzFileError"></span>
+            <div class="file-chip" id="fileChip" style="display:none;">
+              <span class="file-chip-icon" data-icon="file"></span>
+              <div class="file-chip-info">
+                <div class="file-chip-name"></div>
+                <div class="file-chip-size"></div>
+              </div>
+              <button type="button" class="file-chip-remove" id="fileChipRemove" aria-label="Remove file"><span data-icon="x"></span></button>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:20px;">
+            <label class="checkbox-row">
+              <input type="checkbox" id="upConfirm">
+              <span>I confirm this content is accurate and mine to share or permitted for redistribution.</span>
+            </label>
+            <span class="error-text" id="upConfirmError">You must confirm this before submitting.</span>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="uploadSubmit">Submit Resource</button>
+        </form>
+      </div>
+
+      <div class="empty-state" id="uploadSuccess" style="display:none;">
+        <div class="empty-icon" data-icon="check" style="display:flex;justify-content:center; color:var(--color-success);"></div>
+        <h3>Submitted - pending moderation review</h3>
+        <p>Thanks for contributing. Your resource will appear publicly once approved.</p>
+        <a href="/my_uploads.html" class="btn btn-primary">View My Uploads</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="/static/js/main.js"></script>
+<script src="/static/js/upload.js"></script>
+</body>
+</html>
