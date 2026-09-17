@@ -8,13 +8,17 @@ Changes vs haily (per MIGRATION_PLAN.md section 2):
     same-school staff
 """
 from flask import Blueprint, request, jsonify, session, send_file
-from models import db, Resource, User
+from models import db, Resource, User, Upvote, Report
 from utils.file_handler import get_full_path
+from utils.auth import login_required
 import os
 
 resources_bp = Blueprint('resources', __name__)
 
 RESOURCE_TYPES = ['Notes', 'Past Paper', 'Slides', 'Summary']
+
+# Report reasons use the frontend design's modal labels
+REPORT_REASONS = ['Wrong course', 'Outdated', 'Incorrect content', 'Duplicate', 'Inappropriate', 'Other']
 
 
 def _current_user():
@@ -145,3 +149,72 @@ def download_resource(resource_id):
         as_attachment=True,
         download_name=resource.original_filename
     )
+
+
+@resources_bp.route('/api/resources/<int:resource_id>/upvote', methods=['POST'])
+@login_required
+def upvote_resource(resource_id):
+    """Toggle upvote for the current user (haily logic)."""
+    user = User.query.get(session['user_id'])
+    resource = Resource.query.get(resource_id)
+
+    if not resource or resource.is_deleted or resource.status != 'approved':
+        return jsonify({'success': False, 'message': 'Resource not available'}), 404
+
+    existing = Upvote.query.filter_by(resource_id=resource_id, user_id=user.user_id).first()
+    if existing:
+        db.session.delete(existing)
+        resource.upvotes = max(0, resource.upvotes - 1)
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Upvote removed',
+                        'data': {'upvotes': resource.upvotes, 'upvoted': False}})
+
+    upvote = Upvote(resource_id=resource_id, user_id=user.user_id)
+    db.session.add(upvote)
+    resource.upvotes += 1
+    db.session.commit()
+
+    return jsonify({'success': True, 'message': 'Upvoted',
+                    'data': {'upvotes': resource.upvotes, 'upvoted': True}})
+
+
+@resources_bp.route('/api/resources/<int:resource_id>/upvote-status')
+@login_required
+def upvote_status(resource_id):
+    user = User.query.get(session['user_id'])
+    upvote = Upvote.query.filter_by(resource_id=resource_id, user_id=user.user_id).first()
+    return jsonify({'success': True, 'data': {'upvoted': upvote is not None}})
+
+
+@resources_bp.route('/api/resources/<int:resource_id>/report', methods=['POST'])
+@login_required
+def report_resource(resource_id):
+    """Report a resource. Login required; one open report per user per resource."""
+    user = User.query.get(session['user_id'])
+    resource = Resource.query.get(resource_id)
+
+    if not resource or resource.is_deleted:
+        return jsonify({'success': False, 'message': 'Resource not found'}), 404
+
+    data = request.get_json(silent=True) or {}
+    reason = data.get('reason', '').strip()
+    comment = data.get('comment', '').strip()
+
+    if reason not in REPORT_REASONS:
+        return jsonify({'success': False, 'message': 'Invalid report reason'}), 400
+
+    existing = Report.query.filter_by(
+        resource_id=resource_id, reporter_id=user.user_id, status='open').first()
+    if existing:
+        return jsonify({'success': False, 'message': 'You have already reported this resource'}), 409
+
+    report = Report(
+        resource_id=resource_id,
+        reporter_id=user.user_id,
+        reason=reason,
+        comment=comment if comment else None
+    )
+    db.session.add(report)
+    db.session.commit()
+
+    return jsonify({'success': True, 'message': 'Report submitted successfully'})
