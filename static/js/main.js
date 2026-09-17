@@ -66,12 +66,17 @@ const api = {
 /* ---------- Auth state (server session) ---------- */
 
 let currentUser = null;
+let mustChangePassword = false;
 let authStatePromise = null;
 
 function fetchAuthState() {
   if (!authStatePromise) {
     authStatePromise = apiFetch('/api/auth/me')
-      .then(r => { currentUser = r.data.user; return currentUser; })
+      .then(r => {
+        currentUser = r.data.user;
+        mustChangePassword = !!r.data.must_change_password;
+        return currentUser;
+      })
       .catch(() => { currentUser = null; return null; });
   }
   return authStatePromise;
@@ -349,6 +354,61 @@ function hydrateIcons(scope) {
   });
 }
 
+/* ---------- Forced password change (temp-password users, any page) ---------- */
+
+function ensureForceChangeModal() {
+  let modal = document.getElementById("forceChangeModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.className = "modal-overlay";
+    modal.id = "forceChangeModal";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.innerHTML = `
+      <div class="modal-box">
+        <div class="modal-head"><h3>Set a new password</h3></div>
+        <p class="text-secondary" style="font-size:0.9rem;">Your account uses a temporary password. Choose a new one to continue.</p>
+        <form id="forceChangeForm" novalidate>
+          <div class="field">
+            <label for="fcNewPassword">New password</label>
+            <input type="password" id="fcNewPassword" class="input" autocomplete="new-password">
+          </div>
+          <div class="field">
+            <label for="fcConfirmPassword">Confirm new password</label>
+            <input type="password" id="fcConfirmPassword" class="input" autocomplete="new-password">
+          </div>
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary">Update Password</button>
+          </div>
+        </form>
+      </div>`;
+    document.body.appendChild(modal);
+  }
+  const form = document.getElementById("forceChangeForm");
+  if (form && !form.dataset.wired) {
+    form.dataset.wired = "1";
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const pw = document.getElementById("fcNewPassword").value;
+      const confirm = document.getElementById("fcConfirmPassword").value;
+      if (pw.length < 8) { showToast("New password must be at least 8 characters.", "error"); return; }
+      if (pw !== confirm) { showToast("Passwords do not match.", "error"); return; }
+      try {
+        await apiFetch("/change-password", {
+          method: "POST",
+          body: JSON.stringify({ current_password: "", new_password: pw, confirm_password: confirm })
+        });
+        showToast("Password updated. Redirecting…", "success");
+        setTimeout(() => { window.location.href = "/index.html"; }, 600);
+      } catch (err) {
+        showToast(err.message || "Failed to update password.", "error");
+      }
+    });
+  }
+  /* Non-dismissible by design: no close button, no overlay-click close. */
+  modal.classList.add("open");
+}
+
 /* ---------- Init header/footer on every page ---------- */
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -357,4 +417,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderHeader(page);
   renderFooter();
   hydrateIcons();
+  if (mustChangePassword && page !== "login") ensureForceChangeModal();
 });
