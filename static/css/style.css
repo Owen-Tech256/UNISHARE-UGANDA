@@ -679,3 +679,76 @@ table.data-table { width: 100%; border-collapse: collapse; }
   .detail-meta-grid { grid-template-columns: 1fr 1fr; }
   .admin-stats, .summary-cards { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* =========================================================
+   Custom form controls — selects & checkboxes
+   Replaces the native/default browser rendering so these
+   controls match the design system. Purely visual: element
+   semantics, keyboard behavior, and JS hooks are unchanged.
+   ========================================================= */
+
+/* --- Selects: palette chevron instead of the OS arrow --- */
+select.input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding-right: 2.6rem; /* room for the chevron */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' fill='none' stroke='%23174A7E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 12px 8px;
+  cursor: pointer;
+}
+select.input::-ms-expand { display: none; }
+select.input:focus {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' fill='none' stroke='%23123B65' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+select.input.has-error {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' fill='none' stroke='%23D64545' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+select.input:disabled { cursor: not-allowed; opacity: 0.6; }
+select.input option { font-family: inherit; background: var(--color-white); color: var(--color-text); }
+
+/* --- Checkboxes: palette box + check, consistent cross-browser --- */
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  border: 1.5px solid var(--color-border);
+  border-radius: 4px;
+  background-color: var(--color-white);
+  cursor: pointer;
+  flex-shrink: 0;
+  vertical-align: middle;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+input[type="checkbox"]:hover:not(:disabled) { border-color: var(--color-primary); }
+input[type="checkbox"]:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+input[type="checkbox"]:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10' viewBox='0 0 12 10'%3E%3Cpath d='M1 5L4.5 8.5L11 1.5' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 12px 10px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+input[type="checkbox"]:indeterminate {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='2' viewBox='0 0 10 2'%3E%3Cpath d='M1 1H9' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size: 10px 2px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+input[type="checkbox"]:disabled { cursor: not-allowed; opacity: 0.55; background-color: var(--color-bg); }
+
+/* keep the original first-line alignment inside .checkbox-row
+   (declared after the base rule above so it wins the cascade) */
+.checkbox-row input { margin-top: 3px; }
