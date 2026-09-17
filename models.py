@@ -75,6 +75,7 @@ class Resource(db.Model):
     academic_year = db.Column(db.String(20), nullable=False)
     semester = db.Column(db.String(20), nullable=False)
     resource_type = db.Column(db.String(30), nullable=False)
+    description = db.Column(db.Text, nullable=True)  # from the frontend design's upload form
     file_path = db.Column(db.String(500), nullable=False)
     original_filename = db.Column(db.String(255), nullable=False)
     status = db.Column(db.String(20), default='pending')
@@ -102,6 +103,7 @@ class Resource(db.Model):
             'academic_year': self.academic_year,
             'semester': self.semester,
             'resource_type': self.resource_type,
+            'description': self.description,
             'status': self.status,
             'rejection_reason': self.rejection_reason,
             'upvotes': self.upvotes,
