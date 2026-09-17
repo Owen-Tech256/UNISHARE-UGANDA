@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moderation Queue - UniShare Uganda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body data-page="admin">
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="site-header"></div>
+
+<main id="main" class="page-main">
+  <div class="container">
+    <div class="page-header">
+      <h1>Moderation Queue</h1>
+      <p><span id="statPendingCount">–</span> pending &middot; oldest <span id="statOldest">–</span> &middot; <span id="statToday">–</span> submitted today</p>
+    </div>
+
+    <div class="admin-stats">
+      <div class="summary-card"><div class="sc-num" id="statPendingCount2">–</div><div class="sc-label">Pending Resources</div></div>
+      <div class="summary-card"><div class="sc-num" id="statOldest2">–</div><div class="sc-label">Oldest Submission</div></div>
+      <div class="summary-card"><div class="sc-num" id="statToday2">–</div><div class="sc-label">Today's Submissions</div></div>
+    </div>
+
+    <div class="admin-toolbar">
+      <div class="admin-filters">
+        <select id="modFilterSchool" class="input" style="display:none;"></select>
+        <select id="modFilterType" class="input">
+          <option value="">All Types</option>
+          <option>Notes</option>
+          <option>Past Paper</option>
+          <option>Slides</option>
+          <option>Summary</option>
+        </select>
+        <div class="pill-tabs" id="modStatusTabs">
+          <button class="pill-tab active" data-status="pending">Pending</button>
+          <button class="pill-tab" data-status="approved">Approved</button>
+          <button class="pill-tab" data-status="rejected">Rejected</button>
+        </div>
+      </div>
+      <div style="display:flex; gap:12px; align-items:center;">
+        <label class="checkbox-row" style="margin-bottom:0;">
+          <input type="checkbox" id="selectAllPending"> <span>Select all</span>
+        </label>
+        <button class="btn btn-secondary btn-sm" id="approveSelectedBtn">Approve Selected</button>
+      </div>
+    </div>
+
+    <div id="modQueueList"></div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+
+<!-- Reject modal -->
+<div class="modal-overlay" id="rejectModal">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="rejectModalTitle">
+    <div class="modal-head">
+      <h3 id="rejectModalTitle">Reject this resource</h3>
+      <button class="modal-close" id="rejectModalClose" aria-label="Close"><span data-icon="x"></span></button>
+    </div>
+    <div class="field">
+      <label for="rejectReason">Reason</label>
+      <select id="rejectReason" class="input">
+        <option>Wrong course</option>
+        <option>Outdated</option>
+        <option>Incorrect content</option>
+        <option>Duplicate</option>
+        <option>Inappropriate</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="rejectComment">Comment (optional)</label>
+      <textarea id="rejectComment" class="input" placeholder="Explain what needs fixing…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="rejectModalCancel">Cancel</button>
+      <button class="btn btn-danger" id="rejectModalSubmit">Confirm Rejection</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit-before-approve modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+    <div class="modal-head">
+      <h3 id="editModalTitle">Edit before approve</h3>
+      <button class="modal-close" id="editModalClose" aria-label="Close"><span data-icon="x"></span></button>
+    </div>
+    <form id="editForm">
+      <input type="hidden" id="editResourceId">
+      <div class="field">
+        <label for="editTitle">Title</label>
+        <input type="text" id="editTitle" class="input">
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div class="field">
+          <label for="editCourseCode">Course Code</label>
+          <input type="text" id="editCourseCode" class="input">
+        </div>
+        <div class="field">
+          <label for="editCourseName">Course Name</label>
+          <input type="text" id="editCourseName" class="input">
+        </div>
+      </div>
+      <div class="field">
+        <label for="editLecturer">Lecturer</label>
+        <input type="text" id="editLecturer" class="input">
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div class="field">
+          <label for="editSemester">Semester</label>
+          <select id="editSemester" class="input">
+            <option>Semester 1</option>
+            <option>Semester 2</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="editType">Resource Type</label>
+          <select id="editType" class="input">
+            <option>Notes</option>
+            <option>Past Paper</option>
+            <option>Slides</option>
+            <option>Summary</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="editDescription">Description</label>
+        <textarea id="editDescription" class="input" rows="3"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="editModalCancel">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/static/js/main.js"></script>
+<script src="/static/js/admin.js"></script>
+</body>
+</html>

@@ -54,7 +54,13 @@ const api = {
   report: (id, reason, comment) =>
     apiFetch(`/api/resources/${id}/report`, { method: 'POST', body: JSON.stringify({ reason, comment }) }),
   // POST /api/resources
-  submitResource: (formData) => apiFetch('/api/uploads', { method: 'POST', body: formData })
+  submitResource: (formData) => apiFetch('/api/uploads', { method: 'POST', body: formData }),
+  // POST .../approve | .../reject (admin or super-admin variant)
+  moderate: (id, action, body, superAdmin) =>
+    apiFetch(`/api/${superAdmin ? 'super-admin' : 'admin'}/resources/${id}/${action}`, {
+      method: 'POST',
+      body: body ? JSON.stringify(body) : undefined
+    })
 };
 
 /* ---------- Auth state (server session) ---------- */
