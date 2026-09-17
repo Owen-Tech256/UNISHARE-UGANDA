@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome back - UniShare Uganda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body data-page="login">
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="site-header"></div>
+
+<main id="main" class="page-main">
+  <div class="container">
+    <div class="auth-shell">
+      <h1 style="margin-bottom: 24px;">Login</h1>
+
+      <div class="form-alert error" id="loginAlert" role="alert">Invalid credentials.</div>
+
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="loginEmail">Student Number, Staff ID, or Email</label>
+          <input type="text" id="loginEmail" class="input" autocomplete="username">
+          <span class="error-text" id="loginEmailError"></span>
+        </div>
+
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <div class="password-wrap">
+            <input type="password" id="loginPassword" class="input" autocomplete="current-password">
+            <button type="button" class="password-toggle" id="loginPwToggle" aria-label="Show password"></button>
+          </div>
+          <span class="error-text" id="loginPasswordError"></span>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px;">
+          <label class="checkbox-row" style="margin-bottom:0;">
+            <input type="checkbox" id="rememberMe">
+            <span>Remember me</span>
+          </label>
+          <a href="#" id="forgotLink" style="font-size:0.88rem;">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="loginSubmit">Login</button>
+      </form>
+
+      <p class="auth-foot">Don't have an account? <a href="/register.html">Create one</a></p>
+      <p class="auth-foot text-secondary" style="font-size:0.85rem;">
+        An account is only needed to upvote, comment, or report. Browsing and downloading are free for everyone.
+      </p>
+    </div>
+  </div>
+</main>
+
+<!-- Force-change modal (temp-password users; non-dismissible) -->
+<div class="modal-overlay" id="forceChangeModal">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="forceChangeTitle">
+    <div class="modal-head">
+      <h3 id="forceChangeTitle">Set a new password</h3>
+    </div>
+    <p class="text-secondary" style="font-size:0.9rem;">Your account uses a temporary password. Choose a new one to continue.</p>
+    <form id="forceChangeForm" novalidate>
+      <div class="field">
+        <label for="fcNewPassword">New password</label>
+        <div class="password-wrap">
+          <input type="password" id="fcNewPassword" class="input" autocomplete="new-password">
+          <button type="button" class="password-toggle" id="fcPwToggle" aria-label="Show password"></button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="fcConfirmPassword">Confirm new password</label>
+        <input type="password" id="fcConfirmPassword" class="input" autocomplete="new-password">
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary" id="fcSubmit">Update Password</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="site-footer"></div>
+
+<script src="/static/js/main.js"></script>
+<script src="/static/js/auth.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    wirePasswordToggle("fcPwToggle", "fcNewPassword");
+    document.getElementById("forgotLink").addEventListener("click", (e) => {
+      e.preventDefault();
+      showToast("Password resets are done by your super admin, who can issue a temporary password.");
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,8 +1,9 @@
 """
 UniShare Uganda - Flask application factory.
 
-Ported from project haily's app.py: same four blueprints, same JSON/HTML
-error-handling split, same session-based context injection.
+Ported from project haily's app.py: blueprint registry, JSON/HTML
+error-handling split, and session-based context injection, extended
+with the pages blueprint that serves the adapted frontend-design HTML.
 """
 import os
 from flask import Flask, render_template, jsonify, request
@@ -12,6 +13,8 @@ from routes.auth import auth_bp
 from routes.resources import resources_bp
 from routes.uploads import uploads_bp
 from routes.admin import admin_bp
+from routes.pages import pages_bp
+import routes.schools  # noqa: F401  (registers /api/schools on auth_bp)
 
 
 def create_app():
@@ -25,6 +28,7 @@ def create_app():
     db.init_app(app)
 
     # Register blueprints
+    app.register_blueprint(pages_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(resources_bp)
     app.register_blueprint(uploads_bp)

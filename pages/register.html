@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create your UniShare account - UniShare Uganda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body data-page="register">
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="site-header"></div>
+
+<main id="main" class="page-main">
+  <div class="container">
+    <div class="auth-shell">
+      <h1 style="margin-bottom: 24px;">Create your UniShare account</h1>
+      <p class="text-secondary" style="margin-bottom: 20px; font-size: 0.92rem;">
+        An account is only needed to upvote, comment, or report on resources.
+        Browsing and downloading are always free.
+      </p>
+
+      <form id="registerForm" novalidate>
+        <div class="field">
+          <label for="regName">Full Name</label>
+          <input type="text" id="regName" class="input" autocomplete="name">
+          <span class="error-text" id="regNameError"></span>
+        </div>
+
+        <div class="field">
+          <label for="regStudentNumber">Student Number</label>
+          <input type="text" id="regStudentNumber" class="input" inputmode="numeric" maxlength="10" placeholder="e.g. 2400104444">
+          <span class="hint">Must contain exactly 10 digits.</span>
+          <span class="error-text" id="regStudentNumberError"></span>
+        </div>
+
+        <div class="field">
+          <label for="regEmail">Institutional Email</label>
+          <input type="email" id="regEmail" class="input" autocomplete="email" placeholder="you@unishare.ug">
+          <span class="error-text" id="regEmailError"></span>
+        </div>
+
+        <div class="field">
+          <label for="regSchool">School</label>
+          <select id="regSchool" class="input"></select>
+          <span class="error-text" id="regSchoolError"></span>
+        </div>
+
+        <div class="field">
+          <label for="regPassword">Password</label>
+          <div class="password-wrap">
+            <input type="password" id="regPassword" class="input" autocomplete="new-password">
+            <button type="button" class="password-toggle" id="regPwToggle" aria-label="Show password"></button>
+          </div>
+          <span class="hint">At least 8 characters.</span>
+          <span class="error-text" id="regPasswordError"></span>
+        </div>
+
+        <div class="field">
+          <label for="regConfirmPassword">Confirm Password</label>
+          <div class="password-wrap">
+            <input type="password" id="regConfirmPassword" class="input" autocomplete="new-password">
+            <button type="button" class="password-toggle" id="regConfirmPwToggle" aria-label="Show password"></button>
+          </div>
+          <span class="error-text" id="regConfirmPasswordError"></span>
+        </div>
+
+        <div class="field">
+          <label class="checkbox-row">
+            <input type="checkbox" id="regTerms">
+            <span>I agree to upload only original, accurate content.</span>
+          </label>
+          <span class="error-text" id="regTermsError">You must agree before creating an account.</span>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="regSubmit">Create Account</button>
+      </form>
+
+      <p class="auth-foot">Already have an account? <a href="/login.html">Login</a></p>
+    </div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="/static/js/main.js"></script>
+<script src="/static/js/auth.js"></script>
+</body>
+</html>
