@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Uploads - UniShare Uganda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body data-page="my_uploads">
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="site-header"></div>
+
+<main id="main" class="page-main">
+  <div class="container">
+    <div class="page-header">
+      <h1>My Uploads</h1>
+      <p>Track the status of everything you've shared with UniShare.</p>
+    </div>
+
+    <div class="summary-cards" id="summaryCards"></div>
+
+    <div class="admin-toolbar">
+      <div class="pill-tabs" id="statusTabs">
+        <button class="pill-tab active" data-status="">All</button>
+        <button class="pill-tab" data-status="pending">Pending</button>
+        <button class="pill-tab" data-status="approved">Approved</button>
+        <button class="pill-tab" data-status="rejected">Rejected</button>
+      </div>
+      <div class="sort-row">
+        <label for="uploadsSort">Sort</label>
+        <select id="uploadsSort" class="input">
+          <option value="newest">Newest</option>
+          <option value="upvoted">Most Upvoted</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Title</th><th>Course Code</th><th>Type</th><th>Date</th><th>Status</th><th>Upvotes</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="uploadsTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="empty-state" id="uploadsEmpty" style="display:none;">
+      <h3>No uploads in this category</h3>
+      <p>Try a different filter, or share something new.</p>
+      <a href="/upload.html" class="btn btn-primary">Upload a Resource</a>
+    </div>
+  </div>
+</main>
+
+<!-- Edit / resubmit modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+    <div class="modal-head">
+      <h3 id="editModalTitle">Edit upload</h3>
+      <button class="modal-close" id="editModalClose" aria-label="Close"><span data-icon="x"></span></button>
+    </div>
+    <p class="text-secondary" style="font-size:0.85rem; margin-bottom:12px;">Saving resubmits this resource for moderation review.</p>
+    <form id="editForm">
+      <input type="hidden" id="editResourceId">
+      <div class="field">
+        <label for="editTitle">Title</label>
+        <input type="text" id="editTitle" class="input">
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div class="field">
+          <label for="editCourseCode">Course Code</label>
+          <input type="text" id="editCourseCode" class="input">
+        </div>
+        <div class="field">
+          <label for="editCourseName">Course Name</label>
+          <input type="text" id="editCourseName" class="input">
+        </div>
+      </div>
+      <div class="field">
+        <label for="editLecturer">Lecturer</label>
+        <input type="text" id="editLecturer" class="input">
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div class="field">
+          <label for="editSemester">Semester</label>
+          <select id="editSemester" class="input">
+            <option>Semester 1</option>
+            <option>Semester 2</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="editType">Resource Type</label>
+          <select id="editType" class="input">
+            <option>Notes</option>
+            <option>Past Paper</option>
+            <option>Slides</option>
+            <option>Summary</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="editDescription">Description</label>
+        <textarea id="editDescription" class="input" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="editFile">Replace file (optional)</label>
+        <input type="file" id="editFile" class="input" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.jpeg,.png">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="editModalCancel">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="editSubmit">Save &amp; Resubmit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Withdraw confirmation modal -->
+<div class="modal-overlay" id="withdrawModal">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="withdrawModalTitle">
+    <div class="modal-head">
+      <h3 id="withdrawModalTitle">Withdraw this upload?</h3>
+      <button class="modal-close" id="withdrawModalClose" aria-label="Close"><span data-icon="x"></span></button>
+    </div>
+    <p class="text-secondary">This removes the pending upload from the moderation queue. It cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="withdrawModalCancel">Cancel</button>
+      <button class="btn btn-danger" id="withdrawModalConfirm">Withdraw</button>
+    </div>
+  </div>
+</div>
+
+<div id="site-footer"></div>
+
+<script src="/static/js/main.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (!requireAuth("/login.html")) return;
+
+    const user = getAuthState();
+    if (user.role !== "coordinator") {
+      document.getElementById("summaryCards").innerHTML = "";
+      document.querySelector(".admin-toolbar").style.display = "none";
+      document.querySelector(".table-wrap").style.display = "none";
+      const empty = document.getElementById("uploadsEmpty");
+      empty.style.display = "block";
+      empty.querySelector("h3").textContent = "Uploading is for coordinators";
+      empty.querySelector("p").textContent = "Uploading is limited to coordinators assigned by your super admin. You can still browse and download everything freely.";
+      empty.querySelector("a").style.display = "none";
+      return;
+    }
+
+    let currentStatus = "";
+    let currentSort = "newest";
+
+    /* ---------- Data ---------- */
+
+    async function loadUploads() {
+      const params = { per_page: 100 };
+      if (currentStatus) params.status = currentStatus;
+      const data = await api.getMyUploads(params);
+      let list = data.resources;
+      if (currentSort === "upvoted") list = list.slice().sort((a, b) => b.upvotes - a.upvotes);
+      renderSummary(list);
+      renderTable(list);
+    }
+
+    function renderSummary(list) {
+      const approved = list.filter(u => u.status === "approved").length;
+      const pending = list.filter(u => u.status === "pending").length;
+      const rejected = list.filter(u => u.status === "rejected").length;
+      const totalUpvotes = list.reduce((s, u) => s + (u.upvotes || 0), 0);
+      document.getElementById("summaryCards").innerHTML = `
+        <div class="summary-card"><div class="sc-num">${list.length}</div><div class="sc-label">Total Uploads</div></div>
+        <div class="summary-card"><div class="sc-num">${approved}</div><div class="sc-label">Approved</div></div>
+        <div class="summary-card"><div class="sc-num">${pending}</div><div class="sc-label">Pending</div></div>
+        <div class="summary-card"><div class="sc-num">${rejected}</div><div class="sc-label">Rejected</div></div>
+        <div class="summary-card"><div class="sc-num">${totalUpvotes}</div><div class="sc-label">Total Upvotes</div></div>
+      `;
+    }
+
+    function statusClass(s) {
+      return s === "approved" ? "status-approved" : s === "pending" ? "status-pending" : "status-rejected";
+    }
+
+    function renderTable(list) {
+      const body = document.getElementById("uploadsTableBody");
+      const empty = document.getElementById("uploadsEmpty");
+
+      if (!list.length) {
+        body.innerHTML = "";
+        empty.style.display = "block";
+        return;
+      }
+      empty.style.display = "none";
+
+      body.innerHTML = list.map(u => `
+        <tr>
+          <td data-label="Title">${escapeHtml(u.title)}
+            ${u.status === "rejected" && u.rejection_reason ? `<div class="text-secondary" style="font-size:0.78rem;margin-top:4px;"><strong>Reason:</strong> ${escapeHtml(u.rejection_reason)}</div>` : ""}
+          </td>
+          <td data-label="Course Code">${escapeHtml(u.course_code)}</td>
+          <td data-label="Type">${escapeHtml(u.resource_type)}</td>
+          <td data-label="Date">${formatDate(u.created_at)}</td>
+          <td data-label="Status"><span class="status-badge ${statusClass(u.status)}">${u.status.charAt(0).toUpperCase() + u.status.slice(1)}</span></td>
+          <td data-label="Upvotes">${u.upvotes}</td>
+          <td data-label="Actions" class="actions-cell">
+            <a href="/resource_detail.html?id=${u.resource_id}" class="btn btn-ghost btn-sm">View</a>
+            <button class="btn btn-outline btn-sm" data-edit="${u.resource_id}">Edit</button>
+            ${u.status === "rejected" ? `<button class="btn btn-secondary btn-sm" data-resubmit="${u.resource_id}">Resubmit</button>` : ""}
+            ${u.status === "pending" ? `<button class="btn btn-danger btn-sm" data-withdraw="${u.resource_id}">Withdraw</button>` : ""}
+          </td>
+        </tr>
+      `).join("");
+
+      body.querySelectorAll("[data-edit]").forEach(btn =>
+        btn.addEventListener("click", () => openEditModal(Number(btn.getAttribute("data-edit")))));
+      body.querySelectorAll("[data-resubmit]").forEach(btn =>
+        btn.addEventListener("click", () => resubmit(Number(btn.getAttribute("data-resubmit")))));
+      body.querySelectorAll("[data-withdraw]").forEach(btn =>
+        btn.addEventListener("click", () => {
+          document.getElementById("withdrawModal").setAttribute("data-id", btn.getAttribute("data-withdraw"));
+          document.getElementById("withdrawModal").classList.add("open");
+        }));
+    }
+
+    /* ---------- Actions ---------- */
+
+    function openEditModal(id) {
+      api.getMyUploads({ per_page: 100 }).then(data => {
+        const r = data.resources.find(x => x.resource_id === id);
+        if (!r) return;
+        document.getElementById("editResourceId").value = r.resource_id;
+        document.getElementById("editTitle").value = r.title;
+        document.getElementById("editCourseCode").value = r.course_code;
+        document.getElementById("editCourseName").value = r.course_name;
+        document.getElementById("editLecturer").value = r.lecturer_name;
+        document.getElementById("editSemester").value = r.semester;
+        document.getElementById("editType").value = r.resource_type;
+        document.getElementById("editDescription").value = r.description || "";
+        document.getElementById("editFile").value = "";
+        document.getElementById("editModal").classList.add("open");
+      });
+    }
+
+    document.getElementById("editModalClose").addEventListener("click", () => document.getElementById("editModal").classList.remove("open"));
+    document.getElementById("editModalCancel").addEventListener("click", () => document.getElementById("editModal").classList.remove("open"));
+
+    document.getElementById("editForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const id = document.getElementById("editResourceId").value;
+      const fd = new FormData();
+      fd.append("title", document.getElementById("editTitle").value);
+      fd.append("course_code", document.getElementById("editCourseCode").value);
+      fd.append("course_name", document.getElementById("editCourseName").value);
+      fd.append("lecturer_name", document.getElementById("editLecturer").value);
+      fd.append("semester", document.getElementById("editSemester").value);
+      fd.append("resource_type", document.getElementById("editType").value);
+      fd.append("description", document.getElementById("editDescription").value);
+      const file = document.getElementById("editFile").files[0];
+      if (file) fd.append("file", file);
+
+      try {
+        await apiFetch(`/api/uploads/${id}`, { method: "PUT", body: fd });
+        showToast("Saved and resubmitted for moderation.", "success");
+        document.getElementById("editModal").classList.remove("open");
+        loadUploads();
+      } catch (err) {
+        showToast(err.message, "error");
+      }
+    });
+
+    async function resubmit(id) {
+      try {
+        await apiFetch(`/api/uploads/${id}/resubmit`, { method: "POST" });
+        showToast("Resubmitted for moderation review.", "success");
+        loadUploads();
+      } catch (err) {
+        showToast(err.message, "error");
+      }
+    }
+
+    document.getElementById("withdrawModalClose").addEventListener("click", () => document.getElementById("withdrawModal").classList.remove("open"));
+    document.getElementById("withdrawModalCancel").addEventListener("click", () => document.getElementById("withdrawModal").classList.remove("open"));
+    document.getElementById("withdrawModalConfirm").addEventListener("click", async () => {
+      const id = document.getElementById("withdrawModal").getAttribute("data-id");
+      try {
+        await apiFetch(`/api/uploads/${id}`, { method: "DELETE" });
+        showToast("Upload withdrawn.", "success");
+        document.getElementById("withdrawModal").classList.remove("open");
+        loadUploads();
+      } catch (err) {
+        showToast(err.message, "error");
+      }
+    });
+
+    /* ---------- Tabs & sort ---------- */
+
+    document.getElementById("statusTabs").addEventListener("click", (e) => {
+      const btn = e.target.closest(".pill-tab");
+      if (!btn) return;
+      document.querySelectorAll(".pill-tab").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentStatus = btn.getAttribute("data-status");
+      loadUploads();
+    });
+
+    document.getElementById("uploadsSort").addEventListener("change", (e) => {
+      currentSort = e.target.value;
+      loadUploads();
+    });
+
+    loadUploads().catch(() => showToast("Could not load your uploads.", "error"));
+  });
+</script>
+</body>
+</html>
