@@ -6,6 +6,7 @@ from routes.auth import auth_bp
 from routes.resources import resources_bp
 from routes.uploads import uploads_bp
 from routes.admin import admin_bp
+from routes.pages import pages_bp
 
 def create_app():
     app = Flask(__name__)
@@ -22,6 +23,7 @@ def create_app():
     app.register_blueprint(resources_bp)
     app.register_blueprint(uploads_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(pages_bp, url_prefix='/info')
 
     # ==========================================
     # ERROR HANDLERS (Must be inside create_app)

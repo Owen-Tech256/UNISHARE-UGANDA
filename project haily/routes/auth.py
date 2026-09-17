@@ -1,10 +1,16 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
+from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from models import db, User, School
 from utils.auth import login_required
 from datetime import datetime, timedelta
 
 auth_bp = Blueprint('auth', __name__)
+
+
+def password_reset_serializer():
+    from flask import current_app
+    return URLSafeTimedSerializer(current_app.config['SECRET_KEY'], salt='password-reset')
 
 @auth_bp.route('/')
 def index():
@@ -81,6 +87,56 @@ def api_login():
 @auth_bp.route('/login')
 def login():
     return render_template('login.html')
+
+
+@auth_bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    reset_url = None
+    if request.method == 'POST':
+        identifier = request.form.get('identifier', '').strip()
+        email = request.form.get('email', '').strip().lower()
+        user = User.query.filter(
+            ((User.student_number == identifier) | (User.staff_id == identifier)) &
+            (User.email == email)
+        ).first()
+
+        if user:
+            token = password_reset_serializer().dumps({'user_id': user.user_id})
+            reset_url = url_for('auth.reset_password', token=token, _external=True)
+        else:
+            flash('We could not verify those account details. Check them and try again.', 'danger')
+
+    return render_template('forgot_password.html', reset_url=reset_url)
+
+
+@auth_bp.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    try:
+        data = password_reset_serializer().loads(token, max_age=3600)
+        user = User.query.get(data['user_id'])
+    except (BadSignature, SignatureExpired, KeyError, TypeError):
+        user = None
+
+    if not user:
+        flash('This password reset link is invalid or has expired.', 'danger')
+        return redirect(url_for('auth.forgot_password'))
+
+    if request.method == 'POST':
+        password = request.form.get('password', '')
+        confirm_password = request.form.get('confirm_password', '')
+        if len(password) < 8:
+            flash('Password must be at least 8 characters.', 'danger')
+        elif password != confirm_password:
+            flash('Passwords do not match.', 'danger')
+        else:
+            user.password_hash = generate_password_hash(password)
+            user.is_temp_password = False
+            user.temp_password_expires_at = None
+            db.session.commit()
+            flash('Your password has been reset. You can now sign in.', 'success')
+            return redirect(url_for('auth.login'))
+
+    return render_template('reset_password.html')
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():

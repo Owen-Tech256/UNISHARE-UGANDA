@@ -121,10 +121,10 @@
                 <div class="footer-col">
                     <h4>Support & Policy</h4>
                     <ul class="footer-links">
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Terms of Service</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Academic Integrity</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Help Center</a></li>
+                        <li><a href="{{ url_for('pages.information_page', page_name='terms') }}"><i class="fas fa-chevron-right"></i> Terms of Service</a></li>
+                        <li><a href="{{ url_for('pages.information_page', page_name='privacy') }}"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
+                        <li><a href="{{ url_for('pages.information_page', page_name='academic-integrity') }}"><i class="fas fa-chevron-right"></i> Academic Integrity</a></li>
+                        <li><a href="{{ url_for('pages.information_page', page_name='help') }}"><i class="fas fa-chevron-right"></i> Help Center</a></li>
                     </ul>
                 </div>
 
@@ -134,7 +134,7 @@
                     <ul class="footer-contact">
                         <li><i class="fas fa-map-marker-alt"></i> Entebbe Road, Nkumba, Uganda</li>
                         <li><i class="fas fa-envelope"></i> support@nkumbauniversity.ac.ug</li>
-                        <li><i class="fas fa-phone"></i> +256 000 000 000</li>
+                        <li><i class="fas fa-phone"></i> <a href="tel:+256781957183">+256 781957183</a></li>
                     </ul>
                 </div>
             </div>
