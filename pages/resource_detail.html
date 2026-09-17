@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resource Details - UniShare Uganda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body data-page="detail">
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="site-header"></div>
+
+<main id="main" class="page-main">
+  <div class="container">
+    <div id="detailContent"><div class="empty-state"><p>Loading resource…</p></div></div>
+
+    <section class="section" id="moreSection" style="display:none;">
+      <div class="section-head"><h2>More resources for this course</h2></div>
+      <div class="resource-grid" id="moreGrid"></div>
+    </section>
+
+    <!-- Comments section (new feature) -->
+    <section class="section" id="commentsSection">
+      <div class="section-head"><h2>Comments (<span id="commentsCount">0</span>)</h2></div>
+
+      <div id="commentFormWrap" class="card" style="display:none; margin-bottom:16px;">
+        <form id="commentForm">
+          <div class="field">
+            <label for="commentBody">Add a comment</label>
+            <textarea id="commentBody" class="input" rows="3" maxlength="2000" placeholder="Share how this resource helped you…"></textarea>
+            <span class="error-text" id="commentError"></span>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm" id="commentSubmit">Post Comment</button>
+        </form>
+      </div>
+
+      <div id="commentLoginPrompt" class="card" style="display:none; margin-bottom:16px;">
+        <p style="margin-bottom:10px;"><strong>Want to join the discussion?</strong></p>
+        <p class="text-secondary" style="font-size:0.9rem; margin-bottom:12px;">Create a free account or log in to comment, upvote, or report resources. Browsing and downloading stay open to everyone.</p>
+        <div style="display:flex; gap:10px;">
+          <a href="/login.html" class="btn btn-primary btn-sm">Login</a>
+          <a href="/register.html" class="btn btn-outline btn-sm">Register</a>
+        </div>
+      </div>
+
+      <div id="commentsList" class="stack-sm"></div>
+    </section>
+  </div>
+</main>
+
+<!-- Report modal -->
+<div class="modal-overlay" id="reportModal">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
+    <div class="modal-head">
+      <h3 id="reportModalTitle">Report this resource</h3>
+      <button class="modal-close" id="reportModalClose" aria-label="Close"><span data-icon="x"></span></button>
+    </div>
+    <div class="field">
+      <label for="reportReason">Reason</label>
+      <select id="reportReason" class="input">
+        <option>Wrong course</option>
+        <option>Outdated</option>
+        <option>Incorrect content</option>
+        <option>Duplicate</option>
+        <option>Inappropriate</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="reportComment">Comment (optional)</label>
+      <textarea id="reportComment" class="input" placeholder="Add any extra detail…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="reportModalCancel">Cancel</button>
+      <button class="btn btn-danger" id="reportModalSubmit">Submit Report</button>
+    </div>
+  </div>
+</div>
+
+<div id="site-footer"></div>
+
+<script src="/static/js/main.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const resourceId = params.get("id");
+
+  function fileTypeBlurb(fileType) {
+    if (!fileType) return "File";
+    const ext = fileType.toLowerCase();
+    if (ext === "pdf") return "PDF document";
+    if (ext === "doc" || ext === "docx") return "Word document";
+    if (ext === "ppt" || ext === "pptx") return "PowerPoint presentation";
+    if (["jpg", "jpeg", "png"].includes(ext)) return "Image file";
+    return "Document";
+  }
+
+  function renderDetail(r) {
+    document.title = r.title + " - UniShare Uganda";
+    const fileExt = (r.original_filename || "").split(".").pop().toUpperCase();
+
+    document.getElementById("detailContent").innerHTML = `
+      <div class="detail-grid">
+        <div>
+          <div class="card">
+            <div class="detail-top">
+              <span class="badge ${typeBadgeClass(r.resource_type)}">${escapeHtml(r.resource_type)}</span>
+              <h1 style="font-size:1.6rem; margin:10px 0;">${escapeHtml(r.title)}</h1>
+              <span class="approved-flag"><span data-icon="check"></span> Moderator Approved</span>
+            </div>
+
+            <div class="detail-meta-grid">
+              <div class="meta-item"><div class="meta-label">Course Code</div><div class="meta-value">${escapeHtml(r.course_code)}</div></div>
+              <div class="meta-item"><div class="meta-label">Course Name</div><div class="meta-value">${escapeHtml(r.course_name)}</div></div>
+              <div class="meta-item"><div class="meta-label">School</div><div class="meta-value">${escapeHtml(r.school_name || "")}</div></div>
+              <div class="meta-item"><div class="meta-label">Lecturer</div><div class="meta-value">${escapeHtml(r.lecturer_name)}</div></div>
+              <div class="meta-item"><div class="meta-label">Academic Year</div><div class="meta-value">${escapeHtml(r.academic_year)}</div></div>
+              <div class="meta-item"><div class="meta-label">Semester</div><div class="meta-value">${escapeHtml(r.semester)}</div></div>
+              <div class="meta-item"><div class="meta-label">Uploader</div><div class="meta-value">${escapeHtml(r.uploader_name || "Unknown")}</div></div>
+              <div class="meta-item"><div class="meta-label">Upload Date</div><div class="meta-value">${formatDate(r.created_at)}</div></div>
+            </div>
+
+            <div class="preview-box">
+              <div class="file-icon" style="display:flex;justify-content:center;" data-icon="file"></div>
+              <div class="file-name">${escapeHtml(r.original_filename)}</div>
+              <div class="file-meta">${escapeHtml(fileTypeBlurb(r.original_filename))}</div>
+            </div>
+
+            <div class="action-row">
+              <a class="btn btn-primary" id="downloadBtn" href="/download/${r.resource_id}"><span data-icon="upload" style="transform:rotate(180deg);display:inline-block;"></span> Download</a>
+              <button class="btn btn-secondary" id="upvoteBtn"><span data-icon="upvote"></span> Upvote (<span id="upvoteCount">${r.upvotes}</span>)</button>
+              <button class="btn btn-outline" id="shareBtn">Share</button>
+              <button class="btn btn-ghost" id="reportBtn">Report</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card side-card">
+            <h4>About the uploader</h4>
+            <p class="text-secondary" style="font-size:0.9rem;">${escapeHtml(r.uploader_name || "A coordinator")} shared this resource for ${escapeHtml(r.school_name || "your school")}. All uploads are reviewed by moderators before appearing publicly.</p>
+          </div>
+          <div class="card side-card">
+            <h4>Usage note</h4>
+            <p class="text-secondary" style="font-size:0.9rem;">Please confirm this matches your course outline before relying on it for revision. Spotted a problem? Use the Report button.</p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    hydrateIcons(document.getElementById("detailContent"));
+
+    // Upvote
+    document.getElementById("upvoteBtn").addEventListener("click", async () => {
+      try {
+        const res = await api.vote(r.resource_id);
+        document.getElementById("upvoteCount").textContent = res.data.upvotes;
+        showToast(res.data.upvoted ? "Upvoted - thanks for the feedback." : "Upvote removed.", "success");
+      } catch (err) {
+        if (!handleAuthError(err)) showToast(err.message, "error");
+      }
+    });
+
+    // Share
+    document.getElementById("shareBtn").addEventListener("click", () => {
+      const url = window.location.href;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => showToast("Link copied to clipboard."));
+      } else {
+        showToast("Share link: " + url);
+      }
+    });
+
+    // Report
+    document.getElementById("reportBtn").addEventListener("click", () => {
+      if (!getAuthState()) {
+        showToast("Please log in to report a resource.", "error");
+        setTimeout(() => { window.location.href = "/login.html"; }, 900);
+        return;
+      }
+      document.getElementById("reportModal").classList.add("open");
+    });
+    document.getElementById("reportModalClose").addEventListener("click", () => document.getElementById("reportModal").classList.remove("open"));
+    document.getElementById("reportModalCancel").addEventListener("click", () => document.getElementById("reportModal").classList.remove("open"));
+    document.getElementById("reportModalSubmit").addEventListener("click", async () => {
+      const reason = document.getElementById("reportReason").value;
+      try {
+        await api.report(r.resource_id, reason, document.getElementById("reportComment").value);
+        document.getElementById("reportModal").classList.remove("open");
+        document.getElementById("reportComment").value = "";
+        showToast("Report submitted. A moderator will review it.", "success");
+      } catch (err) {
+        showToast(err.message, "error");
+      }
+    });
+  }
+
+  /* ---------- Comments ---------- */
+
+  function commentHtml(c) {
+    const user = getAuthState();
+    const canDelete = user && (user.user_id === c.user_id || user.role === "moderator" || user.role === "super_admin");
+    return `
+      <div class="card" style="padding:14px 18px;" data-comment-id="${c.comment_id}">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+          <div>
+            <strong style="font-size:0.92rem;">${escapeHtml(c.user_name || "Student")}</strong>
+            <div class="text-secondary" style="font-size:0.78rem; margin:2px 0 8px;">${formatDate(c.created_at)}</div>
+            <p style="font-size:0.94rem; white-space:pre-wrap;">${escapeHtml(c.body)}</p>
+          </div>
+          ${canDelete ? `<button type="button" class="btn btn-ghost btn-sm comment-delete" data-id="${c.comment_id}" aria-label="Delete comment">&times;</button>` : ""}
+        </div>
+      </div>
+    `;
+  }
+
+  async function loadComments() {
+    try {
+      const res = await apiFetch(`/api/resources/${resourceId}/comments`);
+      const comments = res.data.comments;
+      document.getElementById("commentsCount").textContent = comments.length;
+      const list = document.getElementById("commentsList");
+      list.innerHTML = comments.length
+        ? comments.map(commentHtml).join("")
+        : `<p class="text-secondary">No comments yet. Be the first to share how this resource helped you.</p>`;
+
+      list.querySelectorAll(".comment-delete").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          try {
+            await apiFetch(`/api/comments/${btn.getAttribute("data-id")}`, { method: "DELETE" });
+            showToast("Comment deleted.", "success");
+            loadComments();
+          } catch (err) {
+            showToast(err.message, "error");
+          }
+        });
+      });
+    } catch (err) {
+      document.getElementById("commentsList").innerHTML = `<p class="text-secondary">Could not load comments.</p>`;
+    }
+  }
+
+  function initCommentForm() {
+    const user = getAuthState();
+    const formWrap = document.getElementById("commentFormWrap");
+    const loginPrompt = document.getElementById("commentLoginPrompt");
+
+    if (user) {
+      formWrap.style.display = "block";
+      document.getElementById("commentForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const bodyEl = document.getElementById("commentBody");
+        const body = bodyEl.value.trim();
+        const errEl = document.getElementById("commentError");
+        if (!body) { errEl.textContent = "Comment cannot be empty."; errEl.classList.add("show"); return; }
+        errEl.classList.remove("show");
+        try {
+          await apiFetch(`/api/resources/${resourceId}/comments`, { method: "POST", body: JSON.stringify({ body }) });
+          bodyEl.value = "";
+          showToast("Comment posted.", "success");
+          loadComments();
+        } catch (err) {
+          showToast(err.message, "error");
+        }
+      });
+    } else {
+      loginPrompt.style.display = "block";
+    }
+  }
+
+  /* ---------- Init ---------- */
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    hydrateIcons();
+
+    if (!resourceId) {
+      document.getElementById("detailContent").innerHTML = `
+        <div class="empty-state">
+          <h3>Resource not found</h3>
+          <p>This resource may have been removed, or the link is incorrect.</p>
+          <a href="/browse.html" class="btn btn-primary">Back to Browse</a>
+        </div>`;
+      return;
+    }
+
+    try {
+      const res = await api.getResource(resourceId);
+      renderDetail(res.resource);
+
+      const more = res.related;
+      if (more && more.length) {
+        document.getElementById("moreSection").style.display = "block";
+        document.getElementById("moreGrid").innerHTML = more.map(resourceCardHtml).join("");
+      }
+
+      initCommentForm();
+      await loadComments();
+    } catch (err) {
+      document.getElementById("detailContent").innerHTML = `
+        <div class="empty-state">
+          <h3>Resource not found</h3>
+          <p>This resource may have been removed, or the link is incorrect.</p>
+          <a href="/browse.html" class="btn btn-primary">Back to Browse</a>
+        </div>`;
+    }
+  });
+</script>
+</body>
+</html>
